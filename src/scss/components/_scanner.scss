@@ -1,0 +1,19 @@
+// Custom Scanner
+[id^="render-"] {
+  // min-height: 300px;
+  line-height: 80px;
+  // box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+#html5-qrcode-button-camera-permission {
+  border: unset;
+  background-color: #1565c0;
+  color: #fff;
+  padding: 8px;
+  border-radius: 3px;
+}
+
+/* Turn off adventisment */
+[id^="render-"] > div:nth-child(1) > img {
+  display: none;
+}

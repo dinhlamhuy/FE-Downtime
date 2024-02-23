@@ -1,0 +1,25 @@
+html,
+body {
+  margin: 0px;
+  font-size: 16px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.MuiButton-contained {
+  text-transform: none !important;
+}
+
+.swal2-container {
+  z-index: 9999;
+}
+
+.swal2-popup {
+  font-size: 13px;
+}
+
+// .MuiTypography-root {
+//   font-size: 14px !important;
+// }
