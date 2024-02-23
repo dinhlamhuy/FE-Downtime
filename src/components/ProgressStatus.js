@@ -29,6 +29,7 @@ import { setErrorCode } from "../redux/features/electric";
 import DetailInfo from "./DetailInfo";
 
 import { useTranslation } from "react-i18next";
+import ConfirmModal from "./ConfirmModal";
 
 const ProgressStatus = ({ listReport, user }) => {
   const [openProgress, setOpenProgress] = useState(listReport || []);
@@ -49,17 +50,17 @@ const ProgressStatus = ({ listReport, user }) => {
         setOpen(true);
       },
     },
-    // {
-    //   label: t("process_status.status_2"),
-    //   description: t("process_status.status_2_"),
-    //   performAction: function (status, lean, id_machine) {
-    //     if (status === 1 && (lean === "TD" || lean === "TM")) {
-    //       setActiveModal("confirm");
-    //       setIdMachine(id_machine);
-    //       setOpen(true);
-    //     }
-    //   },
-    // },
+    {
+      label: t("process_status.status_2"),
+      description: t("process_status.status_2_"),
+      performAction: function (status, lean, id_machine) {
+        if (status === 1 && (lean === "TD" || lean === "TM")) {
+          setActiveModal("confirm");
+          setIdMachine(id_machine);
+          setOpen(true);
+        }
+      },
+    },
     {
       label: t("process_status.status_3"),
       description: t("process_status.status_3_"),
@@ -85,6 +86,7 @@ const ProgressStatus = ({ listReport, user }) => {
   ];
 
   const handleClick = (index) => {
+
     const isOpen = openProgress.includes(index);
     if (isOpen) {
       setOpenProgress(openProgress.filter((item) => item !== index));
@@ -141,7 +143,7 @@ const ProgressStatus = ({ listReport, user }) => {
                   variant="body"
                   style={{
                     color: "white",
-                    fontSize: "14px",
+                    fontSize: "4px",
                   }}
                 >
                   <Chip
@@ -169,18 +171,21 @@ const ProgressStatus = ({ listReport, user }) => {
                     sx={{ width: "100%", padding: "0 15px" }}
                   >
                     <Stepper
-                      activeStep={product["status"] - 2}
+                      activeStep={product["status"] - 1 }
                       orientation="vertical"
                     >
                       {steps.map((step, index) => (
                         <Step
                           key={index}
-                          onClick={() =>
+                          onClick={() =>{
                             step.performAction(
                               product.status,
                               user.lean,
                               product.id_machine
-                            )
+                            ); 
+                             
+                          }
+
                           }
                         >
                           <StepLabel StepIconComponent={ColorlibStepIcon}>
@@ -206,7 +211,7 @@ const ProgressStatus = ({ listReport, user }) => {
             )}
 
             {/* Trạng thái 2: Xác nhận form */}
-            {/* {activeModal === "confirm" && (
+            {activeModal === "confirm" && (
               <ConfirmModal
                 isCheck={idMachine === product.id_machine}
                 idMachine={idMachine}
@@ -214,7 +219,7 @@ const ProgressStatus = ({ listReport, user }) => {
                 setOpen={setOpen}
                 user={user}
               />
-            )} */}
+            )}
 
             {/* Trạng thái 3: Quét mã scanner */}
             {activeModal === "scanner" && (

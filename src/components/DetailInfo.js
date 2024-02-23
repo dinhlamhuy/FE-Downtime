@@ -8,7 +8,7 @@ const DetailInfo = ({ isCheck, open, setOpen, machine, user }) => {
 
     const [t] = useTranslation("global");
 
-    console.log(machine);
+    // console.log(machine);
 
     return (
         <>

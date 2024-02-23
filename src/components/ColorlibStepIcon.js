@@ -2,7 +2,7 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 // import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ArticleIcon from "@mui/icons-material/Article";
-// import SystemSecurityUpdateGoodIcon from "@mui/icons-material/SystemSecurityUpdateGood";
+import SystemSecurityUpdateGoodIcon from "@mui/icons-material/SystemSecurityUpdateGood";
 import QrCodeIcon from "@mui/icons-material/QrCode";
 import NoteAltIcon from "@mui/icons-material/NoteAlt";
 
@@ -29,12 +29,13 @@ const ColorlibStepIconRoot = styled("div")(({ theme, ownerState }) => ({
 const ColorlibStepIcon = (props) => {
   const { active, completed, className } = props;
 
+
   const icons = {
     1: <ArticleIcon />,
-    // 2: <SystemSecurityUpdateGoodIcon />,
-    2: <QrCodeIcon />,
-    3: <NoteAltIcon />,
-    // 4: <AssignmentTurnedInIcon />,
+    2: <SystemSecurityUpdateGoodIcon />,
+    3: <QrCodeIcon />,
+     4: <NoteAltIcon />,
+    //4: <AssignmentTurnedInIcon />,
   };
 
   return (
