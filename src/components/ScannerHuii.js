@@ -54,7 +54,7 @@ const Scanner = (props) => {
         }
 
         const selectedCameraId = rearCameraId || videoDevices[0]?.deviceId;
-console.log('camera nào',  scannerRef.current.start);
+
         if (selectedCameraId) {
           scannerRef.current?.start(selectedCameraId, {
             facingMode: "environment",
