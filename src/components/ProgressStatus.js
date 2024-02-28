@@ -1,19 +1,5 @@
 import React, { useEffect, useState } from "react";
-
-import {
-  Stepper,
-  Step,
-  StepLabel,
-  Typography,
-  Stack,
-  Card,
-  Chip,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Collapse,
-} from "@mui/material";
+import {Stepper, Step,  StepLabel, Typography, Stack, Card, Chip, List, ListItem, ListItemButton, ListItemText, Collapse } from "@mui/material";
 
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -35,7 +21,7 @@ const ProgressStatus = ({ listReport, user }) => {
   const [openProgress, setOpenProgress] = useState(listReport || []);
   const [open, setOpen] = useState(false);
   const [activeModal, setActiveModal] = useState("");
-  const [scannerResult, setScannerResult] = useState("");
+  const [scannerResult, setScannerResult] = useState("IT-PC12");
   const [idMachine, setIdMachine] = useState("");
 
   const [t] = useTranslation("global");

@@ -44,13 +44,13 @@ export default function History({ historyListReport, user }) {
         setOpen(true);
       },
     },
-    // {
-    //   label: t("process_status.status_2"),
-    //   description: t("process_status.status_2_"),
-    //   performAction: function (status, lean, id_machine) {
-    //     return "";
-    //   }
-    // },
+    {
+      label: t("process_status.status_2"),
+      description: t("process_status.status_2_"),
+      performAction: function (status, lean, id_machine) {
+        return "";
+      }
+    },
     {
       label: t("process_status.status_3"),
       description: t("process_status.status_3_"),
@@ -120,7 +120,7 @@ export default function History({ historyListReport, user }) {
                     variant="outlined"
                     sx={{ width: "100%", padding: "0 15px" }}
                   >
-                    <Stepper activeStep={item["status"] - 2} orientation="vertical" >
+                    <Stepper activeStep={item["status"] - 1} orientation="vertical" >
                       {steps.map((step, index) => (
                         <Step key={index}
                           onClick={() =>
