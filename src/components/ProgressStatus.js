@@ -21,7 +21,8 @@ const ProgressStatus = ({ listReport, user }) => {
   const [openProgress, setOpenProgress] = useState(listReport || []);
   const [open, setOpen] = useState(false);
   const [activeModal, setActiveModal] = useState("");
-  const [scannerResult, setScannerResult] = useState("IT-PC12");
+  const [scannerResult, setScannerResult] = useState("");
+  // const [scannerResult, setScannerResult] = useState("IT-PC12");
   const [idMachine, setIdMachine] = useState("");
 
   const [t] = useTranslation("global");
