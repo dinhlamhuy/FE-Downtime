@@ -16,7 +16,7 @@ const Notification = () => {
       // </div>
 
       <div>
-        <a href="http://localhost:3000/electric">
+        <a href="https://fe-downtime-seven.vercel.app/electric/status">
           <b>{notification?.title}</b>
           <p>{notification?.body}</p>
         </a>
