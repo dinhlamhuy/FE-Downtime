@@ -11,7 +11,7 @@ import { Toast } from "../utils/toast";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setErrorCode } from "../redux/features/electric";
-// import ConfirmModal from "./ConfirmModal";
+
 import DetailInfo from "./DetailInfo";
 
 import { useTranslation } from "react-i18next";
