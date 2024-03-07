@@ -2,7 +2,6 @@
 import React, { useEffect, useRef } from "react";
 import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
 import { Box, Typography } from "@mui/material";
-
 import { useTranslation } from "react-i18next";
 
 const Scanner = (props) => {
@@ -11,7 +10,6 @@ const Scanner = (props) => {
   const [t] = useTranslation("global");
 
   useEffect(() => {
-
     const scanner = new Html5QrcodeScanner(`render-${idMachine}`, {
       qrbox: {
         width: 250,

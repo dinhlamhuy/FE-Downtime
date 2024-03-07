@@ -16,10 +16,10 @@ const Notification = () => {
       // </div>
 
       <div>
-        <a href="https://fe-downtime-seven.vercel.app/electric/status">
+        {/* <a href="https://lyv.lacty.com.vn"> */}
           <b>{notification?.title}</b>
           <p>{notification?.body}</p>
-        </a>
+        {/* </a> */}
       </div>
     );
   }
