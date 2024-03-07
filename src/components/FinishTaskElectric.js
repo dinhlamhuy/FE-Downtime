@@ -69,6 +69,8 @@ const FinishTaskElectric = (props) => {
     initialValues: {
       skill: [],
       remark_mechanic: "",
+      new_mechanic: "",
+
     },
     validationSchema,
     onSubmit: (data) => {
@@ -157,8 +159,8 @@ const FinishTaskElectric = (props) => {
                 <>
                 <Button variant="contained">
                   <QrCodeIcon />
-                </Button> &emsp;
-                <TextField size="small"
+                </Button> &ensp;
+                <TextField size="small" sx={{width:'40%'}}
                   id="outlined-read-only-input"
                   label="New code Machine"
                   defaultValue=""
@@ -167,9 +169,9 @@ const FinishTaskElectric = (props) => {
                   }}
                   />
                   <Scanner
-                  idMachine={''}
+                  idMachine={'new_mechanic'}
                   scanner={t("process_status.status_3_scanner")}
-                  scannerResult={''}
+                  scannerResult={formik.values.new_mechanic}
                   setScannerResult={''}
               />
                 </>
