@@ -28,6 +28,7 @@ const FinishTaskElectric = (props) => {
   const { infoSkill } = useSelector((state) => state.electric);
   const { isCheck, idMachine, open, setOpen, user } = props;
   const [scanChangeMachine, setScanChangeMachine] = useState(false);
+  const [btnScan, setBtnScan] = useState(false);
   const [t] = useTranslation("global");
 
   const languages = localStorage.getItem("languages");
@@ -70,7 +71,6 @@ const FinishTaskElectric = (props) => {
       skill: [],
       remark_mechanic: "",
       new_mechanic: "",
-
     },
     validationSchema,
     onSubmit: (data) => {
@@ -85,7 +85,17 @@ const FinishTaskElectric = (props) => {
       const id_user_mechanic = user_name;
 
       const language = languages;
-       dispatch(finish_mechanic({ id_user_mechanic, skill, id_machine, remark_mechanic, lean, factory, language }));
+      dispatch(
+        finish_mechanic({
+          id_user_mechanic,
+          skill,
+          id_machine,
+          remark_mechanic,
+          lean,
+          factory,
+          language,
+        })
+      );
       setOpen(false);
     },
   });
@@ -154,29 +164,38 @@ const FinishTaskElectric = (props) => {
             >
               <Grid item xs={12} md={12}>
                 {/* <FormControlLabel control={<Switch defaultChecked />} label="Chọn " /> */}
-               
-               { scanChangeMachine && (
-                <>
-                <Button variant="contained">
-                  <QrCodeIcon />
-                </Button> &ensp;
-                <TextField size="small" sx={{width:'40%'}}
-                  id="outlined-read-only-input"
-                  label="New code Machine"
-                  defaultValue=""
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  />
-                  <Scanner
-                  idMachine={'new_mechanic'}
-                  scanner={t("process_status.status_3_scanner")}
-                  scannerResult={formik.values.new_mechanic}
-                  setScannerResult={''}
-              />
-                </>
-                )
-                }
+
+                {scanChangeMachine && (
+                  <>
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        setBtnScan(!btnScan);
+                      }}
+                    >
+                      <QrCodeIcon />
+                    </Button>{" "}
+                    &ensp;
+                    <TextField
+                      size="small"
+                      sx={{ width: "81%" }}
+                      id="outlined-read-only-input"
+                      label="New code Machine"
+                      defaultValue=""
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                    {btnScan && (
+                      <Scanner
+                        idMachine={"new_mechanic"}
+                        scanner={t("process_status.status_3_scanner")}
+                        scannerResult={formik.values.new_mechanic}
+                        setScannerResult={""}
+                      />
+                    )}
+                  </>
+                )}
               </Grid>
               <Grid item xs={12} md={12}>
                 <Autocomplete
