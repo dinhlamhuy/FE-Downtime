@@ -16,7 +16,7 @@ import {
   Box,
   Button,
   Stack,
-  Autocomplete,
+  Autocomplete,Paper
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 
@@ -167,18 +167,22 @@ const FinishTaskElectric = (props) => {
 
                 {scanChangeMachine && (
                   <>
+                  <Paper elevation={0} 
+                      component="form"
+                  sx={{  border: 'none',display: 'flex', alignItems: 'center', width: '100%' }}>
+
                     <Button
-                      variant="contained"
+                      variant="contained" sx={{ marginRight:'10px'}}
                       onClick={() => {
                         setBtnScan(!btnScan);
                       }}
                     >
                       <QrCodeIcon />
                     </Button>{" "}
-                    &ensp;
+                 
                     <TextField
                       size="small"
-                      sx={{ width: "81%" }}
+                       sx={{ width: "100%" }}
                       id="outlined-read-only-input"
                       label="New code Machine"
                       defaultValue=""
@@ -186,6 +190,7 @@ const FinishTaskElectric = (props) => {
                         readOnly: true,
                       }}
                     />
+                  </Paper>
                     {btnScan && (
                       <Scanner
                         idMachine={"new_mechanic"}
