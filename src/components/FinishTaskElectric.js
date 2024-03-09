@@ -168,7 +168,7 @@ const FinishTaskElectric = (props) => {
             >
               <Grid item xs={12} md={12}>
                 {/* <FormControlLabel control={<Switch defaultChecked />} label="Chọn " /> */}
-
+{scannerResult}
                 {scanChangeMachine && (
                   <>
                   <Paper elevation={0} 
@@ -190,7 +190,7 @@ const FinishTaskElectric = (props) => {
                       id="outlined-read-only-input"
                       label="New code Machine"
                       defaultValue=""
-                      value={scannerResult}
+                      value={formik.values.new_mechanic}
                       InputProps={{
                         readOnly: true,
                       }}
