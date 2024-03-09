@@ -26,7 +26,8 @@ import Scanner from "./ScannerChangeMachine";
 const FinishTaskElectric = (props) => {
   const dispatch = useDispatch();
   const { infoSkill } = useSelector((state) => state.electric);
-  const { isCheck, idMachine, open, setOpen, user, scannerResult, setScannerResult } = props;
+  const { isCheck, idMachine, open, setOpen, user } = props;
+  const [scannerResult, setScannerResult] = useState("");
   const [scanChangeMachine, setScanChangeMachine] = useState(false);
   const [btnScan, setBtnScan] = useState(false);
   const [t] = useTranslation("global");
