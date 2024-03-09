@@ -16,7 +16,8 @@ import {
   Box,
   Button,
   Stack,
-  Autocomplete,Paper
+  Autocomplete,
+  Paper,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 
@@ -62,7 +63,7 @@ const FinishTaskElectric = (props) => {
         values.find((item) => item.id === 4)
       );
       setScanChangeMachine(true);
-          setBtnScan(false);
+      setBtnScan(false);
     } else {
       setScanChangeMachine(false);
       setBtnScan(false);
@@ -73,7 +74,7 @@ const FinishTaskElectric = (props) => {
     initialValues: {
       skill: [],
       remark_mechanic: "",
-      new_mechanic: scannerResult,
+      // new_mechanic: scannerResult,
     },
     validationSchema,
     onSubmit: (data) => {
@@ -110,9 +111,9 @@ const FinishTaskElectric = (props) => {
     fetchData();
   }, [dispatch]);
 
-  // useEffect(() => {
-    
-  // }, [scannerResult, setScannerResult]);
+  useEffect(() => {
+    alert(scannerResult);
+  }, [scannerResult, setScannerResult]);
 
   const onClose = () => {
     formik.setTouched({});
@@ -171,34 +172,40 @@ const FinishTaskElectric = (props) => {
             >
               <Grid item xs={12} md={12}>
                 {/* <FormControlLabel control={<Switch defaultChecked />} label="Chọn " /> */}
-{scannerResult}
+                {scannerResult}
                 {scanChangeMachine && (
                   <>
-                  <Paper elevation={0} 
+                    <Paper
+                      elevation={0}
                       component="form"
-                  sx={{  border: 'none',display: 'flex', alignItems: 'center', width: '100%' }}>
-
-                    <Button
-                      variant="contained" sx={{ marginRight:'10px'}}
-                      onClick={() => {
-                        setBtnScan(!btnScan);
+                      sx={{
+                        border: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        width: "100%",
                       }}
                     >
-                      <QrCodeIcon />
-                    </Button>{" "}
-                 
-                    <TextField
-                      size="small"
-                       sx={{ width: "100%" }}
-                      id="outlined-read-only-input"
-                      label="New code Machine"
-                      defaultValue=""
-                      value={scannerResult}
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                  </Paper>
+                      <Button
+                        variant="contained"
+                        sx={{ marginRight: "10px" }}
+                        onClick={() => {
+                          setBtnScan(!btnScan);
+                        }}
+                      >
+                        <QrCodeIcon />
+                      </Button>{" "}
+                      <TextField
+                        size="small"
+                        sx={{ width: "100%" }}
+                        id="outlined-read-only-input"
+                        label="New code Machine"
+                        defaultValue=""
+                        // value={scannerResult}
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                      />
+                    </Paper>
                     {btnScan && (
                       <Scanner
                         idMachine={"new_mechanic"}
