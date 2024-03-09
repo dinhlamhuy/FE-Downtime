@@ -21,12 +21,12 @@ import {
 import CheckIcon from "@mui/icons-material/Check";
 
 import { useTranslation } from "react-i18next";
-import Scanner from "./Scanner";
+import Scanner from "./ScannerChangeMachine";
 
 const FinishTaskElectric = (props) => {
   const dispatch = useDispatch();
   const { infoSkill } = useSelector((state) => state.electric);
-  const { isCheck, idMachine, open, setOpen, user } = props;
+  const { isCheck, idMachine, open, setOpen, user, scannerResult, setScannerResult } = props;
   const [scanChangeMachine, setScanChangeMachine] = useState(false);
   const [btnScan, setBtnScan] = useState(false);
   const [t] = useTranslation("global");
@@ -70,7 +70,7 @@ const FinishTaskElectric = (props) => {
     initialValues: {
       skill: [],
       remark_mechanic: "",
-      new_mechanic: "",
+      new_mechanic: scannerResult,
     },
     validationSchema,
     onSubmit: (data) => {
@@ -106,6 +106,10 @@ const FinishTaskElectric = (props) => {
     };
     fetchData();
   }, [dispatch]);
+
+  useEffect(() => {
+    
+  }, [scannerResult, setScannerResult]);
 
   const onClose = () => {
     formik.setTouched({});
@@ -186,6 +190,7 @@ const FinishTaskElectric = (props) => {
                       id="outlined-read-only-input"
                       label="New code Machine"
                       defaultValue=""
+                      value={scannerResult}
                       InputProps={{
                         readOnly: true,
                       }}
@@ -195,8 +200,8 @@ const FinishTaskElectric = (props) => {
                       <Scanner
                         idMachine={"new_mechanic"}
                         scanner={t("process_status.status_3_scanner")}
-                        scannerResult={formik.values.new_mechanic}
-                        setScannerResult={""}
+                        scannerResult={scannerResult}
+                        setScannerResult={setScannerResult}
                       />
                     )}
                   </>
