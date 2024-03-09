@@ -89,13 +89,9 @@ const FinishTaskElectric = (props) => {
       const id_user_mechanic = user_name;
 
       const language = languages;
-      alert( id_user_mechanic,
-            skill,
-            id_machine,
-            remark_mechanic,
-            lean,
-            factory,
-            language,new_mechanic);
+      alert( id_user_mechanic+
+            skill+
+            id_machine+new_mechanic);
       // dispatch(
       //   finish_mechanic({
       //     id_user_mechanic,
