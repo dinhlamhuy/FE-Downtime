@@ -111,9 +111,9 @@ const FinishTaskElectric = (props) => {
     fetchData();
   }, [dispatch]);
 
-  useEffect(() => {
-    alert(scannerResult);
-  }, [scannerResult, setScannerResult]);
+  // useEffect(() => {
+  //   alert(scannerResult);
+  // }, [scannerResult, setScannerResult]);
 
   const onClose = () => {
     formik.setTouched({});
@@ -172,7 +172,7 @@ const FinishTaskElectric = (props) => {
             >
               <Grid item xs={12} md={12}>
                 {/* <FormControlLabel control={<Switch defaultChecked />} label="Chọn " /> */}
-                {scannerResult}
+                {/* {scannerResult} */}
                 {scanChangeMachine && (
                   <>
                     <Paper
@@ -190,6 +190,7 @@ const FinishTaskElectric = (props) => {
                         sx={{ marginRight: "10px" }}
                         onClick={() => {
                           setBtnScan(!btnScan);
+                          setScannerResult('');
                         }}
                       >
                         <QrCodeIcon />
@@ -200,7 +201,7 @@ const FinishTaskElectric = (props) => {
                         id="outlined-read-only-input"
                         label="New code Machine"
                         defaultValue=""
-                        // value={scannerResult}
+                        value={scannerResult}
                         InputProps={{
                           readOnly: true,
                         }}
