@@ -53,7 +53,7 @@ const ScannerElectric = (props) => {
                         sx={{ display: "block", margin: "0 auto", maxWidth: "500px" }}
                     >
                         <Scanner
-                            idMachine={idMachine}
+                            idMachine={'scanner-product'}
                             scanner={t("process_status.status_3_scanner")}
                             scannerResult={scannerResult}
                             setScannerResult={setScannerResult}

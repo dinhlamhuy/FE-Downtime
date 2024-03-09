@@ -62,8 +62,10 @@ const FinishTaskElectric = (props) => {
         values.find((item) => item.id === 4)
       );
       setScanChangeMachine(true);
+          setBtnScan(false);
     } else {
       setScanChangeMachine(false);
+      setBtnScan(false);
     }
   };
 
@@ -108,9 +110,9 @@ const FinishTaskElectric = (props) => {
     fetchData();
   }, [dispatch]);
 
-  useEffect(() => {
+  // useEffect(() => {
     
-  }, [scannerResult, setScannerResult]);
+  // }, [scannerResult, setScannerResult]);
 
   const onClose = () => {
     formik.setTouched({});
