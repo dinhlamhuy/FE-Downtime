@@ -206,7 +206,7 @@ const FinishTaskElectric = (props) => {
                         }}
                       />
                     </Paper>
-                    {btnScan && (
+                    {btnScan && scannerResult !=='' && (
                       <Scanner
                         idMachine={"new_mechanic"}
                         scanner={t("process_status.status_3_scanner")}
