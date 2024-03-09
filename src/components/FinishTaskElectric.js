@@ -193,7 +193,7 @@ const FinishTaskElectric = (props) => {
                       id="outlined-read-only-input"
                       label="New code Machine"
                       defaultValue=""
-                      value={formik.values.new_mechanic}
+                      value={scannerResult}
                       InputProps={{
                         readOnly: true,
                       }}
