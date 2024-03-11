@@ -74,7 +74,7 @@ const FinishTaskElectric = (props) => {
     initialValues: {
       skill: [],
       remark_mechanic: "",
-      new_mechanic: scannerResult,
+    
     },
     validationSchema,
     onSubmit: (data) => {
@@ -83,24 +83,25 @@ const FinishTaskElectric = (props) => {
       const idArray = arraySkill.map((item) => item.id);
       const skill = idArray.join(",");
 
-      const { remark_mechanic, new_mechanic } = data;
+      const { remark_mechanic } = data;
       const { lean, factory, user_name } = user;
       const id_machine = idMachine;
       const id_user_mechanic = user_name;
 
       const language = languages;
-      alert( new_mechanic+'check'+scannerResult);
-      // dispatch(
-      //   finish_mechanic({
-      //     id_user_mechanic,
-      //     skill,
-      //     id_machine,
-      //     remark_mechanic,
-      //     lean,
-      //     factory,
-      //     language,
-      //   })
-      // );
+      // alert( new_mechanic+'check'+scannerResult);
+      dispatch(
+        finish_mechanic({
+          id_user_mechanic,
+          skill,
+          id_machine,
+          remark_mechanic,
+          lean,
+          factory,
+          language,
+          scannerResult
+        })
+      );
       setOpen(false);
     },
   });
@@ -200,7 +201,7 @@ const FinishTaskElectric = (props) => {
                         size="small"
                         sx={{ width: "100%" }}
                         id="outlined-read-only-input"
-                        label="New code Machine"
+                        label={t("process_status.new_code_machine")}
                         defaultValue=""
                         value={scannerResult}
                         InputProps={{

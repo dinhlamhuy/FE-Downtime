@@ -101,7 +101,8 @@
     "status_4_close": "Đóng",
     "status_4_validate_repair_method": "Vui lòng chọn phương pháp!",
     "status_4_validate_remark_repair_method": "Vui lòng nhập phương pháp sửa chữa!",
-    "status_4_validate_space": "Vui lòng không nhập khoảng trắng!"
+    "status_4_validate_space": "Vui lòng không nhập khoảng trắng!",
+    "new_code_machine":"Máy mã mới"
   },
   "personal_info": {
     "search_info": "Tra cứu thông tin",

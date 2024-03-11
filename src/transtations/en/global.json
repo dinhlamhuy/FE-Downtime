@@ -101,7 +101,8 @@
     "status_4_close": "Close",
     "status_4_validate_repair_method": "Please choose repair method!",
     "status_4_validate_remark_repair_method": "Please enter the repair method!",
-    "status_4_validate_space": "Please do not enter spaces!"
+    "status_4_validate_space": "Please do not enter spaces!",
+    "new_code_machine":"New code Machine"
   },
   "personal_info": {
     "search_info": "Look up information",

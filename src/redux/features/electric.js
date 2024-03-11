@@ -70,9 +70,9 @@ export const scanner_fix_mechanic = createAsyncThunk("/task/mechanicAccept", asy
     }
 })
 
-export const finish_mechanic = createAsyncThunk("/task/machineCfmfinish", async ({ id_user_mechanic, skill, id_machine, remark_mechanic, lean, factory, language }) => {
+export const finish_mechanic = createAsyncThunk("/task/machineCfmfinish", async ({ id_user_mechanic, skill, id_machine, remark_mechanic, lean, factory, language, new_mechanic }) => {
     try {
-        const data = await ElectricServices.finish_mechanic(id_user_mechanic, skill, id_machine, remark_mechanic, lean, factory, language);
+        const data = await ElectricServices.finish_mechanic(id_user_mechanic, skill, id_machine, remark_mechanic, lean, factory, language, new_mechanic);
         return data;
     } catch (error) {
         return error.message;

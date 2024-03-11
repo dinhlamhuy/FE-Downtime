@@ -96,15 +96,17 @@ const scanner_fix_mechanic = (id_user_mechanic, id_machine, factory, lean, statu
 }
 
 
-const finish_mechanic = (id_user_mechanic, skill, id_machine, remark_mechanic, lean, factory, language) => {
+const finish_mechanic = (id_user_mechanic, skill, id_machine, remark_mechanic, lean, factory, language, new_mechanic) => {
     return axios.post(BASE_URL + "/task/machineCfmfinish", {
-        id_user_mechanic, skill, id_machine, remark_mechanic, lean, factory, language
+        id_user_mechanic, skill, id_machine, remark_mechanic, lean, factory, language, new_mechanic
     }, {
         headers: {
             "Content-Type": "application/json",
             ...authHeader(),
+            
         }
     }).then((response) => {
+        alert(new_mechanic);
         return response.data;
     }).catch((error) => {
         return error.response.data;
