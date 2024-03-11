@@ -106,7 +106,7 @@ const finish_mechanic = (id_user_mechanic, skill, id_machine, remark_mechanic, l
             
         }
     }).then((response) => {
-        alert(new_mechanic);
+     
         return response.data;
     }).catch((error) => {
         return error.response.data;
