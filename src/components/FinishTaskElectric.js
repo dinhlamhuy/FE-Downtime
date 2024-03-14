@@ -87,7 +87,7 @@ const FinishTaskElectric = (props) => {
       const { lean, factory, user_name } = user;
       const id_machine = idMachine;
       const id_user_mechanic = user_name;
-      const new_mechanic= scannerResult;
+      // const new_mechanic= scannerResult;
       const language = languages;
       // alert( new_mechanic+'check'+scannerResult);
       dispatch(
@@ -99,7 +99,7 @@ const FinishTaskElectric = (props) => {
           lean,
           factory,
           language,
-          new_mechanic
+          scannerResult
         })
       );
       setOpen(false);
