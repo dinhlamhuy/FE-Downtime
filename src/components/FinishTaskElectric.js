@@ -56,18 +56,18 @@ const FinishTaskElectric = (props) => {
   });
 
   const handleAutocompleteChange = (event, values) => {
-    formik.setFieldValue("skill", values);
     if (values.find((item) => item.id === 4)) {
-      console.log(
-        "check",
-        values.find((item) => item.id === 4)
-      );
+      // console.log(
+      //   "check",
+      //   values.find((item) => item.id === 4)
+      // );
       setScanChangeMachine(true);
       setBtnScan(false);
     } else {
       setScanChangeMachine(false);
       setBtnScan(false);
     }
+    formik.setFieldValue("skill", values);
   };
 
   const formik = useFormik({
@@ -87,9 +87,9 @@ const FinishTaskElectric = (props) => {
       const { lean, factory, user_name } = user;
       const id_machine = idMachine;
       const id_user_mechanic = user_name;
-      // const new_mechanic= scannerResult;
+      const new_mechanic= scannerResult;
       const language = languages;
-      // alert( new_mechanic+'check'+scannerResult);
+      //  alert('check'+new_mechanic);
       dispatch(
         finish_mechanic({
           id_user_mechanic,
@@ -99,7 +99,7 @@ const FinishTaskElectric = (props) => {
           lean,
           factory,
           language,
-          scannerResult
+          new_mechanic
         })
       );
       setOpen(false);
