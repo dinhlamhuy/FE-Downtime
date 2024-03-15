@@ -57,10 +57,7 @@ const FinishTaskElectric = (props) => {
 
   const handleAutocompleteChange = (event, values) => {
     if (values.find((item) => item.id === 4)) {
-      // console.log(
-      //   "check",
-      //   values.find((item) => item.id === 4)
-      // );
+    
       setScanChangeMachine(true);
       setBtnScan(false);
     } else {
@@ -102,6 +99,18 @@ const FinishTaskElectric = (props) => {
           new_mechanic
         })
       );
+      console.log( dispatch(
+        finish_mechanic({
+          id_user_mechanic,
+          skill,
+          id_machine,
+          remark_mechanic,
+          lean,
+          factory,
+          language,
+          new_mechanic
+        })
+      ));
       setOpen(false);
     },
   });
