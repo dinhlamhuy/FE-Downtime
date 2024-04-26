@@ -220,7 +220,7 @@ const WorkListScreen = () => {
     const dispatch = useDispatch();
     const [open, setOpen] = useState(false);
     const [task, setTask] = useState({});
-
+    const languages = localStorage.getItem('languages');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -357,7 +357,7 @@ const WorkListScreen = () => {
                                         <TableCell component="th" scope="row">
                                             {row.id_machine}
                                         </TableCell>
-                                        <TableCell>{row.remark}</TableCell>
+                                        <TableCell>{languages === "EN" ? row.info_reason_en: row.info_reason_vn}</TableCell>
                                         <TableCell>
                                             {row.name} - {row.id_user_request}
                                         </TableCell>

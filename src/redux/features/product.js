@@ -32,7 +32,14 @@ export const report_damage = createAsyncThunk(
         }
     }
 );
-
+export const get_info_reason = createAsyncThunk("/damage_report/getInforReason", async () => {
+    try {
+        const data = await ProductServices.get_info_reason();
+        return data;
+    } catch (error) {
+        return error.message;
+    }
+})
 export const get_history_product = createAsyncThunk(
     "/damage_report/getHistoryTaskProduct",
     async ({ id_user_request, factory }) => {
@@ -63,6 +70,8 @@ export const productSlice = createSlice({
         errorMessage: "",
         requestListReportProduct: [],
         historyListReportProduct: [],
+        infoReason: [],
+
     },
     reducers: {
         setErrorCode: (state, action) => {
@@ -88,6 +97,9 @@ export const productSlice = createSlice({
         builder.addCase(cancel_report_damage.fulfilled, (state, action) => {
             state.errorCode = action.payload.error_code;
             state.errorMessage = action.payload.error_message;
+        });
+        builder.addCase(get_info_reason.fulfilled, (state, action) => {
+            state.infoReason = action.payload.data;
         });
     },
 });

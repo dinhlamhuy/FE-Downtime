@@ -50,9 +50,9 @@ const FinishTaskElectric = (props) => {
       )
       .min(1, t("process_status.status_4_validate_repair_method")),
     // remark_mechanic: Yup.string().required(t("process_status.status_4_validate_remark_repair_method")).matches(/^[^\s]+(\s+[^\s]+)*$/, t("process_status.status_4_validate_space"))
-    remark_mechanic: Yup.string().required(
-      t("process_status.status_4_validate_remark_repair_method")
-    ),
+    // remark_mechanic: Yup.string().required(
+    //   t("process_status.status_4_validate_remark_repair_method")
+    // ),
   });
 
   const handleAutocompleteChange = (event, values) => {

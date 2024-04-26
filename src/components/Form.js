@@ -6,9 +6,10 @@ import {
     TextField,
     Grid,
     Stack,
-    Button,
+    Button,  Autocomplete,
     MenuItem,
 } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
@@ -18,7 +19,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Popup from "./Popup";
 import { Toast } from "../utils/toast";
 import { useDispatch, useSelector } from "react-redux";
-import { report_damage, setErrorCode, cancel_report_damage } from "../redux/features/product";
+import { report_damage, setErrorCode, cancel_report_damage, get_info_reason } from "../redux/features/product";
 
 import { useTranslation } from "react-i18next";
 import axios from "axios";
@@ -31,6 +32,7 @@ const Form = (props) => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { infoReason } = useSelector((state) => state.product);
     const product = useSelector((state) => state.product);
     const { formText, scannerResult, setScannerResult, user } =
         props;
@@ -51,7 +53,10 @@ const Form = (props) => {
         setStatusForm(false);
         navigate("/product/status");
     };
-
+    const handleAutocompleteChange = (event, values) => {
+    
+        formik.setFieldValue("remark", values);
+      };
     const onCancel = async () => {
         const id_machine = scannerResult;
         const { user_name, factory } = user;
@@ -71,7 +76,20 @@ const Form = (props) => {
         id_machine: Yup.string().required(t("info_machine_damage.validate_id_machine")),
         fixer: Yup.string().required(t("info_machine_damage.validate_fixer")),
         // remark: Yup.string().required(t("info_machine_damage.validate_remark")).matches(/^[^\s]+(\s+[^\s]+)*$/, t('info_machine_damage.validate_no_spaces'))
-        remark: Yup.string().required(t("info_machine_damage.validate_remark"))
+        // remark: Yup.string().required(t("info_machine_damage.validate_remark"))
+        remark: Yup.array()
+        .of(
+          Yup.object().shape({
+            id: Yup.number().required("Status ID is required"),
+            info_reason_en: Yup.string().required(
+              "English skill name is required"
+            ),
+            info_reason_vn: Yup.string().required(
+              "Vietnamese skill name is required"
+            ),
+          })
+        )
+        .min(1, t("info_machine_damage.validate_remark")),
     });
 
 
@@ -86,13 +104,16 @@ const Form = (props) => {
             id_machine: scannerResult,
             name_machine: "",
             fixer: "",
-            remark: "",
+            remark: [],
         },
         validationSchema,
         onSubmit: async (data) => {
-            const { id_machine, id_user_request, remark, factory, fixer } = data;
+            const arrayRemark = data.remark;
+            const idArray = arrayRemark.map((item) => item.id);
+            const remark = idArray.join(",");
+            const { id_machine, id_user_request, factory, fixer } = data;
             const language = languages;
-
+console.log(remark)
             await dispatch(
                 report_damage({ id_machine, id_user_request, remark, factory, fixer, language })
             );
@@ -159,6 +180,12 @@ const Form = (props) => {
         }
     }, [product, removeTask, dispatch, setScannerResult]);
 
+    useEffect(() => {
+        const fetchData = () => {
+          dispatch(get_info_reason());
+        };
+        fetchData();
+      }, [dispatch]);
     return (
         <Box component="div">
             <Typography
@@ -424,7 +451,8 @@ const Form = (props) => {
                             </TextField>
                         </Grid>
                         <Grid item xs={12} md={12}>
-                            <TextField
+                            {/* lý do hư máy phiên bản nhập tay */}
+                            {/* <TextField
                                 name="remark"
                                 label={t("info_machine_damage.remark")}
                                 multiline
@@ -443,7 +471,51 @@ const Form = (props) => {
                                 }
                                 onChange={formik.handleChange}
                                 value={formik.values.remark}
-                            />
+                            /> */}
+
+<Autocomplete
+                  name="skill"
+                  multiple
+                  options={infoReason}
+                  getOptionLabel={(option) =>
+                    languages === "EN"
+                      ? option.info_reason_en
+                      : option.info_reason_vn
+                  }
+                  disableCloseOnSelect
+                  onChange={handleAutocompleteChange}
+                  value={formik.values.remark}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label={t("info_machine_damage.remark")}
+                      fullWidth
+                      sx={{ fontSize: "14px" }}
+                      size="small"
+                      error={!!(formik.errors.remark && formik.touched.remark)}
+                      className={
+                        formik.errors.remark && formik.touched.remark
+                          ? "is-invalid"
+                          : ""
+                      }
+                      helperText={
+                        formik.errors.remark && formik.touched.remark
+                          ? formik.errors.remark
+                          : null
+                      }
+                    />
+                  )}
+                  renderOption={(props, option, { selected }) => (
+                    <MenuItem {...props} key={option.id} value={option}>
+                      {languages === "EN"
+                        ? option.info_reason_en
+                        : option.info_reason_vn}
+                      {selected ? <CheckIcon color="info" /> : null}
+                    </MenuItem>
+                  )}
+                />
+
                         </Grid>
                     </Grid>
                     <Stack

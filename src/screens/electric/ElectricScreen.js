@@ -43,14 +43,14 @@ const ElectricScreen = () => {
     } else {
         sideBarMenu = [
             {
-                icon: <BadgeOutlinedIcon />,
-                text: t("sidebar.info_user"),
-                path: "/electric/user",
-            },
-            {
                 icon: <AutorenewIcon />,
                 text: t("sidebar.process_status"),
                 path: "/electric/status",
+            },
+            {
+                icon: <BadgeOutlinedIcon />,
+                text: t("sidebar.info_user"),
+                path: "/electric/user",
             },
         ];
     }

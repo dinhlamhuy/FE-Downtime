@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 const DetailInfo = ({ isCheck, open, setOpen, machine, user }) => {
 
     const [t] = useTranslation("global");
-
+    const languages = localStorage.getItem('languages');
     // console.log(machine);
 
     return (
@@ -76,7 +76,10 @@ const DetailInfo = ({ isCheck, open, setOpen, machine, user }) => {
                                 {t("process_status.status_1_remark")} {" "}
                             </Typography>
                             <Typography variant="div" sx={{ fontSize: "14px", color: "gray" }}>
-                                {machine.remark}
+                                {/* {machine.remark} */}
+                                {languages === "EN"
+                        ? machine.info_reason_en
+                        : machine.info_reason_vn}
                             </Typography>
                         </Grid>
                     </Grid>

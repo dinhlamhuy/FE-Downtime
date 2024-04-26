@@ -31,7 +31,7 @@ export default function History({ historyListReport, user }) {
   const [idMachine, setIdMachine] = useState("");
   const [checkDate, setCheckDate] = useState("");
   const [t] = useTranslation("global");
-
+  const languages = localStorage.getItem('languages');
 
   const steps = [
     {

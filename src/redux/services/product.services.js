@@ -51,7 +51,18 @@ const get_history_product = (id_user_request, factory) => {
         return error.response.data;
     });
 }
-
+const get_info_reason = () => {
+    return axios.post(BASE_URL + "/damage_report/getInforReason", {}, {
+        headers: {
+            "Content-Type": "application/json",
+            ...authHeader(),
+        }
+    }).then((response) => {
+        return response.data;
+    }).catch((error) => {
+        return error.response.data;
+    })
+}
 const cancel_report_damage = (user_name, id_machine, factory, language) => {
     return axios.post(BASE_URL + "/damage_report/deleteTask", {
         user_name, id_machine, factory, language
@@ -72,7 +83,8 @@ const ProductServices = {
     get_report_damage,
     report_damage,
     get_history_product,
-    cancel_report_damage
+    cancel_report_damage,
+    get_info_reason
 };
 
 export default ProductServices;

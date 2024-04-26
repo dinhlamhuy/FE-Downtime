@@ -138,7 +138,7 @@ export default function LoginScreen() {
                 navigate("/electric");
                 break;
             case 2:
-                navigate("/electric/user");
+                navigate("/electric/status");
                 break;
             case 3:
                 navigate("/product");
