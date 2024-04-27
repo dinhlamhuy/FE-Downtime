@@ -352,7 +352,11 @@ const WorkListScreen = () => {
                                         sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                                     >
                                         <TableCell component="th" scope="row">
-                                            {row.date_user_request.split("T")[0]}
+                                        {row.date_user_request.split("T")[1].slice(0, -8)}
+                                        &ensp;
+                                        {row.date_user_request.split("T")[0]}
+                                    
+                                           
                                         </TableCell>
                                         <TableCell component="th" scope="row">
                                             {row.id_machine}

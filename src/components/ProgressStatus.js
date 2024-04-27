@@ -134,7 +134,8 @@ const ProgressStatus = ({ listReport, user }) => {
                   }}
                 >
                   <Chip
-                    label={product["date_user_request"].split("T")[0]}
+                    // label={product["date_user_request"].split("T")[0]+' '+product["date_user_request"].split("T")[1].split(".")[0]}
+                    label={product["date_user_request"].split("T")[1].slice(0, -8)+' '+product["date_user_request"].split("T")[0]}
                     color="primary"
                   />{" "}
                   - <Chip label={product["id_machine"]} color="primary" />

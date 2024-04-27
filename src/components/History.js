@@ -101,7 +101,7 @@ export default function History({ historyListReport, user }) {
                   }}
                 >
                   <Chip
-                    label={item["date_user_request"].split("T")[0]}
+                    label={item["date_user_request"].split("T")[1].slice(0,-8) +' '+item["date_user_request"].split("T")[0]}
                     color="primary"
                   />{" "}
                   - <Chip label={item["id_machine"]} color="primary" />
