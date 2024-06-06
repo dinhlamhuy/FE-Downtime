@@ -16,8 +16,8 @@ const PaperStyle = {
 
 const InfoMachineScreen = () => {
     const auth = useSelector((state) => state.auth);
-    // const [scannerResult, setScannerResult] = useState("IT-PC12");
-    const [scannerResult, setScannerResult] = useState("");
+    const [scannerResult, setScannerResult] = useState("IT-PC12");
+    // const [scannerResult, setScannerResult] = useState("");
     const [t] = useTranslation("global");
 
     const dispatch = useDispatch();

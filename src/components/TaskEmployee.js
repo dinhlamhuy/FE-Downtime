@@ -77,7 +77,7 @@ const TaskEmployee = ({ arrResult }) => {
                 return (
                   <TableRow key={index}>
                     <TableCell>
-                      {row.date_user_request.split("T")[0]}
+                      {row.date_user_request && row.date_user_request.split("T")[0]}
                     </TableCell>
                     <TableCell>
                       {row.id_machine}
