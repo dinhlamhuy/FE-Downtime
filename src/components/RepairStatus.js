@@ -32,9 +32,9 @@ function RepairStatus() {
  
     <Box sx={{ marginTop: "10px", padding: "10px" }}>
       <Paper sx={{ elevation: 5 }}>
-      <Grid container justifyContent="space-around" sx={{ marginBottom: 2, width:'98%' }}>
-          <Grid item xs={4} sm={3} md={3} sx={{height:'100%'}}>
-            <Paper elevation={3} sx={{ padding: 2, border: "1px solid #000" }}>
+      <Grid container alignItems={'stretch'} justifyContent="space-around"  sx={{ marginBottom:'10px', width:'98%',height:'100%' }}>
+          <Grid item  alignItems={'stretch'} direction="column" justifyContent="center"   xs={4} sm={3} md={3} sx={{ }}>
+            <Paper elevation={3} sx={{ height:'100%', border: "1px solid #000",padding: 1.5,  borderRadius:'12px'  }}>
               <Typography variant="h6" component="div" sx={{ fontSize: "1rem", fontWeight: "bold", lineHeight: "1.5" }}>
                 {t("repair_status.waiting")}:
                 <br />
@@ -42,8 +42,8 @@ function RepairStatus() {
               </Typography>
             </Paper>
           </Grid>
-          <Grid item xs={4} sm={3} md={3} sx={{height:'100%'}}>
-            <Paper elevation={3} sx={{ padding: 2, border: "1px solid #000" }}>
+          <Grid item  alignItems={'stretch'} direction="column" justifyContent="center"  xs={4} sm={3} md={3} sx={{ }}>
+            <Paper elevation={3} sx={{height:'100%', border: "1px solid #000",padding: 1.5,  borderRadius:'12px'  }}>
               <Typography variant="h6" component="div" sx={{ fontSize: "1rem", fontWeight: "bold", lineHeight: "1.5" }}>
                 {t("repair_status.fixing")}:
                 <br />
@@ -51,8 +51,8 @@ function RepairStatus() {
               </Typography>
             </Paper>
           </Grid>
-          <Grid item xs={4} sm={3} md={3} sx={{height:'100%'}}>
-            <Paper elevation={3} sx={{ padding: 2, border: "1px solid #000",  }}>
+          <Grid item  alignItems={'stretch'} direction="column" justifyContent="center"  xs={4} sm={3} md={3} sx={{ }}>
+            <Paper elevation={3} sx={{height:'100%', border: "1px solid #000",padding: 1.5,  borderRadius:'12px'  }}>
               <Typography variant="h6" component="div" sx={{ fontSize: "1rem", fontWeight: "bold", lineHeight: "1.5" }}>
                 {t("repair_status.fixed")}:
                 <br />
@@ -61,6 +61,7 @@ function RepairStatus() {
             </Paper>
           </Grid>
         </Grid>
+
         <TableContainer>
 
           <Table sx={{ minWidth: 650 }} aria-label="sticky table" stickyHeader>

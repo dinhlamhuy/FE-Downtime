@@ -69,10 +69,10 @@ const OwnerUserListScreen = () => {
 
   useEffect(() => {
     if (selectedFloor === "0") {
-      setFilteredMechanics(getListStatusMechanic);
+      setFilteredMechanics(getListStatusMechanic || []);
     } else {
       setFilteredMechanics(
-        getListStatusMechanic.filter((mechanic) => {
+        (getListStatusMechanic || []).filter((mechanic) => {
           const floors = mechanic.floor.split(',').map(floor => floor.trim());
           return floors.includes(selectedFloor);
         })
@@ -95,18 +95,18 @@ const OwnerUserListScreen = () => {
     <Box component="div">
       {/* Render InfoUser component with selectedUser */}
       {selectedUser && <InfoUser user_name={selectedUser.user_name} factory={selectedUser.factory} />}
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         <Grid item xs={12} md={6}>
           <BreadCrumb breadCrumb={t("employee_list.employee_list")} />
         </Grid>
-        <Grid container spacing={2} justifyContent="flex-end" >
+        <Grid container spacing={2} justifyContent="flex-end">
           <Grid item  sx={{ marginTop: '-20px', marginLeft: 'auto' }}>
             <Box component="div" sx={{ width: '140px' }}>
-              <FormControl fullWidth>
+              <FormControl size='small' fullWidth>
                 <InputLabel>{t("employee_list.select_floor")}</InputLabel>
-                <Select size="small" value={selectedFloor} onChange={handleFloorChange} label={t("employee_list.select_floor")}>
+                <Select value={selectedFloor} onChange={handleFloorChange} label={t("employee_list.select_floor")}>
                   <MenuItem value="0"><em>{t("employee_list.all_floors")}</em></MenuItem>
-                  {Array.from(new Set(getListStatusMechanic.flatMap((mechanic) => mechanic.floor.split(',').map(floor => floor.trim())))).map((floor) => (
+                  {Array.from(new Set((getListStatusMechanic || []).flatMap((mechanic) => mechanic.floor.split(',').map(floor => floor.trim())))).map((floor) => (
                     <MenuItem key={floor} value={floor}>{floor}</MenuItem>
                   ))}
                 </Select>
@@ -122,7 +122,7 @@ const OwnerUserListScreen = () => {
             <Table sx={{ minWidth: 650 }} aria-label="sticky table" stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell style={{ fontWeight: "bold", whiteSpace: "nowrap", backgroundColor: "#1976d2", color: "#fff" , width: "300px"}}  align="center">
+                  <TableCell style={{ fontWeight: "bold", whiteSpace: "nowrap", backgroundColor: "#1976d2", color: "#fff" }} align="center">
                     {t("employee_list.name")}
                   </TableCell>
                   <TableCell style={{ fontWeight: "bold", whiteSpace: "nowrap", backgroundColor: "#1976d2", color: "#fff" }} align="center">
@@ -148,7 +148,8 @@ const OwnerUserListScreen = () => {
               <TableBody>
                     {filteredMechanics?.map((row, index) => (
                     <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                    <TableCell align="center">
+                      {/* style={{ width: "600px" }} */}
+                    <TableCell align="center" >
                       {row.user_name} - {row.name}
                     </TableCell>
                     <TableCell align="center">
@@ -170,10 +171,11 @@ const OwnerUserListScreen = () => {
                       <Button 
                         variant="contained" 
                         onClick={() => handleDetailClick(row.user_name, row.factory)}
+                        style={{ fontSize: '12px' }} 
                       >
                         {t("employee_list.detail")}
                       </Button>
-                    </TableCell>
+                  </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

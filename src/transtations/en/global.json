@@ -115,8 +115,8 @@
   },
   "personal_info": {
     "search_info": "Look up information",
-    "date_to": "From Date",
-    "date_from": "To Date",
+    "date_to": "To Date",
+    "date_from": "From Date ",
     "validate_date_from": "Date no less than from date!",
     "btn_search": "Search",
     "filter": "Filter",

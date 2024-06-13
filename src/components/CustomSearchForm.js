@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button,Grid } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useTranslation } from "react-i18next";
@@ -9,15 +9,15 @@ const CustomSearchForm = ({ formik }) => {
   const { t } = useTranslation("global");
 
   return (
-    <Box component="div">
+    <Box component="div" >
       <Box
         component="form"
         onSubmit={formik.handleSubmit}
         sx={{ display: "flex", alignItems: "center" }}
       >
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+       <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
-            label={t("personal_info.date_to")}
+            label={t("personal_info.date_from")}
             id="DateFrom"
             name="DateFrom"
             format="DD-MM-YYYY"
@@ -25,16 +25,6 @@ const CustomSearchForm = ({ formik }) => {
             onChange={(value) => {
               formik.setFieldValue("DateFrom", value);
             }}
-            // renderInput={(params) => (
-            //   <TextField
-            //     {...params}
-            //     size="small"
-            //     helperText={
-            //       formik.touched.DateFrom && formik.errors.DateFrom
-            //     }
-            //     error={formik.touched.DateFrom && Boolean(formik.errors.DateFrom)}
-            //   />
-            // )}
             slotProps={{
               textField: {
                 size: "small",
@@ -46,14 +36,15 @@ const CustomSearchForm = ({ formik }) => {
                   Boolean(formik.errors.DateFrom),
               },
             }}
-            sx={{ flex: 1, marginRight: 1 }}
+            sx={{ flex: 1, marginLeft: 1 }}
           />
         </LocalizationProvider>
-        <Box sx={{ lineHeight: "35px" }}>~</Box>
+          <Grid item xs={1} md={1}>
+              <Box sx={{ textAlign: "center", lineHeight: "35px" }}>~</Box>
+          </Grid>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
-            label={t("personal_info.date_from")}
-            //size="small"
+            label={t("personal_info.date_to")}
             id="DateTo"
             name="DateTo"
             format="DD-MM-YYYY"
@@ -61,14 +52,6 @@ const CustomSearchForm = ({ formik }) => {
             onChange={(value) => {
               formik.setFieldValue("DateTo", value);
             }}
-            // renderInput={(params) => (
-            //   <TextField
-            //     {...params}
-            //     size="small"
-            //     helperText={formik.touched.DateTo && formik.errors.DateTo}
-            //     error={formik.touched.DateTo && Boolean(formik.errors.DateTo)}
-            //   />
-            // )}
             slotProps={{
               textField: {
                 size: "small",
@@ -87,8 +70,8 @@ const CustomSearchForm = ({ formik }) => {
           type="submit"
           variant="contained"
           color="primary"
-          //size="small"
-          sx={{ marginLeft: 1 }}
+          // size="small"
+          sx={{ marginLeft: 1, fontSize:'0.9rem' }}
         >
           {t("personal_info.btn_search")}
         </Button>

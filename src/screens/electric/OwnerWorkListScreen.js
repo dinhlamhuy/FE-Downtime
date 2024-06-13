@@ -180,7 +180,6 @@ const TableEmployeeList = ({ open, setOpen, headerModal, getListAsignMechanic, t
                     </TableHead>
                     <TableBody>
                         {getListAsignMechanic
-                            ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             ?.map((row, index) => {
                                 const isSelected = selectedRow === row;
                                 return (
@@ -365,7 +364,7 @@ const OwnerWorkListScreen = () => {
 
     return (
         <Box component="div">
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
                 <Grid item xs={12} md={6}>
                     <BreadCrumb breadCrumb={breadCrumbText} />
                 </Grid>

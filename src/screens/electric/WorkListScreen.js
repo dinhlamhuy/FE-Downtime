@@ -40,8 +40,6 @@ const host = BASE_URL;
 const TableEmployeeList = ({ open, setOpen, headerModal, getListAsignMechanic, task }) => {
     const [t] = useTranslation("global");
     const dispatch = useDispatch();
-    const [page] = useState(0);
-    const [rowsPerPage] = useState(5);
     const [selectedRow, setSelectedRow] = useState(null);
 
     const languages = localStorage.getItem('languages');
@@ -148,9 +146,7 @@ const TableEmployeeList = ({ open, setOpen, headerModal, getListAsignMechanic, t
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {getListAsignMechanic
-                            ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            ?.map((row, index) => {
+                        {getListAsignMechanic?.map((row, index) => {
                                 const isSelected = selectedRow === row;
                                 return (
                                     <TableRow

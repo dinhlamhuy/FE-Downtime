@@ -28,12 +28,10 @@ const RepairlistScreen = () => {
   const [selectedFloor, setSelectedFloor] = useState("0");
   const [selectedTime, setSelectedTime] = useState("DAY");
   const [filteredRepairMechanics, setFilteredRepairMechanics] = useState([]);
-  const [rowSpan, setRowSpan] = useState([]);
+  const [rowSpan, setRowSpan] = useState({});
   const [socket, setSocket] = useState("");
   const socketRef = useRef();
   let oldName = '';
-  const [page] = useState(0);
-  const [rowsPerPage] = useState(1000);
   const languages = localStorage.getItem('languages');
 
   useEffect(() => {
@@ -59,24 +57,22 @@ const RepairlistScreen = () => {
   }, [dispatch, user, socket, selectedTime]);
 
   useEffect(() => {
-
-    if (selectedFloor === "0") {
-      setRowSpan(countOccurrences(getListRepairMechanic, 'Name_en'))
-      setFilteredRepairMechanics(getListRepairMechanic);
-    } else {
-      setFilteredRepairMechanics(
-        getListRepairMechanic.filter((mechanic) => {
+    if (getListRepairMechanic && getListRepairMechanic.length > 0) {
+      if (selectedFloor === "0") {
+        setRowSpan(countOccurrences(getListRepairMechanic, 'Name_en'))
+        setFilteredRepairMechanics(getListRepairMechanic);
+      } else {
+        const filteredMechanics = getListRepairMechanic.filter((mechanic) => {
           const floors = mechanic.floor.split(',').map(floor => floor.trim());
           return floors.includes(selectedFloor);
-        })
-      );
-      setRowSpan(countOccurrences(getListRepairMechanic.filter((mechanic) => {
-        const floors = mechanic.floor.split(',').map(floor => floor.trim());
-        return floors.includes(selectedFloor);
-      }), 'Name_en'))
+        });
+  
+        setFilteredRepairMechanics(filteredMechanics);
+        setRowSpan(countOccurrences(filteredMechanics, 'Name_en'));
+      }
     }
   }, [selectedFloor, getListRepairMechanic]);
-
+  
   const handleFloorChange = (event) => {
     setSelectedFloor(event.target.value);
   };
@@ -94,18 +90,15 @@ const RepairlistScreen = () => {
     }
   };
 
-  // Slicing data for pagination
-  const paginatedData = filteredRepairMechanics.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
   return (
     <Box component="div">
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         <Grid item xs={12} md={6}>
           <BreadCrumb breadCrumb={t("repair_list.repair_list")} />
         </Grid>
 
         <Grid container spacing={2} wrap="nowrap">
-          <Grid item sx={{ marginTop: '-20px', marginLeft: 'auto' }}>
+          <Grid item sx={{ marginTop: '10px', marginLeft: 'auto' }}>
             <Box component="div" sx={{ width: '240px' }}>
               <ToggleButtonGroup
                 value={selectedTime}
@@ -114,34 +107,64 @@ const RepairlistScreen = () => {
                 aria-label="text alignment"
                 size="small"
               >
-                <ToggleButton
-                  value="DAY"
-                  sx={{ marginLeft: '10px', marginRight:'10px', backgroundColor: '#f0f0f0', '&.Mui-selected': { backgroundColor: '#2196f3' }, '&.Mui-selected:hover':{backgroundColor:'#2196f3'} }}
-                >
-                  {t("repair_list.day")}
-                </ToggleButton>
-                <ToggleButton
-                  value="WEEK"
-                  sx={{ marginLeft: '10px', marginRight:'10px', backgroundColor: '#f0f0f0', '&.Mui-selected': { backgroundColor: '#2196f3' }, '&.Mui-selected:hover':{backgroundColor:'#2196f3'} }}
-                >
-                  {t("repair_list.week")}
-                </ToggleButton>
-                <ToggleButton
-                  value="MONTH"
-                  sx={{ marginLeft: '10px', marginRight:'10px', backgroundColor: '#f0f0f0', '&.Mui-selected': { backgroundColor: '#2196f3' }, '&.Mui-selected:hover':{backgroundColor:'#2196f3'} }}
-                >
-                  {t("repair_list.month")}
-                </ToggleButton>
-              </ToggleButtonGroup>
+              <ToggleButton
+                value="DAY"
+                sx={{
+                  margin: '10px',
+                  backgroundColor: '#f0f0f0',
+                  '&.Mui-selected': {
+                    backgroundColor: '#190e9b',
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: '#190e9b',
+                    },
+                  },
+                }}
+              >
+                Day
+              </ToggleButton>
+              <ToggleButton
+                value="WEEK"
+                sx={{
+                  margin: '10px',
+                  backgroundColor: '#f0f0f0',
+                  '&.Mui-selected': {
+                    backgroundColor: '#190e9b',
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: '#190e9b',
+                    },
+                  },
+                }}
+              >
+                Week
+              </ToggleButton>
+              <ToggleButton
+                value="MONTH"
+                sx={{
+                  margin: '10px',
+                  backgroundColor: '#f0f0f0',
+                  '&.Mui-selected': {
+                    backgroundColor: '#190e9b',
+                    color: 'white',
+                    '&:hover': {
+                      backgroundColor: '#190e9b',
+                    },
+                  },
+                }}
+              >
+                Month
+              </ToggleButton>
+           </ToggleButtonGroup>
             </Box>
           </Grid>
-          <Grid item sx={{ marginTop: '-20px', marginLeft: 'auto' }}>
+          <Grid item sx={{ marginTop: '10px', marginLeft: 'auto' }}>
             <Box component="div"  sx={{ width: '140px' }}>
-              <FormControl  fullWidth>
-                <InputLabel>{t("employee_list.select_floor")}</InputLabel>
-                <Select size="small" value={selectedFloor} onChange={handleFloorChange} label={t("employee_list.select_floor")}>
+              <FormControl size='small' fullWidth>
+                <InputLabel >{t("employee_list.select_floor")}</InputLabel>
+                <Select value={selectedFloor} onChange={handleFloorChange} label={t("employee_list.select_floor")}>
                   <MenuItem value="0"><em>{t("employee_list.all_floors")}</em></MenuItem>
-                  {Array.from(new Set(getListRepairMechanic.flatMap((mechanic) => mechanic.floor.split(',').map(floor => floor.trim())))).map((floor) => (
+                  {getListRepairMechanic && getListRepairMechanic.length > 0 && Array.from(new Set(getListRepairMechanic.flatMap((mechanic) => mechanic.floor.split(',').map(floor => floor.trim())))).map((floor) => (
                     <MenuItem key={floor} value={floor}>{floor}</MenuItem>
                   ))}
                 </Select>
@@ -187,8 +210,8 @@ const RepairlistScreen = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedData && paginatedData.length > 0 ? (
-                  paginatedData.map((row, index) => {
+                {filteredRepairMechanics && filteredRepairMechanics.length > 0 ? (
+                  filteredRepairMechanics.map((row, index) => {
                     let currentName = row.Name_en;
                     let ItemRowSpan = currentName === oldName ? 0 : rowSpan[row.Name_en];
                     oldName = currentName;
@@ -203,41 +226,42 @@ const RepairlistScreen = () => {
                         )}
                         {ItemRowSpan === 0 && <TableCell style={{ display: 'none' }} />}
                         <TableCell>
-                          {row.ID_Code}
-                        </TableCell>
-                        <TableCell>
-                          {row.floor}
-                        </TableCell>
-                        <TableCell>
-                          {row.line}
-                        </TableCell>
-                        <TableCell align="center">
-                          {row.SumMinute}
-                        </TableCell>
-                        <TableCell align="center">
-                          {row.Alltimes}
-                        </TableCell>
-                        <TableCell align="center">
-                          {row.Frequency}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={7} align="center">
-
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-  
-        </Paper>
+                          {row
+                          .ID_Code}
+                          </TableCell>
+                          <TableCell>
+                            {row.floor}
+                          </TableCell>
+                          <TableCell>
+                            {row.line}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.SumMinute}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.Alltimes}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.Frequency}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={7} align="center">
+              
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Box>
       </Box>
-    </Box>
-  );
-};
-
-export default RepairlistScreen;
+    );
+  };
+  
+  export default RepairlistScreen;
+  

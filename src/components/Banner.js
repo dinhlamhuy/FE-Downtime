@@ -21,12 +21,15 @@ const Banner = (props) => {
     //     }
     // }
     let nameLean = '';
-    if (user.lean === 'TD, TM' || user.lean === 'TD') {
-        nameLean = t('info_machine_damage.electrician')
-    } else if (user.lean === 'TM') {
-        nameLean = t('info_machine_damage.mechanic')
 
+    if (user.lean === 'TD, TM' || user.lean === 'TD') {
+        nameLean = t('info_machine_damage.electrician');
+    } else if (user.lean === 'TM') {
+        nameLean = t('info_machine_damage.mechanic');
+    } else {
+        nameLean = user.lean; 
     }
+    
     return (
         <React.Fragment>
             <Box

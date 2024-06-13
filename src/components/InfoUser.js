@@ -127,7 +127,7 @@ export default function InfoUser() {
   })
 
   return (
-    <Box marginTop={1} sx={{ position: "relative", width: "100%" }}>
+    <Box  sx={{ position: "relative", width: "100%" }}>
       <BreadCrumb breadCrumb={`${t("personal_info.search_info")} › ${user_name}`} />
       <Box sx={{ textAlign: "right", marginTop: "-15px" }}>
         <Button onClick={onShowFilter}>
@@ -137,19 +137,19 @@ export default function InfoUser() {
       </Box>
 
       <Button
-  variant="contained"
-  style={{
-    backgroundColor: "black",
-    color: "white",
-    marginBottom: '2px',
-    marginTop: '-15px',
-    width: '60px', // Adjust width as needed
-    height: '25px', // Adjust height as needed
-  }}
-  onClick={() => navigate(-1)}
-  startIcon={<ArrowBackIcon />}
->
-</Button>
+        variant="contained"
+        style={{
+          backgroundColor: "black",
+          color: "white",
+          marginBottom: '2px',
+          marginTop: '-15px',
+          width: '60px', // Adjust width as needed
+          height: '25px', // Adjust height as needed
+        }}
+        onClick={() => navigate(-1)}
+        startIcon={<ArrowBackIcon />}
+      >
+      </Button>
 
       <Box component="div" sx={FilterStyle} style={open ? Active : ActiveNone}>
         <Title titleText={t("personal_info.search_info")} />

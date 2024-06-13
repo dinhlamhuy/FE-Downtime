@@ -115,8 +115,8 @@
   },
   "personal_info": {
     "search_info": "Tra cứu thông tin",
-    "date_to": "Ngày",
-    "date_from": "Đến ngày",
+    "date_from": "Từ Ngày",
+    "date_to": "Đến ngày",
     "validate_date_from": "Đến ngày không được nhỏ hơn từ ngày!",
     "btn_search": "Tìm kiếm",
     "filter": "Lọc",
