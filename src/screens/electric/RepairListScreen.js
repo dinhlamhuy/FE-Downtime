@@ -96,9 +96,9 @@ const RepairlistScreen = () => {
         <Grid item xs={12} md={6}>
           <BreadCrumb breadCrumb={t("repair_list.repair_list")} />
         </Grid>
-        <Grid item xs={12} md={12} container  wrap="nowrap" sx={{border:'1px solid red', paddingLeft:'10px', paddingRight:'10px'}}>
+        <Grid item xs={12} md={12} container  wrap="nowrap" sx={{ paddingLeft:'10px', paddingRight:'10px'}}>
           <Grid item sx={{  marginLeft: 'auto',  }}>
-            <Box component="div" sx={{ width: '240px' }}>
+            <Box component="div" sx={{ width: '240px', display:"flex", justifyContent:'center', alignItems:'center' }}>
               <ToggleButtonGroup
                 value={selectedTime}
                 exclusive
@@ -109,13 +109,18 @@ const RepairlistScreen = () => {
               <ToggleButton
                 value="DAY"
                 sx={{
-                  margin: '10px',
+                  borderRadius:'24px',
+                  border:'1px solid black',
+                  // margin: '10px',
+                  paddingLeft:'20px',
+                  paddingRight:'20px',
                   backgroundColor: '#f0f0f0',
                   '&.Mui-selected': {
                     backgroundColor: '#190e9b',
                     color: 'white',
                     '&:hover': {
                       backgroundColor: '#190e9b',
+                      border:'1px solid black'
                     },
                   },
                 }}
@@ -125,13 +130,18 @@ const RepairlistScreen = () => {
               <ToggleButton
                 value="WEEK"
                 sx={{
-                  margin: '10px',
+                  borderRadius:'24px',
+border:'1px solid black',
+                  // margin: '10px',
+                  paddingLeft:'20px',
+                  paddingRight:'20px',
                   backgroundColor: '#f0f0f0',
                   '&.Mui-selected': {
                     backgroundColor: '#190e9b',
                     color: 'white',
                     '&:hover': {
                       backgroundColor: '#190e9b',
+                      border:'1px solid black'
                     },
                   },
                 }}
@@ -141,13 +151,18 @@ const RepairlistScreen = () => {
               <ToggleButton
                 value="MONTH"
                 sx={{
-                  margin: '10px',
+                  borderRadius:'24px',
+border:'1px solid black',
+                  // margin: '10px',
+                  paddingLeft:'20px',
+                  paddingRight:'20px',
                   backgroundColor: '#f0f0f0',
                   '&.Mui-selected': {
                     backgroundColor: '#190e9b',
                     color: 'white',
                     '&:hover': {
                       backgroundColor: '#190e9b',
+                      border:'1px solid black'
                     },
                   },
                 }}
@@ -157,7 +172,7 @@ const RepairlistScreen = () => {
            </ToggleButtonGroup>
             </Box>
           </Grid>
-          <Grid item sx={{ marginTop: '10px', marginLeft: 'auto', marginRight:'15px' }}>
+          <Grid item sx={{ marginTop: '10px', marginLeft: 'auto', paddingRight:'0px' }}>
             <Box component="div"  sx={{ width: '140px' }}>
               <FormControl size='small' fullWidth>
                 <InputLabel >{t("employee_list.select_floor")}</InputLabel>
