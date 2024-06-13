@@ -91,14 +91,13 @@ const RepairlistScreen = () => {
   };
 
   return (
-    <Box component="div">
+    <Box component="div" sx={{width:'100%'}}>
       <Grid container spacing={1}>
         <Grid item xs={12} md={6}>
           <BreadCrumb breadCrumb={t("repair_list.repair_list")} />
         </Grid>
-
-        <Grid container spacing={2} wrap="nowrap">
-          <Grid item sx={{ marginTop: '10px', marginLeft: 'auto' }}>
+        <Grid item xs={12} md={12} container  wrap="nowrap" sx={{border:'1px solid red', paddingLeft:'10px', paddingRight:'10px'}}>
+          <Grid item sx={{  marginLeft: 'auto',  }}>
             <Box component="div" sx={{ width: '240px' }}>
               <ToggleButtonGroup
                 value={selectedTime}
@@ -158,7 +157,7 @@ const RepairlistScreen = () => {
            </ToggleButtonGroup>
             </Box>
           </Grid>
-          <Grid item sx={{ marginTop: '10px', marginLeft: 'auto' }}>
+          <Grid item sx={{ marginTop: '10px', marginLeft: 'auto', marginRight:'15px' }}>
             <Box component="div"  sx={{ width: '140px' }}>
               <FormControl size='small' fullWidth>
                 <InputLabel >{t("employee_list.select_floor")}</InputLabel>
@@ -172,6 +171,7 @@ const RepairlistScreen = () => {
             </Box>
           </Grid>
         </Grid>
+
       </Grid>
       <Box
         component="div"
