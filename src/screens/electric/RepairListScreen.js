@@ -93,12 +93,33 @@ const RepairlistScreen = () => {
   return (
     <Box component="div" sx={{width:'100%'}}>
       <Grid container spacing={1}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={6} md={6}>
+      
+            
+        
           <BreadCrumb breadCrumb={t("repair_list.repair_list")} />
+          
         </Grid>
-        <Grid item xs={12} md={12} container  wrap="nowrap" sx={{ paddingLeft:'10px', paddingRight:'10px'}}>
-          <Grid item sx={{  marginLeft: 'auto',  }}>
-            <Box component="div" sx={{ width: '240px', display:"flex", justifyContent:'center', alignItems:'center' }}>
+          <Grid item xs={6} md={6} sx={{ display:"flex", justifyContent:'flex-end', paddingRight:'10px' }}>
+            <Box component="div"  sx={{ display:"flex", justifyContent:'center', alignItems:'center' }}>
+              <FormControl size='small' fullWidth>
+                <InputLabel >{t("employee_list.select_floor")}</InputLabel>
+                <Select value={selectedFloor} onChange={handleFloorChange} label={t("employee_list.select_floor")}>
+                  <MenuItem value="0"><em>{t("employee_list.all_floors")}</em></MenuItem>
+                  {getListRepairMechanic && getListRepairMechanic.length > 0 && Array.from(new Set(getListRepairMechanic.flatMap((mechanic) => mechanic.floor.split(',').map(floor => floor.trim())))).map((floor) => (
+                    <MenuItem key={floor} value={floor}>{floor}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          </Grid>
+
+
+        <Grid item xs={12} md={12} container  wrap="nowrap" sx={{ padding:'10px',
+           display:"flex", justifyContent:'center', alignItems:'center'
+        }}>
+          {/* <Grid item sx={{  marginLeft: 'auto',  }}> */}
+            <Box component="div" sx={{ width: '240px', }}>
               <ToggleButtonGroup
                 value={selectedTime}
                 exclusive
@@ -112,8 +133,8 @@ const RepairlistScreen = () => {
                   borderRadius:'24px',
                   border:'1px solid black',
                   // margin: '10px',
-                  paddingLeft:'20px',
-                  paddingRight:'20px',
+                  paddingLeft:'1.2rem',
+                  paddingRight:'1.2rem',
                   backgroundColor: '#f0f0f0',
                   '&.Mui-selected': {
                     backgroundColor: '#190e9b',
@@ -133,8 +154,8 @@ const RepairlistScreen = () => {
                   borderRadius:'24px',
 border:'1px solid black',
                   // margin: '10px',
-                  paddingLeft:'20px',
-                  paddingRight:'20px',
+                  paddingLeft:'1.2rem',
+                  paddingRight:'1.2rem',
                   backgroundColor: '#f0f0f0',
                   '&.Mui-selected': {
                     backgroundColor: '#190e9b',
@@ -154,8 +175,8 @@ border:'1px solid black',
                   borderRadius:'24px',
 border:'1px solid black',
                   // margin: '10px',
-                  paddingLeft:'20px',
-                  paddingRight:'20px',
+                  paddingLeft:'1.2rem',
+                  paddingRight:'1.2rem',
                   backgroundColor: '#f0f0f0',
                   '&.Mui-selected': {
                     backgroundColor: '#190e9b',
@@ -171,21 +192,9 @@ border:'1px solid black',
               </ToggleButton>
            </ToggleButtonGroup>
             </Box>
-          </Grid>
-          <Grid item sx={{ marginTop: '10px', marginLeft: 'auto', paddingRight:'0px' }}>
-            <Box component="div"  sx={{ width: '140px' }}>
-              <FormControl size='small' fullWidth>
-                <InputLabel >{t("employee_list.select_floor")}</InputLabel>
-                <Select value={selectedFloor} onChange={handleFloorChange} label={t("employee_list.select_floor")}>
-                  <MenuItem value="0"><em>{t("employee_list.all_floors")}</em></MenuItem>
-                  {getListRepairMechanic && getListRepairMechanic.length > 0 && Array.from(new Set(getListRepairMechanic.flatMap((mechanic) => mechanic.floor.split(',').map(floor => floor.trim())))).map((floor) => (
-                    <MenuItem key={floor} value={floor}>{floor}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-          </Grid>
+          {/* </Grid> */}
         </Grid>
+          
 
       </Grid>
       <Box
