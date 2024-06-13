@@ -99,7 +99,7 @@ const OwnerUserListScreen = () => {
         <Grid item xs={12} md={6}>
           <BreadCrumb breadCrumb={t("employee_list.employee_list")} />
         </Grid>
-        <Grid container spacing={2} justifyContent="flex-end">
+        <Grid container spacing={2} justifyContent="flex-end"sx={{paddingRight:'10px'}} >
           <Grid item  sx={{ marginTop: '-20px', marginLeft: 'auto' }}>
             <Box component="div" sx={{ width: '140px' }}>
               <FormControl size='small' fullWidth>

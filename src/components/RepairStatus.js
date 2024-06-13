@@ -4,7 +4,11 @@ import { useTranslation } from "react-i18next";
 import {  useSelector } from "react-redux";
 
 
-
+const PaperStyle = {
+  position: "relative",
+  marginTop: "10px",
+  padding: "10px",
+};
 function RepairStatus() {
   const { t } = useTranslation("global");
   const { getListStatusTaskDetail, countStatusTask } = useSelector((state) => state.electric);
@@ -31,7 +35,7 @@ function RepairStatus() {
   return (
  
     <Box sx={{ marginTop: "10px", padding: "10px" }}>
-      <Paper sx={{ elevation: 5 }}>
+      
       <Grid container alignItems={'stretch'} justifyContent="space-around"  sx={{ marginBottom:'10px', width:'98%',height:'100%' }}>
           <Grid item  alignItems={'stretch'} direction="column" justifyContent="center"   xs={4} sm={3} md={3} sx={{ }}>
             <Paper elevation={3} sx={{ height:'100%', border: "1px solid #000",padding: 1.5,  borderRadius:'12px'  }}>
@@ -61,9 +65,8 @@ function RepairStatus() {
             </Paper>
           </Grid>
         </Grid>
-
+        <Paper sx={PaperStyle} elevation={5}>
         <TableContainer>
-
           <Table sx={{ minWidth: 650 }} aria-label="sticky table" stickyHeader>
             <TableHead>
               <TableRow>
@@ -83,25 +86,33 @@ function RepairStatus() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.isArray(getListStatusTaskDetail) && getListStatusTaskDetail.length > 0 ? (
-                getListStatusTaskDetail.map((row, index) => (
-                  <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                    {['line', 'id_machine', languages === "EN" ? 'Name_en' : 'Name_vn', languages === "EN" ? 'info_reason_en' : 'info_reason_vn', 'date_cfm_mechanic', 'date_mechanic_cfm_onsite', 'date_mechanic_cfm_finished'].map((field, idx) => (
-                      <TableCell key={idx} sx={{ color: row.status === 4 ? 'green' : 'red' }}>
-                        {field.includes('date') && row[field]
-                          ? `${row[field].split("T")[1].slice(0, -8)} ${row[field].split("T")[0]}`
-                          : row[field]
-                        }
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                
-                </TableRow>
-              )}
-            </TableBody>
+  {Array.isArray(getListStatusTaskDetail) && getListStatusTaskDetail.length > 0 ? (
+    getListStatusTaskDetail
+      .slice() // Create a shallow copy to avoid mutating the original array
+      .sort((a, b) => {
+        if (a.status === 2 && b.status !== 2) return -1;
+        if (a.status !== 2 && b.status === 2) return 1;
+        return 0;
+      })
+      .map((row, index) => (
+        <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+          {['line', 'id_machine', languages === "EN" ? 'Name_en' : 'Name_vn', languages === "EN" ? 'info_reason_en' : 'info_reason_vn', 'date_cfm_mechanic', 'date_mechanic_cfm_onsite', 'date_mechanic_cfm_finished'].map((field, idx) => (
+            <TableCell key={idx} sx={{ color: row.status === 4 ? 'green' : 'red' }}>
+              {field.includes('date') && row[field]
+                ? `${row[field].split("T")[1].slice(0, -8)} ${row[field].split("T")[0]}`
+                : row[field]
+              }
+            </TableCell>
+          ))}
+        </TableRow>
+      ))
+  ) : (
+    <TableRow>
+      {/* You may want to add some content here, like a message indicating no data */}
+    </TableRow>
+  )}
+</TableBody>
+
           </Table>
         </TableContainer>
        

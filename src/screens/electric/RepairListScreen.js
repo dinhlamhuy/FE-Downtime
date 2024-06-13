@@ -59,7 +59,7 @@ const RepairlistScreen = () => {
   useEffect(() => {
     if (getListRepairMechanic && getListRepairMechanic.length > 0) {
       if (selectedFloor === "0") {
-        setRowSpan(countOccurrences(getListRepairMechanic, 'Name_en'))
+        setRowSpan(countOccurrences(getListRepairMechanic, 'Name_en'));
         setFilteredRepairMechanics(getListRepairMechanic);
       } else {
         const filteredMechanics = getListRepairMechanic.filter((mechanic) => {
@@ -70,8 +70,10 @@ const RepairlistScreen = () => {
         setFilteredRepairMechanics(filteredMechanics);
         setRowSpan(countOccurrences(filteredMechanics, 'Name_en'));
       }
+    }else{
+      setFilteredRepairMechanics(getListRepairMechanic);
     }
-  }, [selectedFloor, getListRepairMechanic]);
+  }, [selectedFloor, getListRepairMechanic, selectedTime]);
   
   const handleFloorChange = (event) => {
     setSelectedFloor(event.target.value);
@@ -94,11 +96,7 @@ const RepairlistScreen = () => {
     <Box component="div" sx={{width:'100%'}}>
       <Grid container spacing={1}>
         <Grid item xs={9} md={9} sx={{ }}>
-      
-            
-        
           <BreadCrumb breadCrumb={t("repair_list.repair_list")} />
-          
         </Grid>
           <Grid item xs={3} md={3} sx={{  display:"flex", justifyContent:'flex-end', paddingRight:'10px' }}>
             <Box component="div"  sx={{ display:"flex", justifyContent:'center', alignItems:'center' }}>
@@ -146,13 +144,13 @@ const RepairlistScreen = () => {
                   },
                 }}
               >
-                Day
+                Daily
               </ToggleButton>
               <ToggleButton
                 value="WEEK"
                 sx={{
                   borderRadius:'24px',
-border:'1px solid black',
+                  border:'1px solid black',
                   // margin: '10px',
                   paddingLeft:'1.2rem',
                   paddingRight:'1.2rem',
@@ -167,13 +165,13 @@ border:'1px solid black',
                   },
                 }}
               >
-                Week
+                Weekly
               </ToggleButton>
               <ToggleButton
                 value="MONTH"
                 sx={{
                   borderRadius:'24px',
-border:'1px solid black',
+                  border:'1px solid black',
                   // margin: '10px',
                   paddingLeft:'1.2rem',
                   paddingRight:'1.2rem',
@@ -188,7 +186,7 @@ border:'1px solid black',
                   },
                 }}
               >
-                Month
+                Monthly
               </ToggleButton>
            </ToggleButtonGroup>
             </Box>
@@ -234,7 +232,7 @@ border:'1px solid black',
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredRepairMechanics && filteredRepairMechanics.length > 0 ? (
+                {filteredRepairMechanics  ? (
                   filteredRepairMechanics.map((row, index) => {
                     let currentName = row.Name_en;
                     let ItemRowSpan = currentName === oldName ? 0 : rowSpan[row.Name_en];
