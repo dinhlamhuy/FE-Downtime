@@ -93,14 +93,14 @@ const RepairlistScreen = () => {
   return (
     <Box component="div" sx={{width:'100%'}}>
       <Grid container spacing={1}>
-        <Grid item xs={6} md={6}>
+        <Grid item xs={9} md={9} sx={{ }}>
       
             
         
           <BreadCrumb breadCrumb={t("repair_list.repair_list")} />
           
         </Grid>
-          <Grid item xs={6} md={6} sx={{ display:"flex", justifyContent:'flex-end', paddingRight:'10px' }}>
+          <Grid item xs={3} md={3} sx={{  display:"flex", justifyContent:'flex-end', paddingRight:'10px' }}>
             <Box component="div"  sx={{ display:"flex", justifyContent:'center', alignItems:'center' }}>
               <FormControl size='small' fullWidth>
                 <InputLabel >{t("employee_list.select_floor")}</InputLabel>
