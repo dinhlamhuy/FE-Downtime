@@ -8,7 +8,7 @@ import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { useSelector } from "react-redux";
 import Notification from "../../firebaseNotifications/Notification";
-
+import SettingsTwoToneIcon from '@mui/icons-material/SettingsTwoTone';
 import { useTranslation } from "react-i18next";
 
 const ElectricScreen = () => {
@@ -20,7 +20,7 @@ const ElectricScreen = () => {
     if (auth.user?.permission === 1) {
         sideBarMenu = [
             {
-                icon: <WorkOutlineOutlinedIcon />,
+                icon: <WorkOutlineOutlinedIcon  />,
                 text: t("sidebar.work_list"),
                 path: "/electric",
             },
@@ -35,12 +35,34 @@ const ElectricScreen = () => {
                 path: "/electric/user",
             },
             {
-                icon: <AutorenewIcon />,
+                icon: <AutorenewIcon  />,
                 text: t("sidebar.process_status"),
                 path: "/electric/status",
-            },
+            }    
+
         ];
-    } else {
+        
+    } else if (auth.user?.permission === 0) {
+        sideBarMenu = [
+            {
+                icon: <WorkOutlineOutlinedIcon  />,
+                text: t("sidebar.work_list"),
+                path: "/electric",
+            },
+            {
+                icon: <RecentActorsOutlinedIcon />,
+                text: t("sidebar.employee_list"),
+                path: "/electric/list-user",
+            },
+         
+            {
+                icon: <SettingsTwoToneIcon  />,
+                text: t("sidebar.machinery_maintenance"),
+                path: "/electric/list-repair",
+            }            
+
+        ];
+    } else if(auth.user?.permission === 2) {
         sideBarMenu = [
             {
                 icon: <AutorenewIcon />,
@@ -55,12 +77,10 @@ const ElectricScreen = () => {
         ];
     }
 
-
-
     return (
         <React.Fragment>
             {auth.user !== null &&
-                (auth.user?.permission === 1 || auth.user?.permission === 2) ? (
+                (auth.user?.permission === 1 || auth.user?.permission === 2 || auth.user?.permission === 0) ? (
                 <SideBar sideBarMenu={sideBarMenu} user={auth.user} >
                     <RoutesElectric />
                 </SideBar>

@@ -222,7 +222,7 @@ const ProgressStatus = ({ listReport, user }) => {
               />
             )}
 
-            {/* Trạng thái 4: Hoàn thành việc sửa chửa  */}
+            {/* Trạng thái 4: Hoàn thành việc sửa chữa  */}
             {activeModal === "finish" && (
               <FinishTaskElectric
                 isCheck={idMachine === product.id_machine}

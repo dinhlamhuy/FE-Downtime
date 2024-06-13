@@ -132,7 +132,7 @@ export default function LoginScreen() {
 
         switch (permission) {
             case 0:
-                navigate("/dashboard");
+                navigate("/electric");
                 break;
             case 1:
                 navigate("/electric");

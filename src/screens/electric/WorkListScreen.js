@@ -8,7 +8,7 @@ import {
     TableRow,
     TableCell,
     TableBody,
-    TablePagination,
+    // TablePagination,
     Button,
     Stack,
 } from "@mui/material";
@@ -40,22 +40,22 @@ const host = BASE_URL;
 const TableEmployeeList = ({ open, setOpen, headerModal, getListAsignMechanic, task }) => {
     const [t] = useTranslation("global");
     const dispatch = useDispatch();
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [page] = useState(0);
+    const [rowsPerPage] = useState(5);
     const [selectedRow, setSelectedRow] = useState(null);
 
     const languages = localStorage.getItem('languages');
 
     const electric = useSelector((state) => state.electric);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+    // const handleChangePage = (event, newPage) => {
+    //     setPage(newPage);
+    // };
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
+    // const handleChangeRowsPerPage = (event) => {
+    //     setRowsPerPage(+event.target.value);
+    //     setPage(0);
+    // };
 
     const handleRowClick = (rowData) => {
         setSelectedRow(rowData);
@@ -187,7 +187,7 @@ const TableEmployeeList = ({ open, setOpen, headerModal, getListAsignMechanic, t
                     </TableBody>
                 </Table>
             </TableContainer>
-            <TablePagination
+            {/* <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
                 count={getListAsignMechanic?.length || 0}
@@ -195,7 +195,7 @@ const TableEmployeeList = ({ open, setOpen, headerModal, getListAsignMechanic, t
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+            /> */}
             <Stack
                 direction="row"
                 spacing={2}
@@ -221,17 +221,17 @@ const WorkListScreen = () => {
     const [open, setOpen] = useState(false);
     const [task, setTask] = useState({});
     const languages = localStorage.getItem('languages');
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    // const [page, setPage] = useState(0);
+    // const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+    // const handleChangePage = (event, newPage) => {
+    //     setPage(newPage);
+    // };
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
+    // const handleChangeRowsPerPage = (event) => {
+    //     setRowsPerPage(+event.target.value);
+    //     setPage(0);
+    // };
 
     const { factory, floor, user_name, lean, position } = useSelector(
         (state) => state.auth.user
@@ -352,7 +352,9 @@ const WorkListScreen = () => {
                                         sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                                     >
                                         <TableCell component="th" scope="row">
-                                        {row.date_user_request && row.date_user_request.split("T")[1].slice(0, -8) +' '+ row.date_user_request.split("T")[0]}
+                                        {row.date_user_request.split("T")[1].slice(0, -8)}
+                                        &ensp;
+                                        {row.date_user_request.split("T")[0]}
                                     
                                            
                                         </TableCell>
@@ -385,7 +387,7 @@ const WorkListScreen = () => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <TablePagination
+                    {/* <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
                         count={dataTaskReportDamageList?.length || 0}
@@ -393,7 +395,7 @@ const WorkListScreen = () => {
                         page={page}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
+                    /> */}
                 </Paper>
             </Box>
 

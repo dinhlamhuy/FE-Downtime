@@ -8,19 +8,25 @@ const Banner = (props) => {
 
     const [t] = useTranslation("global");
 
-    const changeLean = (lean) => {
-        switch (lean) {
-            case "TD, TM":
-                return "Cơ điện"
-            case "TD":
-                return "Cơ điện";
-            case "TM":
-                return "Thợ máy";
-            default:
-                return lean;
-        }
-    }
+    // const changeLean = (lean) => {
+    //     switch (lean) {
+    //         case "TD, TM":
+    //             return "TD"
+    //         case "TD":
+    //             return "TD";
+    //         case "TM":
+    //             return "Thợ máy";
+    //         default:
+    //             return lean;
+    //     }
+    // }
+    let nameLean = '';
+    if (user.lean === 'TD, TM' || user.lean === 'TD') {
+        nameLean = t('info_machine_damage.electrician')
+    } else if (user.lean === 'TM') {
+        nameLean = t('info_machine_damage.mechanic')
 
+    }
     return (
         <React.Fragment>
             <Box
@@ -58,13 +64,12 @@ const Banner = (props) => {
                         {user.name}
                     </Typography>
                     <br />
+
                     <Typography variant="div" fontWeight={600} sx={{ fontSize: "14px" }}>
                         {t("banner.lean")} &nbsp;
                     </Typography>
                     <Typography variant="div" fontWeight={400} sx={{ fontSize: "14px" }}>
-                        {
-                            changeLean(user.lean)
-                        }
+                        {user.permission === 0 ? t("banner.owner_mechanic") : ''} {nameLean}
                     </Typography>
                 </Box>
             </Box>
