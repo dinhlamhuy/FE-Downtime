@@ -22,14 +22,26 @@ const Banner = (props) => {
     // }
     let nameLean = '';
 
-    if (user.lean === 'TD, TM' || user.lean === 'TD') {
-        nameLean = t('info_machine_damage.electrician');
-    } else if (user.lean === 'TM') {
-        nameLean = t('info_machine_damage.mechanic');
-    } else {
-        nameLean = user.lean; 
+    if (user.permission === 0) {
+        if (user.lean === 'TD, TM' || user.lean === 'TD') {
+            nameLean = t('info_machine_damage.electromechanical_supervisor');
+        } else if (user.lean === 'TM') {
+            nameLean = t('info_machine_damage.machine_supervisor');
+        }
+    } else if (user.permission === 1 || user.permission === 2) {
+
+        if (user.lean === 'TD, TM' || user.lean === 'TD') {
+            nameLean = t('info_machine_damage.electrician');
+        } else if (user.lean === 'TM') {
+            nameLean = t('info_machine_damage.mechanic');
+        }
     }
-    
+    else {
+        nameLean = user.lean;
+    }
+
+
+
     return (
         <React.Fragment>
             <Box
@@ -72,7 +84,8 @@ const Banner = (props) => {
                         {t("banner.lean")} &nbsp;
                     </Typography>
                     <Typography variant="div" fontWeight={400} sx={{ fontSize: "14px" }}>
-                        {user.permission === 0 ? t("banner.owner_mechanic") : ''} {nameLean}
+
+                        {nameLean}
                     </Typography>
                 </Box>
             </Box>

@@ -55,13 +55,12 @@ const RepairlistScreen = () => {
       socketRef.current.disconnect();
     };
   }, [dispatch, user, socket, selectedTime]);
-  
+
   useEffect(() => {
     setSelectedFloor("0");
   }, [selectedTime]);
 
   useEffect(() => {
-    
     if (getListRepairMechanic && getListRepairMechanic.length > 0) {
       if (selectedFloor === "0") {
         setRowSpan(countOccurrences(getListRepairMechanic, 'Name_en'));
@@ -78,7 +77,7 @@ const RepairlistScreen = () => {
     }else{
       setFilteredRepairMechanics(getListRepairMechanic);
     }
-  }, [selectedFloor, getListRepairMechanic, selectedTime]);
+  }, [selectedFloor, getListRepairMechanic]);
   
   const handleFloorChange = (event) => {
     setSelectedFloor(event.target.value);
@@ -105,12 +104,13 @@ const RepairlistScreen = () => {
         </Grid>
           <Grid item xs={3} md={3} sx={{  display:"flex", justifyContent:'flex-end', paddingRight:'10px' }}>
             <Box component="div"  sx={{ display:"flex", justifyContent:'center', alignItems:'center' }}>
-            <FormControl size='small' fullWidth>
+            <FormControl size='small' sx={{ minWidth: 100 }} fullWidth>
               <InputLabel>{t("employee_list.select_floor")}</InputLabel>
               <Select
                 value={selectedFloor}
                 onChange={handleFloorChange}
                 label={t("employee_list.select_floor")}
+               
               >
                 <MenuItem value="0"><em>{t("employee_list.all_floors")}</em></MenuItem>
                 {getListRepairMechanic && getListRepairMechanic.length > 0 && Array.from(new Set(getListRepairMechanic.flatMap((mechanic) => mechanic.floor.split(',').map(floor => floor.trim())))).map((floor) => (

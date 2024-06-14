@@ -28,7 +28,7 @@
   "banner": {
     "name": "Full Name:",
     "lean": "Lean:",
-    "owner_mechanic": "Owner"
+    "owner_mechanic": "Machine Supervisor"
   },
   "breadcrumb": {
     "system": "System"
@@ -49,6 +49,8 @@
     "fixer": "Fixer",
     "electrician": "Electrician",
     "mechanic": "Mechanic",
+    "machine_supervisor": "Machine Supervisor",
+    "electromechanical_supervisor": "Electromechanical Supervisor",
     "remark": "Remark",
     "confirm": "Confirm",
     "cancel": "Cancel",
@@ -159,7 +161,7 @@
     "name": "Full Name",
     "lean": "Lean",
     "floor": "Floor",
-    "active_status": "Active Status",
+    "active_status": "Status",
     "task_name": " Current Task",
     "count_time": "Total Repairing",
     "detail": "Detail",
@@ -167,11 +169,11 @@
     "all_floors": "All"
   },
   "repair_status": {
-    "repair_status": "Repair status",
+    "repair_status": "Repairing status",
     "conveyor": "Line",
-    "machine_code": "Machine Type",
+    "machine_code": "ID Machine",
     "machine_name": "Machine name",
-    "problem_faced": "Breakdown Issue",
+    "problem_faced": "Issue",
     "waiting_time": "Waiting",
     "fixing_time": "Repairing",
     "fixed": "Done",
@@ -181,12 +183,12 @@
     "repair_list": {
       "repair_list": "Machinery-maintenance",
       "name_machine": "Machine Name",
-      "machine_code": "Machine Code",
-      "workshop": "Workshop",
+      "machine_code": "ID Machine",
+      "workshop": "Floor",
       "conveyor": "Line",
-      "number_of_breakdowns": "Number of Breakdowns",
+      "number_of_breakdowns": "Breakdowns",
       "total_time": "Total Time",
-      "efficiency": "Efficiency",
+      "efficiency": "Frequency",
       "day": "Day",
       "week": "Week",
       "month": "Month"

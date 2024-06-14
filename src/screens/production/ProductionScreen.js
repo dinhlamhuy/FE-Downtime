@@ -9,47 +9,47 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 
 const ProductionScreen = () => {
-  const auth = useSelector((state) => state.auth);
-  const [t] = useTranslation("global");
+    const auth = useSelector((state) => state.auth);
+    const [t] = useTranslation("global");
+  // State to control the sidebar open/close
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+
   const handleSidebarToggle = () => {
-    setSidebarOpen(!isSidebarOpen);
+      setSidebarOpen(!isSidebarOpen);
   };
 
   const handleSidebarClose = () => {
-    setSidebarOpen(false);
+      setSidebarOpen(false);
   };
+    const sideBarMenu = [
+        {
+            icon: <NotificationsNoneIcon />,
+            text: t("sidebar.info_machine_damage"),
+            path: "/product",
+        },
+        {
+            icon: <AutorenewIcon />,
+            text: t("sidebar.process_status"),
+            path: "/product/status",
+        },
+    ];
 
-  const sideBarMenu = [
-    {
-      icon: <NotificationsNoneIcon />,
-      text: t("sidebar.info_machine_damage"),
-      path: "/product",
-    },
-    {
-      icon: <AutorenewIcon />,
-      text: t("sidebar.process_status"),
-      path: "/product/status",
-    },
-  ];
-
-  return (
-    <React.Fragment>
-      {auth.user !== null && auth.user?.permission === 3 ? (
-        <SideBar
-          sideBarMenu={sideBarMenu}
-          user={auth.user}
-          open={isSidebarOpen}
-          onToggle={handleSidebarToggle}
-          onClose={handleSidebarClose}
-        >
-          <RoutesProdution />
-        </SideBar>
-      ) : (
-        <LoginScreen />
-      )}
-    </React.Fragment>
-  );
+    return (
+        <React.Fragment>
+            {auth.user !== null && auth.user?.permission === 3 ? (
+                <SideBar   
+                sideBarMenu={sideBarMenu}
+                user={auth.user}
+                open={isSidebarOpen}
+                onToggle={handleSidebarToggle}
+                onClose={handleSidebarClose}>
+                    <RoutesProdution />
+                </SideBar>
+            ) : (
+                <LoginScreen />
+            )}
+        </React.Fragment>
+    );
 };
 
 export default ProductionScreen;
