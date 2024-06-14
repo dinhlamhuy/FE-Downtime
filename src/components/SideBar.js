@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
     AppBar,
@@ -37,23 +38,17 @@ const LanguagesListStyle = {
     color: "gray"
 };
 
-const SideBar = (props) => {
+const SideBar = ({ sideBarMenu, user, children, open, onToggle, onClose }) => {
     const dispatch = useDispatch();
-    const { sideBarMenu, user, children } = props;
     const { pathname } = useLocation();
 
     const active = sideBarMenu.findIndex((e) => e.path === pathname);
 
-    const [open, setOpen] = useState(false);
     const [openLanguages, setOpenLanguages] = useState(false);
-
-    const toggleSlider = () => {
-        setOpen(!open);
-    };
 
     const onLogOut = () => {
         dispatch(logout());
-    }
+    };
 
     const [t, i18n] = useTranslation("global");
 
@@ -95,7 +90,7 @@ const SideBar = (props) => {
                     }}
                 >
                     <Toolbar>
-                        <IconButton onClick={toggleSlider}>
+                        <IconButton onClick={onToggle}>
                             <MenuIcon style={{ color: "#fff" }} />
                         </IconButton>
 
@@ -105,7 +100,7 @@ const SideBar = (props) => {
                     </Toolbar>
 
                     {/* SideBar */}
-                    <Drawer open={open} anchor="left" onClose={toggleSlider}>
+                    <Drawer open={open} anchor="left" onClose={onClose}>
                         <Box component="div" style={menuSliderContainer}>
                             <Box
                                 sx={{
@@ -135,7 +130,12 @@ const SideBar = (props) => {
                                 <List component="nav">
                                     {
                                         sideBarMenu.map((listItem, index) => (
-                                            <ListItemButton component={Link} to={listItem.path} key={index}>
+                                            <ListItemButton
+                                                component={Link}
+                                                to={listItem.path}
+                                                key={index}
+                                                onClick={onClose} // Close the sidebar when an item is clicked
+                                            >
                                                 <ListItemIcon style={{ color: active === index ? "#1565c0" : "" }}>
                                                     {listItem.icon}
                                                 </ListItemIcon>
@@ -218,3 +218,7 @@ const SideBar = (props) => {
 };
 
 export default SideBar;
+
+
+
+

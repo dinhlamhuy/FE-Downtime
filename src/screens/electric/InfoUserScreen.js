@@ -2,14 +2,11 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Grid,
-  Stack,
+  Grid
 } from "@mui/material";
 import CalculateJob from "../../components/CalculateJob";
 import SkillEmployee from "../../components/SkillEmployee";
 import ChartEmployee from "../../components/ChartEmployee";
-import Title from "../../components/Title";
-import FilterListIcon from "@mui/icons-material/FilterList";
 
 import dayjs from "dayjs";
 import { format } from "date-fns";
@@ -27,27 +24,20 @@ import { useTranslation } from "react-i18next";
 import { Toast } from "../../utils/toast";
 
 const FilterStyle = {
-  padding: "15px 30px 15px 30px",
+  padding: "20px 5px 20px 5px",
   borderRadius: "30px",
   border: "3px solid #ccc",
+  
 };
 
 const Active = {
   // position: "absolute",
   width: "100%",
-  height: "150px",
+  // height: "150px",
   opacity: "1",
   transform: `translate(0%, 0%)`,
   transition: "ease 0.5s",
   zIndex: '1'
-}
-
-const ActiveNone = {
-  // position: "absolute",
-  width: "100%",
-  height: "180px",
-  opacity: "1",
-  transform: `translate(0%, -300%)`,
 }
 
 export default function InfoUserScreen() {
@@ -61,10 +51,7 @@ export default function InfoUserScreen() {
 
   const [t] = useTranslation("global");
 
-  const [open, setOpen] = useState(false);
-  const onShowFilter = () => {
-    setOpen(!open);
-  };
+  const [open] = useState(true);
 
   const validationSchema = Yup.object().shape({
     DateFrom: Yup.string().required("Vui lòng nhập ngày!"),
@@ -127,96 +114,59 @@ export default function InfoUserScreen() {
   })
 
   return (
-    <Box marginTop={1} sx={{ position: "relative", width: "100%" }}>
-      <Box sx={{ textAlign: "right", marginTop: "-15px" }}>
-        <Button onClick={onShowFilter}>
-          <FilterListIcon />
-          {t("personal_info.filter")}
-        </Button>
-      </Box>
-
-      <Box component="div" sx={FilterStyle} style={open ? Active : ActiveNone}>
-        <Title titleText={t("personal_info.search_info")} />
-        <Box component="form" onSubmit={formik.handleSubmit}>
-          <Grid
-            container
-            rowSpacing={2}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-          >
-            <Grid item xs={5} md={5}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label={t("personal_info.date_to")}
-                  id="DateFrom"
-                  name="DateFrom"
-                  format="DD-MM-YYYY"
-                  value={formik.values.DateFrom}
-                  onChange={(value) => {
-                    formik.setFieldValue("DateFrom", value);
-                  }}
-                  slotProps={{
-                    textField: {
-                      size: "small",
-                      fullWidth: true,
-                      helperText:
-                        formik.touched.DateFrom && formik.errors.DateFrom,
-                      error:
-                        formik.touched.DateFrom &&
-                        Boolean(formik.errors.DateFrom),
-                    },
-                  }}
-                />
-              </LocalizationProvider>
+  <Box marginTop={1} sx={{ position: "relative", width: "100%" }}>
+      <Box component="div" sx={FilterStyle} style={Active}>
+          <Box component="form" onSubmit={formik.handleSubmit} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Date From"
+                id="DateFrom"
+                name="DateFrom"
+                format="DD-MM-YYYY"
+                value={formik.values.DateFrom}
+                onChange={(value) => {
+                  formik.setFieldValue("DateFrom", value);
+                }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                    helperText: formik.touched.DateFrom && formik.errors.DateFrom,
+                    error: formik.touched.DateFrom && Boolean(formik.errors.DateFrom),
+                  },
+                }}
+                sx={{ flex: 1, marginLeft: 1 }}
+              />
+            </LocalizationProvider>
+            <Grid item xs={1} md={1}>
+                  <Box sx={{ textAlign: "center", lineHeight: "35px" }}>~</Box>
             </Grid>
-            <Grid item xs={2} md={2}>
-              <Box sx={{ textAlign: "center", lineHeight: "35px" }}>~</Box>
-            </Grid>
-            <Grid item xs={5} md={5}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label={t("personal_info.date_from")}
-                  id="DateTo"
-                  name="DateTo"
-                  format="DD-MM-YYYY"
-                  value={formik.values.DateTo}
-                  onChange={(value) => {
-                    formik.setFieldValue("DateTo", value);
-                  }}
-                  slotProps={{
-                    textField: {
-                      size: "small",
-                      fullWidth: true,
-                      helperText:
-                        formik.touched.DateTo && formik.errors.DateTo,
-                      error:
-                        formik.touched.DateTo &&
-                        Boolean(formik.errors.DateTo),
-                    },
-                  }}
-                />
-              </LocalizationProvider>
-            </Grid>
-          </Grid>
-
-          <Box sx={{ position: "absolute", top: "90px", left: "50%", transform: "translate(-50%, 0)" }}>
-            <Stack
-              direction="row"
-              spacing={2}
-              sx={{ marginTop: "10px", justifyContent: "center" }}
-            >
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                size="small"
-              >
-                {t("personal_info.btn_search")}
-              </Button>
-            </Stack>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Date To"
+                id="DateTo"
+                name="DateTo"
+                format="DD-MM-YYYY"
+                value={formik.values.DateTo}
+                onChange={(value) => {
+                  formik.setFieldValue("DateTo", value);
+                }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    fullWidth: true,
+                    helperText: formik.touched.DateTo && formik.errors.DateTo,
+                    error: formik.touched.DateTo && Boolean(formik.errors.DateTo),
+                  },
+                }}
+                sx={{ flex: 1, marginLeft: 1 }}
+              />
+            </LocalizationProvider>
+            <Button type="submit" variant="contained" color="primary"  sx={{ marginLeft: 1, fontSize:'0.9rem' }}>
+            {t("personal_info.btn_search")}
+            </Button>
           </Box>
         </Box>
-      </Box>
-
 
       {/* Content  */}
       <Box component="div" sx={open ? {
