@@ -15,7 +15,7 @@ const Scanner = (props) => {
         width: 250,  // Kích thước nhỏ hơn để tập trung vào mã QR nhỏ
         height: 250,
       },
-      fps: 10,
+      fps: 15,
       videoConstraints: {
         width: { ideal: 1920 },
         height: { ideal: 1080 },
