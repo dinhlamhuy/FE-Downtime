@@ -22,17 +22,20 @@
     "language": "Ngôn ngữ",
     "en": "Tiếng anh",
     "vn": "Tiếng việt",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "machinery_maintenance": "Máy móc-bảo trì"
   },
   "banner": {
     "name": "Họ và tên:",
-    "lean": "Đơn vị:"
+    "lean": "Đơn vị:",
+    "owner_mechanic": "Chủ quản"
   },
   "breadcrumb": {
     "system": "Hệ thống"
   },
   "info_machine_damage": {
     "info_machine_damage": "Thông báo máy hư",
+    "form_scan": "Nhập thông tin:",
     "scan_qr_bar_code": "Quét mã Bar/QR Code:",
     "form_request": "Đơn đề nghị thông báo máy hư",
     "name": "Họ và tên",
@@ -46,6 +49,8 @@
     "fixer": "Thợ sửa",
     "electrician": "Cơ điện",
     "mechanic": "Thợ máy",
+    "machine_supervisor": "Chủ quản thợ máy",
+    "electromechanical_supervisor": "Chủ quản cơ điện",
     "remark": "Vấn đề gặp phải",
     "confirm": "Xác nhận",
     "cancel": "Hủy",
@@ -62,6 +67,7 @@
     "alert_success": "Hoàn thành",
     "alert_error": "Lỗi dữ liệu",
     "back": "Trở về",
+    "choose_machine": "Nhập mã tài sản",
     "process_status": "Trạng thái xử lý"
   },
   "process_status": {
@@ -71,12 +77,13 @@
     "status_1_": "Sản xuất - Quét mã và gửi yêu cầu cho thợ sửa.",
     "status_1_header": "Thông tin yêu cầu của thợ sửa",
     "status_1_user_request": "Người gửi:",
-    "status_1_date": "Ngày:",
+    "status_1_date": "Ngày yêu cầu:",
     "status_1_id_machine": "Mã máy:",
     "status_1_floor": "Mặt lầu:",
     "status_1_lean": "Đơn vị:",
     "status_1_remark": "Ghi chú:",
     "status_1_mechanic": "Thợ sửa:",
+    "status_2_date": "Thợ xác nhận:",
     "status_2": "Thợ sửa",
     "status_2_": "Xác nhận yêu cầu được gửi từ sản xuất.",
     "status_2_header": "Xác nhận yêu cầu được gửi từ sản xuất.",
@@ -88,26 +95,30 @@
     "status_3_": "Tiến hành sửa.",
     "status_3_header": "Thợ sửa - Tiếp nhận từ yêu cầu sản xuất",
     "status_3_scanner": "Quét mã Bar/QR Code:",
+    "status_3_form_input": "Nhập thông tin",
     "status_3_alert": "Mã QRCode/BarCode không trùng khớp!",
+    "status_4_date": "Hoàn thành:",
     "status_4": "Thợ sửa",
     "status_4_": "Hoàn thành sửa chữa.",
     "status_4_header": "Thợ sửa - Hoàn thành sửa chữa",
     "status_4_alert": "Vui lòng gửi yêu cầu sau khi hoàn thành!",
     "status_4_info": "Thông tin",
     "status_4_id_machine": "Mã máy:",
-    "status_4_repair_method": "Phương pháp sửa chữa",
+    "status_4_repair_method": "Phương pháp sửa chữa:",
     "status_4_remark": "Ghi chú",
     "status_4_confirm": "Xác nhận",
     "status_4_close": "Đóng",
     "status_4_validate_repair_method": "Vui lòng chọn phương pháp!",
     "status_4_validate_remark_repair_method": "Vui lòng nhập phương pháp sửa chữa!",
     "status_4_validate_space": "Vui lòng không nhập khoảng trắng!",
-    "new_code_machine":"Máy mã mới"
+    "new_code_machine":"Máy mã mới",
+    "owner_mechanic": "Chủ quản:",
+    "time_fix": "Thời gian sửa:"
   },
   "personal_info": {
     "search_info": "Tra cứu thông tin",
-    "date_to": "Ngày",
-    "date_from": "Đến ngày",
+    "date_from": "Từ Ngày",
+    "date_to": "Đến ngày",
     "validate_date_from": "Đến ngày không được nhỏ hơn từ ngày!",
     "btn_search": "Tìm kiếm",
     "filter": "Lọc",
@@ -121,12 +132,17 @@
     "method_machine": "Phương pháp sửa",
     "time_fix": "Thời gian sửa",
     "service_repair_machine": "Loại máy sửa chữa",
-    "repair_method": "Phương pháp sửa chữa"
+    "repair_method": "Phương pháp sửa chữa",
+    "top_machine" : "Top máy sửa chữa tốn thời gian", 
+    "top_breakdown" : "Top máy hỏng",
+    "minutes": "Số Phút",
+    "frequency": "Số Lần"
   },
   "scanner": {
     "btn_req_camera_permission": "Yêu cầu quyền sử dụng máy ảnh",
     "alert_not_found": "Không tìm thấy thiết bị được yêu cầu!",
-    "alert_not_permisson": "Yêu cấp quyền camera!"
+    "alert_not_permisson": "Yêu cấp quyền camera!",
+    "submit": "Gửi"
   },
   "work_list": {
     "work_list": "Danh sách công việc",
@@ -136,18 +152,57 @@
     "requester": "Người gửi yêu cầu",
     "floor": "Mặt lầu",
     "assign": "Giao phó",
+    "call": "Gọi",
     "employee_list": "Danh sách nhân viên",
     "name": "Họ và tên",
     "phone": "Số điện thoại",
     "lean": "Đơn vị",
     "close": "Đóng",
-    "alert_table": "Vui lòng chọn dòng dữ liệu trong bảng!"
+    "alert_table": "Vui lòng chọn dòng dữ liệu trong bảng!",
+    "total_skills": "Tổng kỹ năng",
+    "total_fix": "Tổng lần sửa máy",
+    "hide" : "Ẩn",
+    "see_more" : "Xem thêm"
   },
   "employee_list": {
     "employee_list": "Danh sách nhân viên",
     "name": "Họ và tên",
     "lean": "Đơn vị",
     "floor": "Mặt lầu",
-    "active_status": "Trạng thái hoạt động"
+    "active_status": "Trạng thái",
+    "task_name": "Nhiệm vụ hiện tại",
+    "count_time": "Tổng sửa chữa",
+    "detail": "Chi tiết",
+    "select_floor": "Chọn Lầu",
+    "all_floors": "Tất cả"
+  },
+
+  "repair_status": {
+    "repair_status": "Trạng thái sửa chữa",
+    "conveyor": "Chuyền",
+    "machine_code": "Mã máy",
+    "machine_name": "Tên máy",
+    "problem_faced": "Vấn đề gặp phải",
+    "waiting_time": "Thời gian chờ",
+    "fixing_time": "Thời gian sửa",
+    "fixed": "Đã sửa",
+    "waiting": "Đang chờ",
+    "fixing": "Đang sửa"
+  },
+
+  "repair_list": {
+    "repair_list": "Máy móc-bảo trì",
+    "name_machine": "Tên máy",
+    "machine_code": "Mã máy",
+    "workshop": "Xưởng",
+    "reason": "Lý do hư máy",
+
+    "conveyor": "Chuyền",
+    "number_of_breakdowns": "Số lần hư",
+    "total_time": "Tổng thời gian",
+    "efficiency": "Tầng suất",
+    "day": "Ngày",
+    "week": "Tuần",
+    "month": "Tháng"
   }
 }

@@ -2,8 +2,8 @@ import React from "react";
 import AlertDialog from "./AlertDialog";
 import { Box, Stack, Button, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { scanner_fix_mechanic } from "../redux/features/electric";
-
+import { scanner_fix_mechanic,get_work_list_report_employee } from "../redux/features/electric";
+import { get_all_machine } from "../redux/features/machine";
 import { useTranslation } from "react-i18next";
 
 
@@ -13,28 +13,37 @@ const ConfirmModal = ({ isCheck, open, setOpen, idMachine, user }) => {
   const [t] = useTranslation("global");
   const languages = localStorage.getItem('languages');
 
-  const onSubmit = () => {
+  const fetchData = async () => {
+    const { user_name, factory, lean } = user;
+    const id_user_mechanic = user_name;
+    // await dispatch(get_all_machine({ factory }));
+    await dispatch(get_work_list_report_employee({ id_user_mechanic, factory, lean }));
+  };
+
+  const onSubmit = async () => {
     const { user_name, factory, lean } = user;
     const id_machine = idMachine;
     const id_user_mechanic = user_name;
     const status = 2;
     const language = languages;
-
-    dispatch(scanner_fix_mechanic({ id_user_mechanic, id_machine, factory, lean, status, language }));
+    await dispatch(scanner_fix_mechanic({ id_user_mechanic, id_machine, factory, lean, status, language }));
+    await fetchData();
     setOpen(false);
   };
 
-  const onCancel = () => {
+  
+  const onCancel = async () => {
     const { user_name, factory, lean } = user;
     const id_machine = idMachine;
     const id_user_mechanic = user_name;
     const status = 5;
     const language = languages;
-
-    dispatch(scanner_fix_mechanic({ id_user_mechanic, id_machine, factory, lean, status, language }));
+  
+    await dispatch(scanner_fix_mechanic({ id_user_mechanic, id_machine, factory, lean, status, language }));
+    await fetchData();
     setOpen(false);
   };
-
+  
   return (
     <>
       {isCheck && (

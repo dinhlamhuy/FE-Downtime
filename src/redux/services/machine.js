@@ -17,8 +17,24 @@ const get_info_machine = (factory, id_machine) => {
     });
 }
 
+const get_all_machine = (factory) => {
+    return axios.post(BASE_URL + "/damage_report/getAllMachine", { 
+        factory
+    }, {
+        headers: {
+            "Content-Type": "application/json",
+            ...authHeader(),
+        }
+    }).then((response) => {
+        return response.data;
+    }).catch((error) => {
+        return error.response.data;
+    });
+}
+
 const MachineService = {
-    get_info_machine
+    get_info_machine,
+    get_all_machine
 }
 
 export default MachineService;

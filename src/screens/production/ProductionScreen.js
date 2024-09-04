@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import LoginScreen from "../LoginScreen";
 import SideBar from "../../components/SideBar";
 import RoutesProdution from "../../config/RoutesProdution";
@@ -11,7 +11,16 @@ import { useTranslation } from "react-i18next";
 const ProductionScreen = () => {
     const auth = useSelector((state) => state.auth);
     const [t] = useTranslation("global");
+  // State to control the sidebar open/close
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
+  const handleSidebarToggle = () => {
+      setSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleSidebarClose = () => {
+      setSidebarOpen(false);
+  };
     const sideBarMenu = [
         {
             icon: <NotificationsNoneIcon />,
@@ -28,7 +37,12 @@ const ProductionScreen = () => {
     return (
         <React.Fragment>
             {auth.user !== null && auth.user?.permission === 3 ? (
-                <SideBar sideBarMenu={sideBarMenu} user={auth.user}>
+                <SideBar   
+                sideBarMenu={sideBarMenu}
+                user={auth.user}
+                open={isSidebarOpen}
+                onToggle={handleSidebarToggle}
+                onClose={handleSidebarClose}>
                     <RoutesProdution />
                 </SideBar>
             ) : (

@@ -20,6 +20,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import ColorlibStepIcon from "./ColorlibStepIcon";
 
 import DetailInfo from "./DetailInfo";
+import DetailFinish from "./DetailFinish";
 
 import { useTranslation } from "react-i18next";
 
@@ -31,7 +32,6 @@ export default function History({ historyListReport, user }) {
   const [idMachine, setIdMachine] = useState("");
   const [checkDate, setCheckDate] = useState("");
   const [t] = useTranslation("global");
-  const languages = localStorage.getItem('languages');
 
   const steps = [
     {
@@ -61,9 +61,12 @@ export default function History({ historyListReport, user }) {
     {
       label: t("process_status.status_4"),
       description: t("process_status.status_4_"),
-      performAction: function (status, lean, id_machine) {
-        return "";
-      }
+      performAction: function (status, lean, id_machine, date_user_request) {
+        setActiveModal("detailFinish");
+        setIdMachine(id_machine);
+        setCheckDate(date_user_request);
+        setOpen(true);
+      },
     },
   ];
 
@@ -75,7 +78,9 @@ export default function History({ historyListReport, user }) {
       setHistoryList([...historyList, index]);
     }
   };
-
+  if (!historyListReport || !Array.isArray(historyListReport) || historyListReport.length === 0) {
+    return null;
+  }
   return (
     <Stack sx={{ width: "100%" }} spacing={2}>
       {historyListReport === null
@@ -146,6 +151,17 @@ export default function History({ historyListReport, user }) {
             {/* Trạng thái 1: Xem thông tin yêu cầu */}
             {activeModal === "detailInfo" && (
               <DetailInfo
+                isCheck={idMachine === item.id_machine && checkDate === item.date_user_request}
+                machine={item}
+                open={open}
+                setOpen={setOpen}
+                user={user}
+              />
+            )}
+
+              {/* Trạng thái 4: Xem thông tin hoàn thành */}
+              {activeModal === "detailFinish" && (
+              <DetailFinish
                 isCheck={idMachine === item.id_machine && checkDate === item.date_user_request}
                 machine={item}
                 open={open}

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip } from "@mui/material";
-import Title from "../../components/Title";
 import BreadCrumb from "../../components/BreadCrumb";
 import { useDispatch, useSelector } from "react-redux";
 import { get_list_status_mechanic } from "../../redux/features/electric";
@@ -40,8 +39,6 @@ const UserlistScreen = () => {
   const [socket, setSocket] = useState("");
   const socketRef = useRef();
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       const { position, factory, floor, lean } = user;
@@ -65,6 +62,8 @@ const UserlistScreen = () => {
   }, [dispatch, user, socket]);
 
 
+  const availableMechanics = getListStatusMechanic?.filter(row => row.STS === 1);
+
   return (
     <Box component="div">
       <BreadCrumb breadCrumb={t("employee_list.employee_list")} />
@@ -73,7 +72,6 @@ const UserlistScreen = () => {
         sx={{ display: "block", margin: "0 auto" }}
       >
         <Paper sx={PaperStyle} elevation={5}>
-          <Title titleText={t("employee_list.employee_list")} />
           <TableContainer>
             <Table
               sx={{ minWidth: 650 }}
@@ -97,7 +95,7 @@ const UserlistScreen = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {getListStatusMechanic?.map((row, index) => (
+                {availableMechanics?.map((row, index) => (
                   <TableRow
                     key={index}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

@@ -53,7 +53,7 @@ export const get_history_product = createAsyncThunk(
 );
 
 export const cancel_report_damage = createAsyncThunk(
-    "/damage_report/deleteTask",
+    "/damage_report/deleteTask",   // Tên action
     async ({ user_name, id_machine, factory, language }) => {
         try {
             const data = await ProductServices.cancel_report_damage(user_name, id_machine, factory, language);

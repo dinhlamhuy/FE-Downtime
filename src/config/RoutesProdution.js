@@ -4,6 +4,7 @@ import InfoMachineScreen from "../screens/production/InfoMachineScreen";
 import StatusScreen from "../screens/production/StatusScreen";
 
 const RoutesProdution = () => {
+    
     return (
         <Routes>
             <Route path="/" element={<InfoMachineScreen />} />

@@ -9,6 +9,7 @@ import socketIOClient from "socket.io-client";
 import { BASE_URL } from "../../utils/env";
 
 import { useTranslation } from "react-i18next";
+import { get_all_machine } from "../../redux/features/machine";
 
 const host = BASE_URL;
 
@@ -51,13 +52,17 @@ const StatusScreen = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { user_name, factory } = user;
+      const { user_name, factory, lean } = user;
       const id_user_mechanic = user_name;
 
       if (value === 1) {
+       
         await dispatch(get_history_mechanic({ id_user_mechanic, factory }));
       } else {
-        await dispatch(get_work_list_report_employee({ id_user_mechanic, factory }));
+        await dispatch(get_all_machine({ factory }));
+
+        await dispatch(get_work_list_report_employee({ id_user_mechanic, factory, lean }));
+        
       }
     }
 
@@ -83,10 +88,10 @@ const StatusScreen = () => {
     setValue(newValue);
   };
 
-
+  const breadCrumbText = value === 0 ? t("process_status.process_status") : t("process_status.history");
   return (
     <Box component="div">
-      <BreadCrumb breadCrumb={t("process_status.process_status")} />
+      <BreadCrumb breadCrumb={breadCrumbText} />
       <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
@@ -106,6 +111,7 @@ const StatusScreen = () => {
               {...a11yProps(1)}
               sx={{ fontSize: "14px", textTransform: "capitalize" }}
             />
+            
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>

@@ -27,7 +27,7 @@ const DetailInfo = ({ isCheck, open, setOpen, machine, user }) => {
                                 {t("process_status.status_1_user_request")} {" "}
                             </Typography>
                             <Typography variant="div" sx={{ fontSize: "14px", color: "gray" }}>
-                                {machine.name_user_req ? machine.name_user_req : user.name}
+                                {machine.name_userrq ? machine.name_userrq : user.name}
                             </Typography>
                         </Grid>
                         <Grid item xs={6} md={6}>
@@ -68,7 +68,7 @@ const DetailInfo = ({ isCheck, open, setOpen, machine, user }) => {
                             </Typography>
                             <Typography variant="div" sx={{ fontSize: "14px", color: "gray" }}>
                                 {/* {machine?.name_machanic ? machine?.name_machanic : machine?.name} */}
-                                {machine?.name_machanic}
+                                {machine?.name_mechanic}
                             </Typography>
                         </Grid>
                         <Grid item xs={12} md={12}>

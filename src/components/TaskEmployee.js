@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {  } from "react";
 import {
   Box,
   Typography,
@@ -8,7 +8,6 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  TablePagination,
 } from "@mui/material";
 
 import { useTranslation } from "react-i18next";
@@ -27,18 +26,8 @@ const TitleStyle = {
 };
 
 const TaskEmployee = ({ arrResult }) => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   // const [selectedRow, setSelectedRow] = useState(null);
   const languages = localStorage.getItem('languages');
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
 
   const [t] = useTranslation("global");
 
@@ -71,9 +60,7 @@ const TaskEmployee = ({ arrResult }) => {
 
           </TableHead>
           <TableBody>
-            {arrResult
-              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => {
+          {arrResult?.map((row, index) => {
                 return (
                   <TableRow key={index}>
                     <TableCell>
@@ -95,15 +82,7 @@ const TaskEmployee = ({ arrResult }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={arrResult?.length || 0}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+  
     </Box>
   );
 };

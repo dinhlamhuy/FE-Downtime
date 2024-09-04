@@ -1,7 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef } from "react";
 import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
 import { Box, Typography } from "@mui/material";
-
 import { useTranslation } from "react-i18next";
 
 const Scanner = (props) => {
@@ -10,75 +10,10 @@ const Scanner = (props) => {
   const [t] = useTranslation("global");
 
   useEffect(() => {
-    // localStorage.removeItem("ML5_QRCODE_DATA");
-
-    const startScanning = async () => {
-      let cameraFailTimer;
-      let cameraStarting = true;
-      let cameraView = document.getElementById(`render-${idMachine}`); // Assuming you have an element with the ID 'cameraView'
-
-      const constraints = {
-        audio: false,
-        video: {
-          facingMode: 'environment'
-        }
-      };
-
-      navigator.mediaDevices.getUserMedia(constraints)
-        .then((mediaStream) => {
-          cameraView.srcObject = mediaStream;
-          clearTimeout(cameraFailTimer);
-          cameraFailTimer = setTimeout(function () {
-            // Camera isn't working - do something on screen
-            cameraStarting = false;
-          }, 5000);
-          cameraView.onloadedmetadata = () => {
-            cameraView.play().then(function () {
-              // Camera is working - continue as normal
-              clearTimeout(cameraFailTimer);
-              cameraStarting = false;
-              // callback(true);
-            });
-          };
-        })
-        .catch((err) => {
-          // Camera isn't working - do something on screen
-          cameraStarting = false;
-          // callback(false);
-        });
-      // try {
-      //   const devices = await navigator.mediaDevices.enumerateDevices();
-      //   const videoDevices = devices.filter(
-      //     (device) => device.kind === "videoinput"
-      //   );
-
-      //   let rearCameraId = null;
-      //   for (const device of videoDevices) {
-      //     if (device.label.toLowerCase().includes("back")) {
-      //       rearCameraId = device.deviceId;
-      //       break;
-      //     }
-      //   }
-
-      //   const selectedCameraId = rearCameraId || videoDevices[0]?.deviceId;
-
-      //   if (selectedCameraId) {
-      //     scannerRef.current?.start(selectedCameraId, {
-      //       facingMode: "environment",
-      //     }, (result) => {
-      //       scannerRef.current?.clear();
-      //       setScannerResult(result);
-      //     });
-      //   }
-      // } catch (error) {
-      //   console.log(error);
-      // }
-    };
-
     const scanner = new Html5QrcodeScanner(`render-${idMachine}`, {
       qrbox: {
-        width: 250,
-        height: 250,
+        width: 700,
+        height: 700,
       },
       fps: 10,
       videoConstraints: {
@@ -101,7 +36,38 @@ const Scanner = (props) => {
       console.log(err);
     }
 
+    const startScanning = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(
+          (device) => device.kind === "videoinput"
+        );
+
+        let rearCameraId = null;
+        for (const device of videoDevices) {
+          if (device.label.toLowerCase().includes("back")) {
+            rearCameraId = device.deviceId;
+            break;
+          }
+        }
+
+        const selectedCameraId = rearCameraId || videoDevices[0]?.deviceId;
+
+        if (selectedCameraId) {
+          scannerRef.current?.start(selectedCameraId, {
+            facingMode: "environment",
+          }, (result) => {
+            scannerRef.current?.clear();
+            setScannerResult(result);
+          });
+        }
+      } catch (error) {
+         console.log(error);
+      }
+    };
+
     startScanning();
+
 
     const buttonElement = document.getElementById("html5-qrcode-button-camera-permission");
 
@@ -109,6 +75,7 @@ const Scanner = (props) => {
       buttonElement.textContent = t("scanner.btn_req_camera_permission");
       buttonElement.addEventListener("click", handleCameraPermission);
     }
+
 
     // Clean up function
     return () => {
@@ -119,16 +86,27 @@ const Scanner = (props) => {
         buttonElement.removeEventListener("click", handleCameraPermission);
       }
     };
+
+
   }, [scannerResult, setScannerResult, idMachine, t]);
 
   function handleCameraPermission() {
     navigator.mediaDevices.getUserMedia({ video: true })
-      .then(() => {
+      .then((stream) => {
+        stream.getTracks().forEach(function (track) {
+          track.stop();
+        });
         console.log("Camera permission granted");
       })
       .catch((error) => {
+        // alert(String(error))
         const alertNotFound = document.getElementById(`render-${idMachine}__header_message`);
-        alertNotFound.textContent = t("scanner.alert_not_found");
+     
+        if (String(error) === "NotFoundError: Requested device not found") {
+          alertNotFound.textContent = t("scanner.alert_not_found");
+        } else {
+          alertNotFound.textContent = t("scanner.alert_not_permisson");
+        }
       });
   }
 

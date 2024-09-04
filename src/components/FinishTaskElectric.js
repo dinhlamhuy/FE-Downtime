@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import AlertDialog from "./AlertDialog";
 import Title from "./Title";
-
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { finish_mechanic, get_info_skill } from "../redux/features/electric";
-
 import QrCodeIcon from "@mui/icons-material/QrCode";
 import {
   Typography,
@@ -32,7 +30,7 @@ const FinishTaskElectric = (props) => {
   const [scanChangeMachine, setScanChangeMachine] = useState(false);
   const [btnScan, setBtnScan] = useState(false);
   const [t] = useTranslation("global");
-
+  const { machineList } = useSelector((state) => state.machine);
   const languages = localStorage.getItem("languages");
 
   const validationSchema = Yup.object().shape({
@@ -57,12 +55,14 @@ const FinishTaskElectric = (props) => {
 
   const handleAutocompleteChange = (event, values) => {
     if (values.find((item) => item.id === 4)) {
-    
+     // const userFactory = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).factory : '';
+      // fetchAllMachines(userFactory);
       setScanChangeMachine(true);
       setBtnScan(false);
     } else {
       setScanChangeMachine(false);
       setBtnScan(false);
+      setScannerResult('')
     }
     formik.setFieldValue("skill", values);
   };
@@ -71,7 +71,7 @@ const FinishTaskElectric = (props) => {
     initialValues: {
       skill: [],
       remark_mechanic: "",
-    
+
     },
     validationSchema,
     onSubmit: (data) => {
@@ -84,8 +84,9 @@ const FinishTaskElectric = (props) => {
       const { lean, factory, user_name } = user;
       const id_machine = idMachine;
       const id_user_mechanic = user_name;
-      const new_mechanic= scannerResult;
+      const new_mechanic = scannerResult;
       const language = languages;
+
       //  alert('check'+new_mechanic);
       dispatch(
         finish_mechanic({
@@ -99,27 +100,33 @@ const FinishTaskElectric = (props) => {
           new_mechanic
         })
       );
-      console.log( dispatch(
-        finish_mechanic({
-          id_user_mechanic,
-          skill,
-          id_machine,
-          remark_mechanic,
-          lean,
-          factory,
-          language,
-          new_mechanic
-        })
-      ));
+      // console.log( dispatch(
+      //   finish_mechanic({
+      //     id_user_mechanic,
+      //     skill,
+      //     id_machine,
+      //     remark_mechanic,
+      //     lean,
+      //     factory,
+      //     language,
+      //     new_mechanic
+      //   })
+      // ));
       setOpen(false);
     },
   });
 
+  // const fetchAllMachines = async (factory) => {
+  //   await dispatch(get_all_machine({ factory }));
+  // };
   useEffect(() => {
-    const fetchData = () => {
+
+    const fetchInfoSkill = () => {
       dispatch(get_info_skill());
     };
-    fetchData();
+
+
+    fetchInfoSkill();
   }, [dispatch]);
 
   // useEffect(() => {
@@ -130,6 +137,11 @@ const FinishTaskElectric = (props) => {
     formik.setTouched({});
     formik.setErrors({});
     setOpen(false);
+  };
+
+  const handleButtonClick = () => {
+    setBtnScan(!btnScan);
+    setScannerResult('');
   };
 
   return (
@@ -199,14 +211,37 @@ const FinishTaskElectric = (props) => {
                       <Button
                         variant="contained"
                         sx={{ marginRight: "10px" }}
-                        onClick={() => {
-                          setBtnScan(!btnScan);
-                          setScannerResult('');
-                        }}
+                        onClick={handleButtonClick}
                       >
                         <QrCodeIcon />
                       </Button>{" "}
-                      <TextField
+                      <Autocomplete sx={{ width: "100%" }}
+                        freeSolo
+                        options={machineList.map((machine) => machine.ID_Code)}
+                        inputValue={scannerResult}
+                        onInputChange={(event, newInputValue) => {
+                          setScannerResult(newInputValue);
+                          setBtnScan(false);
+                        }}
+
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            size="small"
+                            sx={{ width: "100%" }}
+                            id="outlined-read-only-input"
+                            label={t("process_status.new_code_machine")}
+                            InputProps={{
+                              ...params.InputProps,
+                              readOnly: btnScan,
+                            }}
+
+                          />
+                        )}
+                      />
+
+
+                      { /* <TextField
                         size="small"
                         sx={{ width: "100%" }}
                         id="outlined-read-only-input"
@@ -216,7 +251,9 @@ const FinishTaskElectric = (props) => {
                         InputProps={{
                           readOnly: true,
                         }}
-                      />
+                      /> + */
+                      }
+
                     </Paper>
                     {btnScan && scannerResult === '' && (
                       <Scanner
@@ -283,7 +320,7 @@ const FinishTaskElectric = (props) => {
                   variant="outlined"
                   className={
                     formik.errors.remark_mechanic &&
-                    formik.touched.remark_mechanic
+                      formik.touched.remark_mechanic
                       ? "is-invalid"
                       : ""
                   }
@@ -293,7 +330,7 @@ const FinishTaskElectric = (props) => {
                   }
                   helperText={
                     formik.errors.remark_mechanic &&
-                    formik.touched.remark_mechanic
+                      formik.touched.remark_mechanic
                       ? formik.errors.remark_mechanic
                       : null
                   }

@@ -56,6 +56,7 @@ const StatusScreen = () => {
             if (value === 1) {
                 await dispatch(get_history_product({ id_user_request, factory }));
             } else {
+                
                 await dispatch(get_report_damage({ id_user_request, factory }));
             }
         };

@@ -113,7 +113,7 @@ const Form = (props) => {
             const remark = idArray.join(",");
             const { id_machine, id_user_request, factory, fixer } = data;
             const language = languages;
-console.log(remark)
+            console.log(remark)
             await dispatch(
                 report_damage({ id_machine, id_user_request, remark, factory, fixer, language })
             );
@@ -531,7 +531,8 @@ console.log(remark)
                         >
                             {t("info_machine_damage.confirm")}
                         </Button>
-                        <Button  type="button"
+                        <Button  
+                            type="button"
                             variant="contained"
                             color="error"
                             size="small"

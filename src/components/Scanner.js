@@ -12,8 +12,8 @@ const Scanner = (props) => {
   useEffect(() => {
     const scanner = new Html5QrcodeScanner(`render-${idMachine}`, {
       qrbox: {
-        width: 700,
-        height: 700,
+        width: 800,
+        height: 800,
       },
       fps: 10,
       videoConstraints: {
