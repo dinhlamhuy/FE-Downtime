@@ -19,8 +19,8 @@ const Scanner = (props) => {
       videoConstraints: {
         // width: { ideal: 1920 },
         // height: { ideal: 1080 },
-        width: { ideal: 1280 },  // Reduce resolution
-        height: { ideal: 720 },
+        // width: { ideal: 1280 },  // Reduce resolution
+        // height: { ideal: 720 },
         facingMode: { exact: "environment" },
         zoom: 2.9
       },
