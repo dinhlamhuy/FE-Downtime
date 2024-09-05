@@ -17,8 +17,8 @@ const Scanner = (props) => {
       },
       fps: 15,
       videoConstraints: {
-        // width: { ideal: 1920 },
-        // height: { ideal: 1080 },
+        width: { ideal: 1920 },
+        height: { ideal: 1080 },
         facingMode: { exact: "environment" },
         zoom: 2.5 
       },
