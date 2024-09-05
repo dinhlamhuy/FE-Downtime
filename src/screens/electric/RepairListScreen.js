@@ -100,19 +100,34 @@ const RepairlistScreen = () => {
           const floors = mechanic.floor.split(",").map((floor) => floor.trim());
           return floors.includes(selectedFloor);
         });
-
+  
         setFilteredRepairMechanics(filteredMechanics);
         setRowSpan(countOccurrences(filteredMechanics, "Name_en"));
       }
     } else {
       setFilteredRepairMechanics(getListRepairMechanic);
     }
-  }, [selectedFloor, getListRepairMechanic]);
+  }, [selectedFloor, getListRepairMechanic, user.floor]);
+  
 
   const handleFloorChange = (event) => {
-    setSelectedFloor(event.target.value);
+    const selectedFloor = event.target.value;
+    setSelectedFloor(selectedFloor);
+    const { factory, lean, floor: userFloor } = user;
+    dispatch(get_top_longest_repair_time({
+      factory,
+      floor: selectedFloor === "0" ? userFloor : selectedFloor,
+      lean,
+      time: selectedTime
+    }));
+    dispatch(get_top3_broken_machines({
+      factory,
+      floor: selectedFloor === "0" ? userFloor : selectedFloor, 
+      lean,
+      time: selectedTime
+    }));
   };
-
+  
   const countOccurrences = (array, key) => {
     return array.reduce((acc, obj) => {
       acc[obj[key]] = (acc[obj[key]] || 0) + 1;
@@ -398,7 +413,7 @@ const RepairlistScreen = () => {
                               ? languages === "EN"
                                 ? row.Name_en
                                 : row.Name_vn
-                              : ""}
+                              : "UnKnown"}
                           </TableCell>
                         )}
                         {ItemRowSpan === 0 && (
@@ -431,7 +446,7 @@ const RepairlistScreen = () => {
         >
           <Grid container spacing={2}  >
             <Grid item xs={12} md={7}   >
-                <ChartRepair getTop5LongestRepairTime={getTop5LongestRepairTime}  />
+                <ChartRepair  getTop5LongestRepairTime={getTop5LongestRepairTime}  />
             </Grid>
             <Grid item xs={12} md={5}   >
                 <ChartPie getTop3BrokenMachines={getTop3BrokenMachines} />

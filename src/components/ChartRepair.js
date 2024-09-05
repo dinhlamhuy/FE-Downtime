@@ -10,7 +10,6 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend,
 
 const ChartRepairStyle = {
     padding: "20px",
-    // margin: "5px",
     height: "100%",
     borderRadius: "40px",
     border: '2px solid #292020'
@@ -25,7 +24,7 @@ const TitleStyle = {
 const ContentStyle = {
     display: "flex",
     justifyContent: "center",
-    marginTop: "35px",
+    marginTop: "10px",
     maxHeight: "100%",
     height: "90%"
 };
@@ -59,8 +58,17 @@ const ChartRepair = ({ getTop5LongestRepairTime }) => {
                     },
                     align: 'end',
                     anchor: 'end',
-                    formatter: (value) => value.toFixed(2)
+                    formatter: (value) => value.toFixed(1)
                 },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            const value = tooltipItem.raw.toFixed(1); // Round to one decimal
+                            const label = t("personal_info.minutes"); // Label "minutes"
+                            return `${label}: ${value}`; // Display label and rounded value
+                        }
+                    }
+                }
             },
             scales: {
                 x: {
@@ -75,7 +83,6 @@ const ChartRepair = ({ getTop5LongestRepairTime }) => {
                     border: {
                         color: '#874e4e',
                     }
-                    
                 },
                 y: {
                     ticks: {
@@ -92,12 +99,11 @@ const ChartRepair = ({ getTop5LongestRepairTime }) => {
             },
             layout: {
                 padding: {
-                    // top: 10, bottom: 10,
                     right: 30,
                     left: 20
                 }
             },
-            barPercentage: 0.8, 
+            barPercentage: 1.5, 
             categoryPercentage: 0.4, 
         }
     });
@@ -112,6 +118,15 @@ const ChartRepair = ({ getTop5LongestRepairTime }) => {
                     ...prevData.datasets[0],
                     label,
                     data: getTop5LongestRepairTime.map(data => Number(data.Minutes))
+                }]
+            }));
+        } else {
+            setChartData(prevData => ({
+                ...prevData,
+                labels: [],
+                datasets: [{
+                    ...prevData.datasets[0],
+                    data: []
                 }]
             }));
         }

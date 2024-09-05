@@ -5,11 +5,11 @@ import { Pie } from 'react-chartjs-2';
 import { useTranslation } from "react-i18next";
 import ChartDataLabels from 'chartjs-plugin-datalabels'; 
 
-ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels); 
+// Đăng ký các plugin cần thiết
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
+
 const ChartPieStyle = {
-    padding: " 20px",
-    // margin: "5px",
-    // backgroundColor:'blue',
+    padding: "20px",
     height: "100%",
     borderRadius: "40px",
     border: '2px solid #292020'
@@ -17,14 +17,14 @@ const ChartPieStyle = {
 
 const TitleStyle = {
     textTransform: "uppercase",
-    fontSize: "14px",
+    fontSize: "1rem",
     fontWeight: "bold",
 };
 
 const ContentStyle2 = {
     display: "flex",
     justifyContent: "center",
-    // marginTop: "10px",
+    marginTop: "10px",
     maxHeight: "100%",
     height: "90%",
 };
@@ -56,8 +56,7 @@ const ChartPie = ({ getTop3BrokenMachines }) => {
                         color: '#000',
                         font: {
                             size: 14
-                        },
-                      
+                        }
                     }
                 },
                 datalabels: { 
@@ -85,22 +84,31 @@ const ChartPie = ({ getTop3BrokenMachines }) => {
                     data: getTop3BrokenMachines.map((data) => Number(data.Time))
                 }]
             }));
+        } else {
+           
+            setChart(prevChart => ({
+                ...prevChart,
+                labels: [],
+                datasets: [{
+                    ...prevChart.datasets[0],
+                    data: []
+                }]
+            }));
         }
     }, [getTop3BrokenMachines, languages, t]);
-    
 
     return (
         <Box sx={ChartPieStyle}>
-            <Typography sx={{ ...TitleStyle, textAlign: 'center', color: '#2196F3', fontSize: '1rem', paddingBottom: '10px' }} variant="h4">
+            <Typography sx={{ ...TitleStyle, textAlign: 'center', color: '#2196F3', fontSize: '1rem', }} variant="h4">
                 {t("personal_info.top_breakdown")}
             </Typography>
             <Box sx={ContentStyle2}>
-            {chart.labels.length > 0 ? (
-                 <Pie data={chart} options={chart.options} />
-            ) : (
-                <Typography>No Data</Typography>
-            )}
-        </Box>
+                {chart.labels.length > 0 ? (
+                    <Pie data={chart} options={chart.options} />
+                ) : (
+                    <Typography>No Data</Typography>
+                )}
+            </Box>
         </Box>
     );
 }

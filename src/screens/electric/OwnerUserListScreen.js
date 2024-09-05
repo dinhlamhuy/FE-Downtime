@@ -67,20 +67,24 @@ const OwnerUserListScreen = () => {
       socketRef.current.disconnect();
     };
   }, [dispatch, user, socket]);
-
   useEffect(() => {
+    const mechanicsCopy = [...(getListStatusMechanic || [])];
+    
     if (selectedFloor === "0") {
-      setFilteredMechanics(getListStatusMechanic || []);
+      setFilteredMechanics(mechanicsCopy.sort((a, b) => a.CountTime - b.CountTime));
     } else {
       setFilteredMechanics(
-        (getListStatusMechanic || []).filter((mechanic) => {
-          const floors = mechanic.floor.split(',').map(floor => floor.trim());
-          return floors.includes(selectedFloor);
-        })
+        mechanicsCopy
+          .filter((mechanic) => {
+            const floors = mechanic.floor.split(',').map(floor => floor.trim());
+            return floors.includes(selectedFloor);
+          })
+          .sort((a, b) => a.CountTime - b.CountTime)
       );
     }
   }, [selectedFloor, getListStatusMechanic]);
-
+  
+  
   const handleFloorChange = (event) => {
     setSelectedFloor(event.target.value);
   };
