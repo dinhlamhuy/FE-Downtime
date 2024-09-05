@@ -20,7 +20,7 @@ const Scanner = (props) => {
         // width: { ideal: 1920 },
         // height: { ideal: 1080 },
         facingMode: { exact: "environment" },
-        zoom: 2 
+        zoom: 2.5 
       },
       rememberLastUsedCamera: true,
       supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
