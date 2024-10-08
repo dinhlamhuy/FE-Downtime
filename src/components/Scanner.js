@@ -10,17 +10,29 @@ const Scanner = (props) => {
   const [t] = useTranslation("global");
 
   useEffect(() => {
+    // const scanner = new Html5QrcodeScanner(`render-${idMachine}`, {
+    //   qrbox: {
+    //     width: 400,
+    //     height: 400,
+    //   },
+    //   fps: 15,
+    //   videoConstraints: {
+    //     width: { ideal: 1280 },  // Reduce resolution
+    //     height: { ideal: 720 },
+    //     facingMode: { exact: "environment" },
+    //     zoom: 2.5
+    //   },
+    //   rememberLastUsedCamera: true,
+    //   supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+    // });
     const scanner = new Html5QrcodeScanner(`render-${idMachine}`, {
       qrbox: {
-        width: 400,
-        height: 400,
+        width: 250,
+        height: 250,
       },
-      fps: 15,
+      fps: 10,
       videoConstraints: {
-        width: { ideal: 1280 },  // Reduce resolution
-        height: { ideal: 720 },
         facingMode: { exact: "environment" },
-        zoom: 2.5
       },
       rememberLastUsedCamera: true,
       supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
@@ -57,38 +69,20 @@ const Scanner = (props) => {
         const selectedCameraId = rearCameraId || videoDevices[0]?.deviceId;
 
         if (selectedCameraId) {
-          await scannerRef.current?.start(selectedCameraId, {
+          scannerRef.current?.start(selectedCameraId, {
             facingMode: "environment",
           }, (result) => {
             scannerRef.current?.clear();
             setScannerResult(result);
           });
-          await retryPlay(scannerRef.current);
         }
-
       } catch (error) {
          console.log(error);
       }
     };
 
     startScanning();
-    const retryPlay = (scanner) => {
-      return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          if (scanner) {
-            console.log("Retrying play after timeout...");
-            scanner.clear();
-            reject(new Error("Video play failed, retrying..."));
-          }
-        }, 3000);
-    
-        // Clear timeout if video starts playing successfully
-        scanner?.on('onloadedmetadata', () => {
-          clearTimeout(timeout);
-          resolve();
-        });
-      });
-    };
+
 
     const buttonElement = document.getElementById("html5-qrcode-button-camera-permission");
 
