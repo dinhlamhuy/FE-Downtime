@@ -57,20 +57,38 @@ const Scanner = (props) => {
         const selectedCameraId = rearCameraId || videoDevices[0]?.deviceId;
 
         if (selectedCameraId) {
-          scannerRef.current?.start(selectedCameraId, {
+          await scannerRef.current?.start(selectedCameraId, {
             facingMode: "environment",
           }, (result) => {
             scannerRef.current?.clear();
             setScannerResult(result);
           });
+          await retryPlay(scannerRef.current);
         }
+
       } catch (error) {
          console.log(error);
       }
     };
 
     startScanning();
-
+    const retryPlay = (scanner) => {
+      return new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          if (scanner) {
+            console.log("Retrying play after timeout...");
+            scanner.clear();
+            reject(new Error("Video play failed, retrying..."));
+          }
+        }, 3000);
+    
+        // Clear timeout if video starts playing successfully
+        scanner?.on('onloadedmetadata', () => {
+          clearTimeout(timeout);
+          resolve();
+        });
+      });
+    };
 
     const buttonElement = document.getElementById("html5-qrcode-button-camera-permission");
 

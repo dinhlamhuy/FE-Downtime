@@ -11,7 +11,7 @@ import {
   ListItemButton,
   ListItemText,
   Collapse,
-  Chip
+  Chip,
 } from "@mui/material";
 
 import ExpandLess from "@mui/icons-material/ExpandLess";
@@ -23,7 +23,6 @@ import DetailInfo from "./DetailInfo";
 import DetailFinish from "./DetailFinish";
 
 import { useTranslation } from "react-i18next";
-
 
 export default function History({ historyListReport, user }) {
   const [historyList, setHistoryList] = useState(historyListReport || []);
@@ -49,14 +48,14 @@ export default function History({ historyListReport, user }) {
       description: t("process_status.status_2_"),
       performAction: function (status, lean, id_machine) {
         return "";
-      }
+      },
     },
     {
       label: t("process_status.status_3"),
       description: t("process_status.status_3_"),
       performAction: function (status, lean, id_machine) {
         return "";
-      }
+      },
     },
     {
       label: t("process_status.status_4"),
@@ -78,7 +77,11 @@ export default function History({ historyListReport, user }) {
       setHistoryList([...historyList, index]);
     }
   };
-  if (!historyListReport || !Array.isArray(historyListReport) || historyListReport.length === 0) {
+  if (
+    !historyListReport ||
+    !Array.isArray(historyListReport) ||
+    historyListReport.length === 0
+  ) {
     return null;
   }
   return (
@@ -86,91 +89,112 @@ export default function History({ historyListReport, user }) {
       {historyListReport === null
         ? []
         : historyListReport.map((item, index) => (
-          <List
-            sx={{
-              width: "100%",
-              bgcolor: "primary.dark",
-              borderRadius: "5px",
-            }}
-            component="nav"
-            aria-labelledby="nested-list-subheader"
-            key={index}
-          >
-            <ListItemButton onClick={() => handleClick(index)}>
-              <ListItemText>
-                <Typography
-                  variant="body"
-                  style={{
-                    color: "white",
-                    fontSize: "14px",
-                  }}
-                >
-                  <Chip
-                    label={item["date_user_request"].split("T")[1].slice(0,-8) +' '+item["date_user_request"].split("T")[0]}
-                    color="primary"
-                  />{" "}
-                  - <Chip label={item["id_machine"]} color="primary" />
-                </Typography>
-              </ListItemText>
-              {historyList.includes(index) ? (
-                <ExpandLess style={{ color: "white" }} />
-              ) : (
-                <ExpandMore style={{ color: "white" }} />
-              )}
-            </ListItemButton>
-            <Collapse in={historyList.includes(index)} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItem>
-                  <Card
-                    variant="outlined"
-                    sx={{ width: "100%", padding: "0 15px" }}
+            <List
+              sx={{
+                width: "100%",
+                bgcolor: "primary.dark",
+                borderRadius: "5px",
+              }}
+              component="nav"
+              aria-labelledby="nested-list-subheader"
+              key={index}
+            >
+              <ListItemButton onClick={() => handleClick(index)}>
+                <ListItemText>
+                  <Typography
+                    variant="body"
+                    style={{
+                      color: "white",
+                      fontSize: "14px",
+                    }}
                   >
-                    <Stepper activeStep={item["status"] - 1} orientation="vertical" >
-                      {steps.map((step, index) => (
-                        <Step key={index}
-                          onClick={() =>
-                            step.performAction(
-                              item.status,
-                              user.lean,
-                              item.id_machine,
-                              item.date_user_request
-                            )
-                          }
-                        >
-                          <StepLabel StepIconComponent={ColorlibStepIcon}>
-                            {step.label} - {step.description}
-                          </StepLabel>
-                        </Step>
-                      ))}
-                    </Stepper>
-                  </Card>
-                </ListItem>
-              </List>
-            </Collapse>
+                    <Chip
+                      label={
+                        item["date_user_request"].split("T")[1].slice(0, -8) +
+                        " " +
+                        item["date_user_request"].split("T")[0]
+                      }
+                      color="primary"
+                    />{" "}
+                    - <Chip label={item["id_machine"]} color="primary" /> - 
+                    {item["line_req"]
+                      ? (<Chip label={item["line_req"]} color="primary" />)
+                      : ""}
+                  </Typography>
+                </ListItemText>
+                {historyList.includes(index) ? (
+                  <ExpandLess style={{ color: "white" }} />
+                ) : (
+                  <ExpandMore style={{ color: "white" }} />
+                )}
+              </ListItemButton>
+              <Collapse
+                in={historyList.includes(index)}
+                timeout="auto"
+                unmountOnExit
+              >
+                <List component="div" disablePadding>
+                  <ListItem>
+                    <Card
+                      variant="outlined"
+                      sx={{ width: "100%", padding: "0 15px" }}
+                    >
+                      <Stepper
+                        activeStep={item["status"] - 1}
+                        orientation="vertical"
+                      >
+                        {steps.map((step, index) => (
+                          <Step
+                            key={index}
+                            onClick={() =>
+                              step.performAction(
+                                item.status,
+                                user.lean,
+                                item.id_machine,
+                                item.date_user_request
+                              )
+                            }
+                          >
+                            <StepLabel StepIconComponent={ColorlibStepIcon}>
+                              {step.label} - {step.description}
+                            </StepLabel>
+                          </Step>
+                        ))}
+                      </Stepper>
+                    </Card>
+                  </ListItem>
+                </List>
+              </Collapse>
 
-            {/* Trạng thái 1: Xem thông tin yêu cầu */}
-            {activeModal === "detailInfo" && (
-              <DetailInfo
-                isCheck={idMachine === item.id_machine && checkDate === item.date_user_request}
-                machine={item}
-                open={open}
-                setOpen={setOpen}
-                user={user}
-              />
-            )}
+              {/* Trạng thái 1: Xem thông tin yêu cầu */}
+              {activeModal === "detailInfo" && (
+                <DetailInfo
+                  isCheck={
+                    idMachine === item.id_machine &&
+                    checkDate === item.date_user_request
+                  }
+                  machine={item}
+                  open={open}
+                  setOpen={setOpen}
+                  user={user}
+                />
+              )}
 
               {/* Trạng thái 4: Xem thông tin hoàn thành */}
               {activeModal === "detailFinish" && (
-              <DetailFinish
-                isCheck={idMachine === item.id_machine && checkDate === item.date_user_request}
-                machine={item}
-                open={open}
-                setOpen={setOpen}
-                user={user}
-              />
-            )}
-          </List>
-        ))}
+                <DetailFinish
+                  isCheck={
+                    idMachine === item.id_machine &&
+                    checkDate === item.date_user_request
+                  }
+                  machine={item}
+                  open={open}
+                  setOpen={setOpen}
+                  user={user}
+                />
+              )}
+            </List>
+          ))}
     </Stack>
   );
 }

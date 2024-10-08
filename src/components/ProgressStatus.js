@@ -1,5 +1,18 @@
 import React, { useEffect, useState } from "react";
-import {Stepper, Step,  StepLabel, Typography, Stack, Card, Chip, List, ListItem, ListItemButton, ListItemText, Collapse } from "@mui/material";
+import {
+  Stepper,
+  Step,
+  StepLabel,
+  Typography,
+  Stack,
+  Card,
+  Chip,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Collapse,
+} from "@mui/material";
 
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -73,7 +86,6 @@ const ProgressStatus = ({ listReport, user }) => {
   ];
 
   const handleClick = (index) => {
-
     const isOpen = openProgress.includes(index);
     if (isOpen) {
       setOpenProgress(openProgress.filter((item) => item !== index));
@@ -115,125 +127,132 @@ const ProgressStatus = ({ listReport, user }) => {
       {listReport === null
         ? []
         : listReport?.map((product, index) => (
-          <List
-            sx={{
-              width: "100%",
-              bgcolor: "primary.dark",
-              borderRadius: "5px",
-            }}
-            component="nav"
-            key={index}
-          >
-            <ListItemButton onClick={() => handleClick(index)}>
-              <ListItemText>
-                <Typography
-                  variant="body"
-                  style={{
-                    color: "white",
-                    fontSize: "4px",
-                  }}
-                >
-                  <Chip
-                    // label={product["date_user_request"].split("T")[0]+' '+product["date_user_request"].split("T")[1].split(".")[0]}
-                    label={product["date_user_request"] && product["date_user_request"].split("T")[1].slice(0, -8)+' '+product["date_user_request"].split("T")[0]}
-                    color="primary"
-                  />{" "}
-                  - <Chip label={product["id_machine"]} color="primary" />
-                </Typography>
-              </ListItemText>
-              {openProgress.includes(index) ? (
-                <ExpandLess style={{ color: "white" }} />
-              ) : (
-                <ExpandMore style={{ color: "white" }} />
-              )}
-            </ListItemButton>
-            <Collapse
-              in={openProgress.includes(index)}
-              timeout="auto"
-              unmountOnExit
+            <List
+              sx={{
+                width: "100%",
+                bgcolor: "primary.dark",
+                borderRadius: "5px",
+              }}
+              component="nav"
+              key={index}
             >
-              <List component="div" disablePadding>
-                <ListItem>
-                  <Card
-                    variant="outlined"
-                    sx={{ width: "100%", padding: "0 15px" }}
+              <ListItemButton onClick={() => handleClick(index)}>
+                <ListItemText>
+                  <Typography
+                    variant="body"
+                    style={{
+                      color: "white",
+                      fontSize: "4px",
+                    }}
                   >
-                    <Stepper
-                      activeStep={product["status"] - 1 }
-                      orientation="vertical"
+                    <Chip
+                      // label={product["date_user_request"].split("T")[0]+' '+product["date_user_request"].split("T")[1].split(".")[0]}
+                      label={
+                        product["date_user_request"] &&
+                        product["date_user_request"]
+                          .split("T")[1]
+                          .slice(0, -8) +
+                          " " +
+                          product["date_user_request"].split("T")[0]
+                      }
+                      color="primary"
+                    />{" "}
+                    - <Chip label={product["id_machine"]} color="primary" />{" "} - 
+                    {product["line_req"]
+                      ? ( <Chip label={product["line_req"]} color="primary" />)
+                      : ""}
+                  </Typography>
+                </ListItemText>
+                {openProgress.includes(index) ? (
+                  <ExpandLess style={{ color: "white" }} />
+                ) : (
+                  <ExpandMore style={{ color: "white" }} />
+                )}
+              </ListItemButton>
+              <Collapse
+                in={openProgress.includes(index)}
+                timeout="auto"
+                unmountOnExit
+              >
+                <List component="div" disablePadding>
+                  <ListItem>
+                    <Card
+                      variant="outlined"
+                      sx={{ width: "100%", padding: "0 15px" }}
                     >
-                      {steps.map((step, index) => (
-                        <Step
-                          key={index}
-                          onClick={() =>{
-                            step.performAction(
-                              product.status,
-                              user.lean,
-                              product.id_machine
-                            ); 
-                             
-                          }
+                      <Stepper
+                        activeStep={product["status"] - 1}
+                        orientation="vertical"
+                      >
+                        {steps.map((step, index) => (
+                          <Step
+                            key={index}
+                            onClick={() => {
+                              step.performAction(
+                                product.status,
+                                user.lean,
+                                product.id_machine
+                              );
+                            }}
+                          >
+                            <StepLabel StepIconComponent={ColorlibStepIcon}>
+                              {step.label} - {step.description}
+                            </StepLabel>
+                          </Step>
+                        ))}
+                      </Stepper>
+                    </Card>
+                  </ListItem>
+                </List>
+              </Collapse>
 
-                          }
-                        >
-                          <StepLabel StepIconComponent={ColorlibStepIcon}>
-                            {step.label} - {step.description}
-                          </StepLabel>
-                        </Step>
-                      ))}
-                    </Stepper>
-                  </Card>
-                </ListItem>
-              </List>
-            </Collapse>
+              {/* Trạng thái 1: Xem thông tin yêu cầu */}
+              {activeModal === "detailInfo" && (
+                <DetailInfo
+                  isCheck={idMachine === product.id_machine}
+                  machine={product}
+                  open={open}
+                  setOpen={setOpen}
+                  user={user}
+                />
+              )}
 
-            {/* Trạng thái 1: Xem thông tin yêu cầu */}
-            {activeModal === "detailInfo" && (
-              <DetailInfo
-                isCheck={idMachine === product.id_machine}
-                machine={product}
-                open={open}
-                setOpen={setOpen}
-                user={user}
-              />
-            )}
+              {/* Trạng thái 2: Xác nhận form */}
+              {activeModal === "confirm" && (
+                <ConfirmModal
+                  isCheck={idMachine === product.id_machine}
+                  idMachine={idMachine}
+                  open={open}
+                  setOpen={setOpen}
+                  user={user}
+                />
+              )}
 
-            {/* Trạng thái 2: Xác nhận form */}
-            {activeModal === "confirm" && (
-              <ConfirmModal
-                isCheck={idMachine === product.id_machine}
-                idMachine={idMachine}
-                open={open}
-                setOpen={setOpen}
-                user={user}
-              />
-            )}
+              {/* Trạng thái 3: Quét mã scanner */}
+              {activeModal === "scanner" && (
+                <ScannerElectric
+                  isCheck={idMachine === product.id_machine}
+                  idMachine={idMachine}
+                  open={open}
+                  setOpen={setOpen}
+                  scannerResult={scannerResult}
+                  setScannerResult={setScannerResult}
+                  user={user}
+                />
+              )}
 
-            {/* Trạng thái 3: Quét mã scanner */}
-            {activeModal === "scanner" && (
-              <ScannerElectric
-                isCheck={idMachine === product.id_machine}
-                idMachine={idMachine}
-                open={open}
-                setOpen={setOpen}
-                scannerResult={scannerResult}
-                setScannerResult={setScannerResult}
-                user={user}
-              />
-            )}
-
-            {/* Trạng thái 4: Hoàn thành việc sửa chữa  */}
-            {activeModal === "finish" && (
-              <FinishTaskElectric
-                isCheck={idMachine === product.id_machine}
-                idMachine={idMachine}
-                open={open}
-                setOpen={setOpen}
-                user={user}
-              />
-            )}
-          </List>
-        ))}
+              {/* Trạng thái 4: Hoàn thành việc sửa chữa  */}
+              {activeModal === "finish" && (
+                <FinishTaskElectric
+                  isCheck={idMachine === product.id_machine}
+                  idMachine={idMachine}
+                  open={open}
+                  setOpen={setOpen}
+                  user={user}
+                />
+              )}
+            </List>
+          ))}
     </Stack>
   );
 };
