@@ -20,8 +20,9 @@
     "employee_list": "Danh sách nhân viên",
     "support": "Hỗ trợ",
     "language": "Ngôn ngữ",
-    "en": "Tiếng anh",
-    "vn": "Tiếng việt",
+    "en": "Tiếng Anh",
+    "vn": "Tiếng Việt",
+    "mm": "Tiếng Myanmar",
     "logout": "Đăng xuất",
     "machinery_maintenance": "Máy móc-bảo trì"
   },
@@ -64,17 +65,20 @@
     "validate_fixer": "Vui lòng nhập người sửa!",
     "validate_remark": "Vui lòng nhập vấn đề gặp phải!",
     "validate_no_spaces": "Vui lòng không nhập khoảng trắng!",
+    "validate_other_issue": "Vui lòng nhập vấn đề khác!",
     "alert_success": "Hoàn thành",
     "alert_error": "Lỗi dữ liệu",
     "back": "Trở về",
     "choose_machine": "Nhập mã tài sản",
-    "process_status": "Trạng thái xử lý"
+    "process_status": "Trạng thái xử lý",
+    "other_issue": "Vấn đề khác"
+
   },
   "process_status": {
     "process_status": "Trạng thái xử lý",
     "history": "Lịch sử",
-    "status_1": "Production",
-    "status_1_": "Sản xuất - Quét mã và gửi yêu cầu cho thợ sửa.",
+    "status_1": "Sản xuất",
+    "status_1_": "Quét mã và gửi yêu cầu cho thợ sửa.",
     "status_1_header": "Thông tin yêu cầu của thợ sửa",
     "status_1_user_request": "Người gửi:",
     "status_1_date": "Ngày yêu cầu:",
@@ -105,15 +109,24 @@
     "status_4_info": "Thông tin",
     "status_4_id_machine": "Mã máy:",
     "status_4_repair_method": "Phương pháp sửa chữa:",
-    "status_4_remark": "Ghi chú",
+    "status_4_remark": "Ghi chú:",
     "status_4_confirm": "Xác nhận",
     "status_4_close": "Đóng",
     "status_4_validate_repair_method": "Vui lòng chọn phương pháp!",
     "status_4_validate_remark_repair_method": "Vui lòng nhập phương pháp sửa chữa!",
     "status_4_validate_space": "Vui lòng không nhập khoảng trắng!",
+    "status_4_validate_machine_new_code" : "Vui lòng nhập mã máy mới",
+    "status_4_validate_other_method": "Vui lòng nhập phương pháp khác!",
     "new_code_machine":"Máy mã mới",
     "owner_mechanic": "Chủ quản:",
-    "time_fix": "Thời gian sửa:"
+    "time_fix": "Thời gian sửa:",
+    "hours": "giờ",
+    "minutes": "phút",
+    "seconds": "giây",
+    "other_method": "Phương pháp khác",
+    "official" : "Cán bộ:",
+    "enter_details": "Chi tiết hỗ trợ"
+
   },
   "personal_info": {
     "search_info": "Tra cứu thông tin",
@@ -148,6 +161,7 @@
     "work_list": "Danh sách công việc",
     "date": "Ngày",
     "id_machine": "Mã Máy",
+    "id_machine_support": "Mã Máy Hỗ Trợ",
     "remark": "Ghi Chú",
     "requester": "Người gửi yêu cầu",
     "floor": "Mặt lầu",
@@ -162,7 +176,12 @@
     "total_skills": "Tổng kỹ năng",
     "total_fix": "Tổng lần sửa máy",
     "hide" : "Ẩn",
-    "see_more" : "Xem thêm"
+    "see_more" : "Xem thêm",
+    "select_line": "Chọn Line",
+    "error_select_line": "Vui lòng chọn line",
+    "error_enter_remark": "Vui lòng nhập ghi chú",
+    "error_select_mechanic": "Vui lòng chọn thợ",
+    "no_select":"Không tìm thấy"
   },
   "employee_list": {
     "employee_list": "Danh sách nhân viên",
@@ -174,7 +193,15 @@
     "count_time": "Tổng sửa chữa",
     "detail": "Chi tiết",
     "select_floor": "Chọn Lầu",
-    "all_floors": "Tất cả"
+    "all_floors": "Tất cả",
+    "available": "Sẵn sàng",
+    "fixing": "Đang sửa chữa",
+    "task": "Công việc",
+    "choose_floor" : "Chọn lầu",
+    "confirm":"Xác nhận",
+    "cancel": "Hủy",
+    "change_floor": "Đổi Lầu",
+    "error_choose_floor": "Vui lòng chọn ít nhất một tầng!"
   },
 
   "repair_status": {
@@ -203,6 +230,10 @@
     "efficiency": "Tầng suất",
     "day": "Ngày",
     "week": "Tuần",
-    "month": "Tháng"
+    "month": "Tháng",
+    
+    "daily": "Hàng ngày",
+    "weekly": "Hàng tuần",
+    "monthly": "Hàng tháng"
   }
 }

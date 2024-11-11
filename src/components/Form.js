@@ -17,6 +17,7 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Popup from "./Popup";
+
 import { Toast } from "../utils/toast";
 import { useDispatch, useSelector } from "react-redux";
 import { report_damage, setErrorCode, cancel_report_damage, get_info_reason } from "../redux/features/product";
@@ -40,7 +41,8 @@ const Form = (props) => {
     const [statusPopup, setstatusPopup] = useState(false);
     const [removeTask, setRemoveTask] = useState(false);
     const [infoMachine, setInfoMachine] = useState(null);
-
+    const [otherIssue, setAdditionalInput] = useState("");
+    const [loading, setLoading] = useState(false);
     const onBack = () => {
         setScannerResult("");
         dispatch(setErrorCode(null, ""));
@@ -54,9 +56,16 @@ const Form = (props) => {
         navigate("/product/status");
     };
     const handleAutocompleteChange = (event, values) => {
-    
         formik.setFieldValue("remark", values);
-      };
+    
+        const hasId35 = values.some((item) => item.id === 35);
+        
+        if (!hasId35) {
+            setAdditionalInput(""); 
+            formik.setFieldValue("otherIssue", ""); 
+        }
+    };
+    
     const onCancel = async () => {
         const id_machine = scannerResult;
         const { user_name, factory } = user;
@@ -71,27 +80,35 @@ const Form = (props) => {
         factory: Yup.string().required(t("info_machine_damage.validate_factory")),
         id_user_request: Yup.string().required(t("info_machine_damage.validate_id_user_request")),
         Lean: Yup.string().required(t("info_machine_damage.validate_lean")),
-        // Floor: Yup.string().required(t("info_machine_damage.validate_floor")),
         DateReport: Yup.string().required(t("info_machine_damage.validate_date_report")),
         id_machine: Yup.string().required(t("info_machine_damage.validate_id_machine")),
         fixer: Yup.string().required(t("info_machine_damage.validate_fixer")),
-        // remark: Yup.string().required(t("info_machine_damage.validate_remark")).matches(/^[^\s]+(\s+[^\s]+)*$/, t('info_machine_damage.validate_no_spaces'))
-        // remark: Yup.string().required(t("info_machine_damage.validate_remark"))
+        
+        // Validation for remark
         remark: Yup.array()
-        .of(
-          Yup.object().shape({
-            id: Yup.number().required("Status ID is required"),
-            info_reason_en: Yup.string().required(
-              "English skill name is required"
+            .of(
+                Yup.object().shape({
+                    id: Yup.number().required("Status ID is required"),
+                    info_reason_en: Yup.string().required("English skill name is required"),
+                    info_reason_vn: Yup.string().required("Vietnamese skill name is required"),
+                    info_reason_mm: Yup.string().required("Myanmar skill name is required"),
+                })
+            )
+            .min(1, t("info_machine_damage.validate_remark")),
+            otherIssue: Yup.string().test(
+                "is-required-when-id-35",
+                t("info_machine_damage.validate_other_issue"), 
+                function(value) {
+                    const { remark } = this.parent; 
+                    const hasId35 = Array.isArray(remark) && remark.some(item => item.id === 35); 
+                    if (hasId35) {
+                        return !!value;
+                    }
+                    return true;
+                }
             ),
-            info_reason_vn: Yup.string().required(
-              "Vietnamese skill name is required"
-            ),
-          })
-        )
-        .min(1, t("info_machine_damage.validate_remark")),
     });
-
+    
 
     const formik = useFormik({
         initialValues: {
@@ -105,22 +122,33 @@ const Form = (props) => {
             name_machine: "",
             fixer: "",
             remark: [],
+            otherIssue: "", 
         },
         validationSchema,
         onSubmit: async (data) => {
+            setLoading(true)
+            // console.log("Form data:", data); 
             const arrayRemark = data.remark;
             const idArray = arrayRemark.map((item) => item.id);
-            const remark = idArray.join(",");
-            const { id_machine, id_user_request, factory, fixer } = data;
+            let remark = idArray.join(",");
+        
+            const { id_machine, id_user_request, factory, fixer, otherIssue } = data; 
             const language = languages;
-            console.log(remark)
+        
             await dispatch(
-                report_damage({ id_machine, id_user_request, remark, factory, fixer, language })
+                report_damage({ 
+                    id_machine, 
+                    id_user_request, 
+                    remark, 
+                    factory, 
+                    fixer, 
+                    otherIssue, 
+                    language 
+                })
             );
-
-            // await dispatch(setErrorCode(null));
         },
     });
+    
 
 
     useEffect(() => {
@@ -450,6 +478,26 @@ const Form = (props) => {
                                 <MenuItem value="TM">{t("info_machine_damage.mechanic")}</MenuItem>
                             </TextField>
                         </Grid>
+                        <Grid item xs={6} md={6}>
+                            {
+                                formik.values.remark.some((item) => item.id === 35) && (
+                                <TextField
+                                    name="otherIssue"
+                                    variant="outlined"
+                                    label={t("info_machine_damage.other_issue")}
+                                    value={formik.values.otherIssue} 
+                                    onChange={(e) => formik.setFieldValue('otherIssue', e.target.value)} 
+                                    fullWidth
+                                    size="small"
+                                    error={!!(formik.errors.otherIssue && formik.touched.otherIssue)} 
+                                    helperText={formik.errors.otherIssue && formik.touched.otherIssue 
+                                        ? formik.errors.otherIssue 
+                                        : null}
+                                />
+                                )
+                            }
+                        </Grid>
+
                         <Grid item xs={12} md={12}>
                             {/* lý do hư máy phiên bản nhập tay */}
                             {/* <TextField
@@ -473,15 +521,18 @@ const Form = (props) => {
                                 value={formik.values.remark}
                             /> */}
 
-<Autocomplete
+           <Autocomplete
                   name="skill"
                   multiple
                   options={infoReason}
                   getOptionLabel={(option) =>
                     languages === "EN"
                       ? option.info_reason_en
+                      : languages === "MM"
+                      ? option.info_reason_mm
                       : option.info_reason_vn
                   }
+                  
                   disableCloseOnSelect
                   onChange={handleAutocompleteChange}
                   value={formik.values.remark}
@@ -508,11 +559,10 @@ const Form = (props) => {
                   )}
                   renderOption={(props, option, { selected }) => (
                     <MenuItem {...props} key={option.id} value={option}>
-                      {languages === "EN"
-                        ? option.info_reason_en
-                        : option.info_reason_vn}
-                      {selected ? <CheckIcon color="info" /> : null}
-                    </MenuItem>
+                    {option[`info_reason_${languages.toLowerCase()}`]}
+                    {selected && <CheckIcon color="info" />}
+                  </MenuItem>
+                  
                   )}
                 />
 
@@ -527,7 +577,9 @@ const Form = (props) => {
                             type="submit"
                             variant="contained"
                             color="primary"
+                          
                             size="small"
+                            disabled={loading} 
                         >
                             {t("info_machine_damage.confirm")}
                         </Button>

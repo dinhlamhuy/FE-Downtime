@@ -31,7 +31,22 @@ const ContentStyle2 = {
 
 const ChartPie = ({ getTop3BrokenMachines }) => {
     const { t } = useTranslation("global");
-    const languages = localStorage.getItem("languages");
+    const languages = localStorage.getItem("languages") || "en"; // Mặc định là tiếng Anh nếu không có giá trị
+    const [currentLanguage, setCurrentLanguage] = useState(languages);
+
+    // Đối tượng chứa các bản dịch cho các ngôn ngữ
+    const translations = {
+      EN: {
+        no_data: "No Data"
+      },
+      VN: {
+        no_data: "Không có dữ liệu"
+      },
+      MM: {
+        no_data: "ဒေတာမရှိပါ"
+      }
+    };
+
     const [chart, setChart] = useState({
         labels: [],
         datasets: [
@@ -73,6 +88,8 @@ const ChartPie = ({ getTop3BrokenMachines }) => {
     });
 
     useEffect(() => {
+        setCurrentLanguage(languages);
+        
         if (getTop3BrokenMachines && getTop3BrokenMachines.length > 0) {
             const label = t("personal_info.frequency");
             setChart(prevChart => ({
@@ -85,7 +102,6 @@ const ChartPie = ({ getTop3BrokenMachines }) => {
                 }]
             }));
         } else {
-           
             setChart(prevChart => ({
                 ...prevChart,
                 labels: [],
@@ -106,7 +122,7 @@ const ChartPie = ({ getTop3BrokenMachines }) => {
                 {chart.labels.length > 0 ? (
                     <Pie data={chart} options={chart.options} />
                 ) : (
-                    <Typography>No Data</Typography>
+                    <Typography> {translations[currentLanguage]?.no_data || translations["en"].no_data}</Typography>
                 )}
             </Box>
         </Box>

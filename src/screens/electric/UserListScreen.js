@@ -9,19 +9,6 @@ import { BASE_URL } from "../../utils/env";
 
 import { useTranslation } from "react-i18next";
 
-function statusCurrent(status) {
-  switch (status) {
-    case 1:
-      return <Chip label="Available" color="success" sx={{ backgroundColor: "#11a52c" }} />;
-    case 2:
-      return <Chip label="Task" color="warning" />;
-    case 3:
-      return <Chip label="Fixing" color="error" />;
-    default:
-      return "";
-  }
-}
-
 const PaperStyle = {
   position: "relative",
   marginTop: "10px",
@@ -31,7 +18,7 @@ const PaperStyle = {
 const host = BASE_URL;
 
 const UserlistScreen = () => {
-  const [t] = useTranslation("global");
+  const { t, i18n } = useTranslation("global");  // Di chuyển useTranslation vào trong component
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { getListStatusMechanic } = useSelector((state) => state.electric);
@@ -41,8 +28,8 @@ const UserlistScreen = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { position, factory, floor, lean } = user;
-      await dispatch(get_list_status_mechanic({ position, factory, floor, lean }));
+      const { user_name,position, factory, floor, lean } = user;
+      await dispatch(get_list_status_mechanic({user_name, position, factory, floor, lean }));
     }
     fetchData();
 
@@ -61,8 +48,21 @@ const UserlistScreen = () => {
     };
   }, [dispatch, user, socket]);
 
+  // const availableMechanics = getListStatusMechanic?.filter(row => row.STS === 1);
+  const availableMechanics = getListStatusMechanic;
 
-  const availableMechanics = getListStatusMechanic?.filter(row => row.STS === 1);
+  function statusCurrent(status) {
+    switch (status) {
+      case 1:
+        return <Chip label={t("employee_list.available")} color="success" sx={{ backgroundColor: "#11a52c" }} />;
+      case 2:
+        return <Chip label={t("employee_list.task")} color="warning" />;
+      case 3:
+        return <Chip label={t("employee_list.fixing")} color="error" />;
+      default:
+        return "";
+    }
+  }
 
   return (
     <Box component="div">
@@ -108,7 +108,6 @@ const UserlistScreen = () => {
                     </TableCell>
                     <TableCell align="center">
                       {row.floor}
-                      {/* {row.floor} - {row.floors} */}
                     </TableCell>
                     <TableCell align="center">
                       {statusCurrent(row.STS)}

@@ -78,6 +78,7 @@ function RepairStatus() {
                       whiteSpace: "nowrap",
                       backgroundColor: "#1976d2",
                       color: "#fff",
+                      width: "100px",
                     }}
                   >
                     {label}
@@ -95,16 +96,31 @@ function RepairStatus() {
         return 0;
       })
       .map((row, index) => (
+        // <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+        //   {['line', 'id_machine', languages === "EN" ? 'Name_en' : 'Name_vn', languages === "EN" ? 'info_reason_en' : 'info_reason_vn', 'date_cfm_mechanic', 'date_mechanic_cfm_onsite', 'date_mechanic_cfm_finished'].map((field, idx) => (
+        //     <TableCell key={idx} sx={{ color: row.status === 4 ? 'green' : 'red' }}>
+        //       {field.includes('date') && row[field]
+        //         ? `${row[field].split("T")[1].slice(0, -8)} ${row[field].split("T")[0]}`
+        //         : row[field]
+        //       }
+        //     </TableCell>
+        //   ))}
+        // </TableRow>
         <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-          {['line', 'id_machine', languages === "EN" ? 'Name_en' : 'Name_vn', languages === "EN" ? 'info_reason_en' : 'info_reason_vn', 'date_cfm_mechanic', 'date_mechanic_cfm_onsite', 'date_mechanic_cfm_finished'].map((field, idx) => (
-            <TableCell key={idx} sx={{ color: row.status === 4 ? 'green' : 'red' }}>
-              {field.includes('date') && row[field]
-                ? `${row[field].split("T")[1].slice(0, -8)} ${row[field].split("T")[0]}`
-                : row[field]
-              }
-            </TableCell>
-          ))}
-        </TableRow>
+        {['line', 'id_machine', 
+          `Name_${languages.toLowerCase() === "vn" ? "vn" : "en"}`, 
+          `info_reason_${languages.toLowerCase() === "vn" ? "vn" : languages.toLowerCase() === "mm" ? "mm" : "en"}`, 
+          'date_cfm_mechanic', 'date_mechanic_cfm_onsite', 'date_mechanic_cfm_finished'
+        ].map((field, idx) => (
+          <TableCell key={idx} sx={{ color: row.status === 4 ? 'green' : 'red' }}>
+            {field.includes('date') && row[field]
+              ? `${row[field].split("T")[1].slice(0, -8)} ${row[field].split("T")[0]}`
+              : row[field]}
+          </TableCell>
+        ))}
+      </TableRow>
+      
+    
       ))
   ) : (
     <TableRow>

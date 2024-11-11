@@ -73,7 +73,16 @@ const ChartEmployee = ({ arrPercentfn }) => {
         if (arrPercentfn !== undefined) {
             setChart(prevChart => ({
                 ...prevChart,
-                labels: arrPercentfn?.map((data) => languages === "EN" ? data.skill_en : data.skill_vn),
+                labels: arrPercentfn?.map((data) => {
+                    if (languages === "EN") {
+                        return data.skill_en;
+                    } else if (languages === "VN") {
+                        return data.skill_vn;
+                    } else if (languages === "MM") {
+                        return data.skill_mm;
+                    }
+                    return data.skill_en; // Ngôn ngữ mặc định nếu không khớp
+                }),
                 datasets: [
                     {
                         ...prevChart.datasets[0],
@@ -83,6 +92,7 @@ const ChartEmployee = ({ arrPercentfn }) => {
             }));
         }
     }, [setChart, arrPercentfn, languages]);
+    
 
     return (
         <Box sx={ChartEmployeeStyle}>

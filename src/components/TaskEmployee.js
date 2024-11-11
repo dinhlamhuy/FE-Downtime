@@ -64,14 +64,24 @@ const TaskEmployee = ({ arrResult }) => {
                 return (
                   <TableRow key={index}>
                     <TableCell>
-                      {row.date_user_request.split("T")[0]}
+                      {row?.date_user_request?.split("T")[0]}
                     </TableCell>
                     <TableCell>
                       {row.id_machine}
                     </TableCell>
-                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                    {/* <TableCell sx={{ whiteSpace: "nowrap" }}>
                       {languages === "EN" ? row.skill_cfm.join(", ") : row.skill_cfm_vn.join(", ")}
-                    </TableCell>
+                    </TableCell> */}
+                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                      {languages === "EN" 
+                          ? row.skill_cfm.join(", ") 
+                          : languages === "VN" 
+                              ? row.skill_cfm_vn.join(", ") 
+                              : languages === "MM" 
+                                  ? row.skill_cfm_mm.join(", ") 
+                                  : row.skill_cfm.join(", ") // Mặc định nếu không khớp
+                      }{row.other_skill && '('+row.other_skill + ')'}
+                  </TableCell>
                     <TableCell>
                       {row.avgTime}
                     </TableCell>

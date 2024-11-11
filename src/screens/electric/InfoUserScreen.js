@@ -58,21 +58,39 @@ export default function InfoUserScreen() {
     DateTo: Yup.string().required("Vui lòng nhập đến ngày!"),
   });
 
+
   const validate = (values) => {
     const error = {};
     const { DateFrom, DateTo } = values;
-
-    if (new Date(format(DateTo.$d, "yyyy-MM-dd")) < new Date(format(DateFrom.$d, "yyyy-MM-dd"))) {
+  
+    if (DateFrom && DateTo && new Date(format(DateTo.$d, "yyyy-MM-dd")) < new Date(format(DateFrom.$d, "yyyy-MM-dd"))) {
       error.DateFrom = " ";
       error.DateTo = " ";
-
+  
       setAlertValidate(true);
       setAlertCount(alertCount + 1);
     }
-
+  
     return error;
   }
-
+  
+  const formik = useFormik({
+    initialValues: {
+      DateFrom: dayjs(new Date()),
+      DateTo: dayjs(new Date()),
+    },
+    validationSchema,
+    validate,
+    onSubmit: async (data) => {
+      if (data.DateFrom && data.DateTo) {
+        const date_from = format(data.DateFrom.$d, "yyyy-MM-dd");
+        const date_to = format(data.DateTo.$d, "yyyy-MM-dd");
+        await dispatch(get_info_calculate({ date_from, date_to, user_name, factory }));
+        await dispatch(get_info_task({ date_from, date_to, user_name, factory }));
+      }
+    }
+  });
+  
   useEffect(() => {
     const date_from = format(dayjs(new Date()).$d, "yyyy-MM-dd");
     const date_to = format(dayjs(new Date()).$d, "yyyy-MM-dd");
@@ -98,74 +116,72 @@ export default function InfoUserScreen() {
     setAlertValidate(false);
   }, [alertValidate, alertCount, t])
 
-  const formik = useFormik({
-    initialValues: {
-      DateFrom: dayjs(new Date()),
-      DateTo: dayjs(new Date()),
-    },
-    validationSchema,
-    validate,
-    onSubmit: async (data) => {
-      const date_from = format(data.DateFrom.$d, "yyyy-MM-dd");
-      const date_to = format(data.DateTo.$d, "yyyy-MM-dd");
-      await dispatch(get_info_calculate({ date_from, date_to, user_name, factory }));
-      await dispatch(get_info_task({ date_from, date_to, user_name, factory }));
-    }
-  })
 
   return (
   <Box marginTop={1} sx={{ position: "relative", width: "100%" }}>
       <Box component="div" sx={FilterStyle} style={Active}>
-          <Box component="form" onSubmit={formik.handleSubmit} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Date From"
-                id="DateFrom"
-                name="DateFrom"
-                format="DD-MM-YYYY"
-                value={formik.values.DateFrom}
-                onChange={(value) => {
-                  formik.setFieldValue("DateFrom", value);
-                }}
-                slotProps={{
-                  textField: {
-                    size: "small",
-                    fullWidth: true,
-                    helperText: formik.touched.DateFrom && formik.errors.DateFrom,
-                    error: formik.touched.DateFrom && Boolean(formik.errors.DateFrom),
-                  },
-                }}
-                sx={{ flex: 1, marginLeft: 1 }}
-              />
-            </LocalizationProvider>
-            <Grid item xs={1} md={1}>
-                  <Box sx={{ textAlign: "center", lineHeight: "35px" }}>~</Box>
-            </Grid>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Date To"
-                id="DateTo"
-                name="DateTo"
-                format="DD-MM-YYYY"
-                value={formik.values.DateTo}
-                onChange={(value) => {
-                  formik.setFieldValue("DateTo", value);
-                }}
-                slotProps={{
-                  textField: {
-                    size: "small",
-                    fullWidth: true,
-                    helperText: formik.touched.DateTo && formik.errors.DateTo,
-                    error: formik.touched.DateTo && Boolean(formik.errors.DateTo),
-                  },
-                }}
-                sx={{ flex: 1, marginLeft: 1 }}
-              />
-            </LocalizationProvider>
-            <Button type="submit" variant="contained" color="primary"  sx={{ marginLeft: 1, fontSize:'0.9rem' }}>
-            {t("personal_info.btn_search")}
-            </Button>
-          </Box>
+      <Box component="form" onSubmit={formik.handleSubmit} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <DatePicker
+      label={t("personal_info.date_from")}
+      id="DateFrom"
+      name="DateFrom"
+      format="DD-MM-YYYY"
+      value={formik.values.DateFrom}
+      onChange={(value) => {
+        if (value && value.isValid()) {
+          formik.setFieldValue("DateFrom", value);
+        } else {
+          formik.setFieldValue("DateFrom", null);  // Xử lý giá trị ngày không hợp lệ
+        }
+      }}
+      slotProps={{
+        textField: {
+          size: "small",
+          fullWidth: true,
+          helperText: formik.touched.DateFrom && formik.errors.DateFrom,
+          error: formik.touched.DateFrom && Boolean(formik.errors.DateFrom),
+        },
+      }}
+      sx={{ flex: 1, marginLeft: 1 }}
+    />
+  </LocalizationProvider>
+
+  <Grid item xs={1} md={1}>
+    <Box sx={{ textAlign: "center", lineHeight: "35px" }}>~</Box>
+  </Grid>
+
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <DatePicker
+      label={t("personal_info.date_to")}
+      id="DateTo"
+      name="DateTo"
+      format="DD-MM-YYYY"
+      value={formik.values.DateTo}
+      onChange={(value) => {
+        if (value && value.isValid()) {
+          formik.setFieldValue("DateTo", value);
+        } else {
+          formik.setFieldValue("DateTo", null);  // Xử lý giá trị ngày không hợp lệ
+        }
+      }}
+      slotProps={{
+        textField: {
+          size: "small",
+          fullWidth: true,
+          helperText: formik.touched.DateTo && formik.errors.DateTo,
+          error: formik.touched.DateTo && Boolean(formik.errors.DateTo),
+        },
+      }}
+      sx={{ flex: 1, marginLeft: 1 }}
+    />
+  </LocalizationProvider>
+
+  <Button type="submit" variant="contained" color="primary" sx={{ marginLeft: 1, fontSize: '0.9rem' }}>
+    {t("personal_info.btn_search")}
+  </Button>
+</Box>
+
         </Box>
 
       {/* Content  */}

@@ -9,6 +9,7 @@ import store from "./redux/store";
 
 import global_en from "./transtations/en/global.json";
 import global_vn from "./transtations/vn/global.json";
+import global_mm from "./transtations/mm/global.json"
 import i18next from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 
@@ -23,6 +24,9 @@ i18next.init({
     },
     VN: {
       global: global_vn,
+    },
+    MM: {
+      global: global_mm,
     },
   },
 })

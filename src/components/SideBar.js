@@ -189,6 +189,7 @@ const SideBar = ({ sideBarMenu, user, children, open, onToggle, onClose }) => {
                                                 >
                                                     <FormControlLabel value="EN" control={<Radio size="small" />} label={<span style={{ fontSize: '14px' }}>{t("sidebar.en")}</span>} />
                                                     <FormControlLabel value="VN" control={<Radio size="small" />} label={<span style={{ fontSize: '14px' }}>{t("sidebar.vn")}</span>} />
+                                                    <FormControlLabel value="MM" control={<Radio size="small" />} label={<span style={{ fontSize: '14px' }}>{t("sidebar.mm")}</span>} />
                                                 </RadioGroup>
                                             </Box>
                                         )}

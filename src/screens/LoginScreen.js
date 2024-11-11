@@ -74,7 +74,7 @@ export default function LoginScreen() {
     })
         .then((currentToken) => {
             if (currentToken) {
-                console.log("current token for client: ", currentToken);
+                // console.log("current token for client: ", currentToken);
                 // Perform any other neccessary action with the token
                 // Toast.fire({
                 //   icon: "success",
@@ -118,6 +118,7 @@ export default function LoginScreen() {
 
 
     useEffect(() => {
+ 
 
         if (auth.errorCode !== 0 && auth.errorCode !== null) {
             Toast.fire({
@@ -267,6 +268,7 @@ export default function LoginScreen() {
                         >
                             <MenuItem value="EN">EN</MenuItem>
                             <MenuItem value="VN">VN</MenuItem>
+                            <MenuItem value="MM">MM</MenuItem>
                         </TextField>
                     </Box>
 

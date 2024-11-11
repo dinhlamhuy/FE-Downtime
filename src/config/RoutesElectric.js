@@ -10,6 +10,7 @@ import RepairScreen from "../screens/electric/RepairListScreen";
 
 import OwnerUserListScreen from "../screens/electric/OwnerUserListScreen";
 import OwnerWorkListScreen from "../screens/electric/OwnerWorkListScreen";
+import SupportScreen from "../screens/electric/SupportScreen";
 
 
 function RoutesElectric() {
@@ -36,6 +37,7 @@ function RoutesElectric() {
                 <>
                     <Route path="/user" element={<InfoUserScreen />} />
                     <Route path="/status" element={<StatusScreen />} />
+                    <Route path="/support" element={<SupportScreen />} />
                 </>
 
             )}

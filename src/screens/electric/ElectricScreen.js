@@ -11,7 +11,9 @@ import { useSelector } from "react-redux";
 import Notification from "../../firebaseNotifications/Notification";
 import SettingsTwoToneIcon from '@mui/icons-material/SettingsTwoTone';
 import { useTranslation } from "react-i18next";
-
+// import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
+// import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
+import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
 const ElectricScreen = () => {
     const auth = useSelector((state) => state.auth);
     const [t] = useTranslation("global");
@@ -80,6 +82,11 @@ const ElectricScreen = () => {
                 icon: <BadgeOutlinedIcon />,
                 text: t("sidebar.info_user"),
                 path: "/electric/user",
+            },
+            {
+                icon: <Diversity3OutlinedIcon />,
+                text: 'Danh sách hỗ trợ',
+                path: "/electric/support",
             },
         ];
     }

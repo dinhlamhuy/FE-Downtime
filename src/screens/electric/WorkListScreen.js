@@ -1,25 +1,36 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-    Box,
-    Paper,
-    TableContainer,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    // TablePagination,
-    Button,
-    Stack,
+  Box,
+  Paper,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  // TablePagination,
+  Button,
+  Stack,
+  Grid,
+  Select,
+  TextField,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  FormHelperText,
+  Autocomplete,
 } from "@mui/material";
 import BreadCrumb from "../../components/BreadCrumb";
 import { Toast } from "../../utils/toast";
 import { useDispatch, useSelector } from "react-redux";
 import {
-    get_task_damage,
-    get_list_asign_mechanic,
-    owner_asign_task,
-    setErrorCode,
+  get_task_damage,
+  get_list_asign_mechanic,
+  owner_asign_task,
+  setErrorCode,
+  get_all_lean,
+  call_support,
+  get_Machine_Under_Repair,
 } from "../../redux/features/electric";
 import AlertDialog from "../../components/AlertDialog";
 
@@ -27,250 +38,271 @@ import socketIOClient from "socket.io-client";
 import { BASE_URL } from "../../utils/env";
 
 import { useTranslation } from "react-i18next";
-
+import { useFormik } from "formik";
+import * as Yup from "yup";
 const PaperStyle = {
-    position: "relative",
-    marginTop: "10px",
-    padding: "10px",
+  position: "relative",
+  marginTop: "10px",
+  padding: "10px",
 };
 
 const host = BASE_URL;
 
-const TableEmployeeList = ({ open, setOpen, headerModal, getListAsignMechanic, task }) => {
-    const { factory, floor, user_name, lean, position } = useSelector(
-        (state) => state.auth.user
-    );
+const TableEmployeeList = ({
+  open,
+  setOpen,
+  headerModal,
+  getListAsignMechanic,
+  task,
+}) => {
+  const { factory, floor, user_name, lean, position } = useSelector(
+    (state) => state.auth.user
+  );
 
-    const [t] = useTranslation("global");
-    const dispatch = useDispatch();
-    const [selectedRow, setSelectedRow] = useState(null);
+  const [t] = useTranslation("global");
+  const dispatch = useDispatch();
+  const [selectedRow, setSelectedRow] = useState(null);
 
-    const languages = localStorage.getItem('languages');
+  const languages = localStorage.getItem("languages");
 
-    const electric = useSelector((state) => state.electric);
+  const electric = useSelector((state) => state.electric);
 
-    // const handleChangePage = (event, newPage) => {
-    //     setPage(newPage);
-    // };
+  // const handleChangePage = (event, newPage) => {
+  //     setPage(newPage);
+  // };
 
-    // const handleChangeRowsPerPage = (event) => {
-    //     setRowsPerPage(+event.target.value);
-    //     setPage(0);
-    // };
-  
-    const handleRowClick = (rowData) => {
-        setSelectedRow(rowData);
-    };
+  // const handleChangeRowsPerPage = (event) => {
+  //     setRowsPerPage(+event.target.value);
+  //     setPage(0);
+  // };
 
-    const onClose = () => {
-        setSelectedRow(null);
-        setOpen(false);
+  const handleRowClick = (rowData) => {
+    setSelectedRow(rowData);
+  };
+
+  const onClose = () => {
+    setSelectedRow(null);
+    setOpen(false);
+  };
+  const [expandedRows, setExpandedRows] = useState({});
+
+  const toggleExpandRow = (index) => {
+    setExpandedRows((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
+  const fetchData = async () => {
+    await dispatch(get_task_damage({ factory, floor, user_name, lean }));
+  };
+  const onAsignTask = async () => {
+    if (task && selectedRow) {
+      const { id_machine, id_owner_mechanic } = task;
+      const { user_name, factory, lean } = selectedRow;
+      const language = languages;
+
+      await dispatch(
+        owner_asign_task({
+          user_name,
+          id_machine,
+          id_owner_mechanic,
+          factory,
+          lean,
+          language,
+        })
+      );
+      fetchData();
+      setSelectedRow(null);
+      setOpen(false);
+    } else {
+      Toast.fire({
+        icon: "error",
+        title: t("work_list.alert_table"),
+      });
     }
-    const [expandedRows, setExpandedRows] = useState({});
+  };
 
-    const toggleExpandRow = (index) => {
-        setExpandedRows((prev) => ({
-            ...prev,
-            [index]: !prev[index],
-        }));
-    };
-    const fetchData = async ( ) => {
-        await dispatch(get_task_damage({ factory, floor, user_name, lean }));
-    };
-    const onAsignTask = async () => {
-        if (task && selectedRow) {
-            const { id_machine, id_owner_mechanic } = task;
-            const { user_name, factory, lean } = selectedRow;
-            const language = languages;
-            
-            await dispatch(owner_asign_task({ user_name, id_machine, id_owner_mechanic, factory, lean, language }));
-            fetchData();
-            setSelectedRow(null);
-            setOpen(false);
-           
-        } else {
-            Toast.fire({
-                icon: 'error',
-                title: t("work_list.alert_table"),
-            })
+  useEffect(() => {
+    const fetchData = async () => {
+      if (electric.errorCode !== null) {
+        let icon = "error";
+        if (electric.errorCode === 0) {
+          icon = "success";
         }
-    }
+        Toast.fire({
+          icon: icon,
+          title: electric.errorMessage,
+        });
+        await dispatch(setErrorCode(null, ""));
+      }
+    };
+    fetchData();
+  }, [electric, dispatch]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (electric.errorCode !== null) {
-                let icon = 'error';
-                if (electric.errorCode === 0) {
-                    icon = 'success';
-                }
-                Toast.fire({
-                    icon: icon,
-                    title: electric.errorMessage,
-                })
-                await dispatch(setErrorCode(null, ""));
-            }
-        }
-        fetchData();
-    }, [electric, dispatch])
-
-    return (
-        <AlertDialog open={open} setOpen={setOpen} headerModal={headerModal}>
-            <TableContainer>
-            <Table stickyHeader aria-label="sticky table table-fixed" style={{ tableLayout: "fixed" }}>
-            <TableHead>
-                <TableRow>
-                    <TableCell
+  return (
+    <AlertDialog open={open} setOpen={setOpen} headerModal={headerModal}>
+      <TableContainer>
+        <Table
+          stickyHeader
+          aria-label="sticky table table-fixed"
+          style={{ tableLayout: "fixed" }}
+        >
+          <TableHead>
+            <TableRow>
+              <TableCell
+                style={{
+                  fontWeight: "bold",
+                  whiteSpace: "nowrap",
+                  width: "200px",
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                }}
+              >
+                {t("work_list.name")}
+              </TableCell>
+              <TableCell
+                style={{
+                  fontWeight: "bold",
+                  whiteSpace: "nowrap",
+                  width: "100px",
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                }}
+              >
+                {t("work_list.lean")}
+              </TableCell>
+              <TableCell
+                style={{
+                  fontWeight: "bold",
+                  whiteSpace: "nowrap",
+                  width: "150px",
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                }}
+              >
+                {t("work_list.floor")}
+              </TableCell>
+              <TableCell
+                style={{
+                  fontWeight: "bold",
+                  whiteSpace: "nowrap",
+                  width: "160px",
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                }}
+              >
+                {t("work_list.total_fix")}
+              </TableCell>
+              <TableCell
+                sx={{
+                  fontWeight: "bold",
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                  width: "300px",
+                  textAlign: "center",
+                }}
+              >
+                {t("work_list.total_skills")}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {getListAsignMechanic?.map((row, index) => {
+              const isSelected = selectedRow === row;
+              const isExpanded = !!expandedRows[index];
+              return (
+                <TableRow
+                  key={index}
+                  onClick={() => handleRowClick(row)}
+                  style={{
+                    backgroundColor: isSelected ? "#83ace7" : "transparent",
+                  }}
+                >
+                  <TableCell
+                    sx={{ whiteSpace: "nowrap" }}
+                    style={{
+                      color: isSelected ? "#fff" : "#000",
+                    }}
+                  >
+                    {row.user_name} - {row.name}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      color: isSelected ? "#fff" : "#000",
+                    }}
+                  >
+                    {row.lean}
+                  </TableCell>
+                  <TableCell
+                    sx={{ whiteSpace: "nowrap" }}
+                    style={{
+                      color: isSelected ? "#fff" : "#000",
+                      width: "100%",
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {row.floor}
+                    {row.floors ? ` (${row.floors})` : ""}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      color: isSelected ? "#fff" : "#000",
+                      textAlign: "center",
+                    }}
+                  >
+                    {row.totalFix}
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: isSelected ? "#fff" : "#000",
+                      textAlign: "left",
+                      width: "100%",
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: row.skill !== "0" ? "center" : "",
+                    }}
+                  >
+                    <div
+                      style={{
+                        maxWidth: isExpanded ? "none" : "240px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: isExpanded ? "normal" : "nowrap",
+                      }}
+                    >
+                      {row.skill || "0"}
+                    </div>
+                    {row.skill && row.skill.length > 20 && (
+                      <span
+                        onClick={() => toggleExpandRow(index)}
                         style={{
-                            fontWeight: "bold",
-                            whiteSpace: "nowrap",
-                            width: "200px",
-                            backgroundColor: "#1976d2",
-                            color: "#fff",
+                          marginLeft: "5px",
+                          padding: "5px 10px",
+                          fontSize: "14px",
+                          color: "#007bff",
+                          cursor: "pointer",
+                          textDecoration: "underline",
+                          display: "inline-block",
+                          userSelect: "none",
                         }}
-                    >
-                        {t("work_list.name")}
-                    </TableCell>
-                    <TableCell
-                        style={{
-                            fontWeight: "bold",
-                            whiteSpace: "nowrap",
-                            width: "100px",
-                            backgroundColor: "#1976d2",
-                            color: "#fff",
-                        }}
-                    >
-                        {t("work_list.lean")}
-                    </TableCell>
-                    <TableCell
-                        style={{
-                            fontWeight: "bold",
-                            whiteSpace: "nowrap",
-                            width: "150px",
-                            backgroundColor: "#1976d2",
-                            color: "#fff",
-                        }}
-                    >
-                        {t("work_list.floor")}
-                    </TableCell>
-                    <TableCell
-                        style={{
-                            fontWeight: "bold",
-                            whiteSpace: "nowrap",
-                            width: "100px",
-                            backgroundColor: "#1976d2",
-                            color: "#fff",
-                        }}
-                    >
-                        {t("work_list.total_fix")}
-                    </TableCell>
-                    <TableCell
-                        sx={{
-                            fontWeight: "bold",
-                            backgroundColor: "#1976d2",
-                            color: "#fff",
-                            width: "300px",
-                            textAlign: "center",
-                        }}
-                    >
-                        {t("work_list.total_skills")}
-                    </TableCell>
+                      >
+                        {isExpanded
+                          ? t("work_list.hide")
+                          : t("work_list.see_more")}
+                      </span>
+                    )}
+                  </TableCell>
                 </TableRow>
-            </TableHead>
-            <TableBody>
-                {getListAsignMechanic?.map((row, index) => {
-                    const isSelected = selectedRow === row;
-                    const isExpanded = !!expandedRows[index];
-                    return (
-                        <TableRow
-                            key={index}
-                            onClick={() => handleRowClick(row)}
-                            style={{
-                                backgroundColor: isSelected ? "#83ace7" : "transparent",
-                            }}
-                        >
-                            <TableCell
-                                sx={{ whiteSpace: "nowrap" }}
-                                style={{
-                                    color: isSelected ? "#fff" : "#000",
-                                }}
-                            >
-                                {row.user_name} - {row.name}
-                            </TableCell>
-                            <TableCell
-                                style={{
-                                    color: isSelected ? "#fff" : "#000",
-                                }}
-                            >
-                                {row.lean}
-                            </TableCell>
-                            <TableCell
-                                sx={{ whiteSpace: "nowrap" }}
-                                style={{
-                                    color: isSelected ? "#fff" : "#000",
-                                    width: "100%",
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden",
-                                    whiteSpace: "nowrap",
-                                }}
-                            >
-                                {row.floor}
-                                {row.floors ? ` (${row.floors})` : ""}
-                            </TableCell>
-                            <TableCell
-                                style={{
-                                    color: isSelected ? "#fff" : "#000",
-                                    textAlign: "center",
-                                }}
-                            >
-                                {row.totalFix}
-                            </TableCell>
-                            <TableCell
-                                sx={{
-                                    color: isSelected ? "#fff" : "#000",
-                                    textAlign: "left",
-                                    width: "100%",
-                                    textOverflow: "ellipsis",
-                                    overflow: "hidden",
-                                    display: "flex",
-                                    alignItems: "center", 
-                                    justifyContent: row.skill !== '0' ? "center" : "", 
-                                }}
-                            >
-                                <div style={{
-                                    maxWidth: isExpanded ? "none" : "240px",
-                                    overflow: "hidden",
-                                    textOverflow: "ellipsis",
-                                    whiteSpace: isExpanded ? "normal" : "nowrap",
-                                
-                                }}>
-                                    {row.skill || '0'}
-                                </div>
-                                {(row.skill && row.skill.length > 20) && (
-                                    <span
-                                        onClick={() => toggleExpandRow(index)}
-                                        style={{
-                                            marginLeft: "5px",
-                                            padding: "5px 10px",
-                                            fontSize: "14px",
-                                            color: "#007bff",
-                                            cursor: "pointer",
-                                            textDecoration: "underline",
-                                            display: "inline-block",
-                                            userSelect: "none",
-                                        }}
-                                    >
-                                        {isExpanded ? t("work_list.hide") : t("work_list.see_more")}
-                                    </span>
-                                )}
-                            </TableCell>
-                        </TableRow>
-                    );
-                })}
-            </TableBody>
+              );
+            })}
+          </TableBody>
         </Table>
-
-            </TableContainer>
-            {/* <TablePagination
+      </TableContainer>
+      {/* <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
                 count={getListAsignMechanic?.length || 0}
@@ -279,198 +311,994 @@ const TableEmployeeList = ({ open, setOpen, headerModal, getListAsignMechanic, t
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             /> */}
-            <Stack
-                direction="row"
-                spacing={2}
-                sx={{
-                    marginTop: "10px",
-                    justifyContent: "center",
-                }}
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          marginTop: "10px",
+          justifyContent: "center",
+        }}
+      >
+        <Button
+          type="button"
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={onAsignTask}
+        >
+          {t("work_list.assign")}
+        </Button>
+        <Button
+          type="button"
+          variant="contained"
+          color="error"
+          size="small"
+          onClick={onClose}
+        >
+          {t("work_list.close")}
+        </Button>
+      </Stack>
+    </AlertDialog>
+  );
+};
+
+// const TableEmployeeListline = ({ open, setOpen, headerModal, getListAsignMechanic, getAllLean }) => {
+//     const { factory, floor,  user_name: authUserName, lean } = useSelector(
+//         (state) => state.auth.user
+//     );
+
+//     const [t] = useTranslation("global");
+//     const dispatch = useDispatch();
+//     const [expandedRows, setExpandedRows] = useState({});
+//     const [selectedRow, setSelectedRow] = useState(null);
+//     const languages = localStorage.getItem('languages');
+//     const [lines, setLines] = useState([]);
+//     const electric = useSelector((state) => state.electric);
+//     const validationSchema = Yup.object({
+//         line: Yup.string().required(t("work_list.error_select_line")),
+//         remark: Yup.string().required(t("work_list.error_enter_remark")),
+//         selectedRow: Yup.mixed().required(t("work_list.error_select_mechanic"))
+//     });
+
+//     // Formik khởi tạo
+//     const formik = useFormik({
+//         initialValues: {
+//             line: '',
+//             remark: '',
+//             selectedRow: null,
+//         },
+//         validationSchema,
+//         onSubmit: (values) => {
+//             console.log("Selected Line:", values.line);
+//             console.log("Remark:", values.remark);
+//             console.log("Selected User:", values.selectedRow);
+
+//             const { user_name: user_machine, factory, lean } = values.selectedRow;
+
+//             dispatch(call_support({
+//                 floor,
+//                 factory,
+//                 line: values.line,
+//                 status: 1,
+//                 user_machine,
+//                 user_owner: authUserName,
+//                 remark: values.remark,
+//                 support_detail: values.support_detail,
+//                 lang: languages
+//             }));
+
+//             setSelectedRow(null);
+//             setOpen(false);
+//         }
+
+//     });
+
+//     const handleRowClick = (rowData) => {
+//         formik.setFieldValue('selectedRow', rowData);
+//         setSelectedRow(rowData);
+//     };
+
+//     const onClose = () => {
+//         formik.resetForm();
+//         setOpen(false);
+//     };
+
+//     const toggleExpandRow = (index) => {
+//         setExpandedRows((prev) => ({
+//             ...prev,
+//             [index]: !prev[index],
+//         }));
+//     };
+
+//     useEffect(() => {
+//         if (Array.isArray(getAllLean) && getAllLean.length > 0) {
+//             const leanData = getAllLean.map(item => item.lean);
+//             setLines(leanData);
+//         }
+//     }, [getAllLean]);
+
+//     useEffect(() => {
+//         const fetchData = async () => {
+
+//             if (electric.errorCode !== null) {
+//                 let icon = 'error';
+//                 if (electric.errorCode === 0) {
+//                     icon = 'success';
+//                 }
+//                 Toast.fire({
+//                     icon: icon,
+//                     title: electric.errorMessage,
+//                 });
+//                 await dispatch(setErrorCode(null, ""));
+//             }
+//         };
+//         fetchData();
+//     }, [electric, dispatch]);
+//     return (
+//         <AlertDialog open={open} setOpen={setOpen} headerModal={headerModal}>
+//          <form onSubmit={formik.handleSubmit}>
+//             <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: "10px", alignItems: "flex-start" }}>
+//             <FormControl
+//             error={formik.touched.line && Boolean(formik.errors.line)}
+//             variant="outlined"
+//             style={{ minWidth: "150px" }}
+//              size="small"
+//         >
+//             <InputLabel>{t("work_list.select_line")}</InputLabel>
+//             <Select
+//                 name="line"
+//                 value={formik.values.line}
+//                 onChange={formik.handleChange}
+//                 displayEmpty
+//                 label={t("work_list.select_line")}
+//             >
+//                 <MenuItem value="" disabled>{t("work_list.select_line")}</MenuItem>
+//                 {lines.length > 0 ? (
+//                     lines.map((lean, index) => (
+//                         <MenuItem key={index} value={lean}>{lean}</MenuItem>
+//                     ))
+//                 ) : (
+//                     <MenuItem value="" disabled>Không có line nào</MenuItem>
+//                 )}
+//             </Select>
+
+//             <FormHelperText>
+//                 {formik.touched.line && formik.errors.line ? formik.errors.line : ""}
+//             </FormHelperText>
+//         </FormControl>
+//                     <TextField
+//                         label={t("work_list.remark")}
+//                         name="remark"
+//                         value={formik.values.remark}
+//                         onChange={formik.handleChange}
+//                         variant="outlined"
+//                         fullWidth
+//                         multiline
+//                         rows={1}
+//                         error={formik.touched.remark && Boolean(formik.errors.remark)}
+//                         helperText={formik.touched.remark && formik.errors.remark}
+//                     />
+//                 </div>
+
+//             <TableContainer>
+//             <Table stickyHeader aria-label="sticky table table-fixed" style={{ tableLayout: "fixed" }}>
+//             <TableHead>
+//                 <TableRow>
+//                     <TableCell
+//                         style={{
+//                             fontWeight: "bold",
+//                             whiteSpace: "nowrap",
+//                             width: "200px",
+//                             backgroundColor: "#1976d2",
+//                             color: "#fff",
+//                         }}
+//                     >
+//                         {t("work_list.name")}
+//                     </TableCell>
+//                     <TableCell
+//                         style={{
+//                             fontWeight: "bold",
+//                             whiteSpace: "nowrap",
+//                             width: "100px",
+//                             backgroundColor: "#1976d2",
+//                             color: "#fff",
+//                         }}
+//                     >
+//                         {t("work_list.lean")}
+//                     </TableCell>
+//                     <TableCell
+//                         style={{
+//                             fontWeight: "bold",
+//                             whiteSpace: "nowrap",
+//                             width: "150px",
+//                             backgroundColor: "#1976d2",
+//                             color: "#fff",
+//                         }}
+//                     >
+//                         {t("work_list.floor")}
+//                     </TableCell>
+//                     <TableCell
+//                         style={{
+//                             fontWeight: "bold",
+//                             whiteSpace: "nowrap",
+//                             width: "160px",
+//                             backgroundColor: "#1976d2",
+//                             color: "#fff",
+//                         }}
+//                     >
+//                         {t("work_list.total_fix")}
+//                     </TableCell>
+//                     <TableCell
+//                         style={{
+//                             fontWeight: "bold",
+//                             whiteSpace: "nowrap",
+//                             width: "160px",
+//                             backgroundColor: "#1976d2",
+//                             color: "#fff",
+//                         }}
+//                     >
+//                         {/* {t("work_list.call")} */}
+//                     </TableCell>
+
+//                 </TableRow>
+//             </TableHead>
+//             <TableBody>
+//                 {getListAsignMechanic?.map((row, index) => {
+//                     const isSelected = selectedRow === row;
+//                     const isExpanded = !!expandedRows[index];
+//                     return (
+//                         <TableRow
+//                             key={index}
+//                             onClick={() => handleRowClick(row)}
+//                             style={{
+//                                 backgroundColor: isSelected ? "#83ace7" : "transparent",
+//                             }}
+//                         >
+//                             <TableCell
+//                                 sx={{ whiteSpace: "nowrap" }}
+//                                 style={{
+//                                     color: isSelected ? "#fff" : "#000",
+//                                 }}
+//                             >
+//                                 {row.user_name} - {row.name}
+//                             </TableCell>
+//                             <TableCell
+//                                 style={{
+//                                     color: isSelected ? "#fff" : "#000",
+//                                 }}
+//                             >
+//                                 {row.lean}
+//                             </TableCell>
+//                             <TableCell
+//                                 sx={{ whiteSpace: "nowrap" }}
+//                                 style={{
+//                                     color: isSelected ? "#fff" : "#000",
+//                                     width: "100%",
+//                                     textOverflow: "ellipsis",
+//                                     overflow: "hidden",
+//                                     whiteSpace: "nowrap",
+//                                 }}
+//                             >
+//                                 {row.floor}
+//                                 {row.floors ? ` (${row.floors})` : ""}
+//                             </TableCell>
+//                             <TableCell
+//                                 style={{
+//                                     color: isSelected ? "#fff" : "#000",
+//                                     textAlign: "center",
+//                                 }}
+//                             >
+//                                 {row.totalFix}
+//                             </TableCell>
+//                             <TableCell>
+//                              <a href={row.phone_number ? 'tel:+' + row.phone_number:'tel:+19008198' }>
+//                               <Button
+//                                  variant="contained"
+//                                  color="primary"
+//                                  sx={{
+//                                  whiteSpace: "nowrap",
+//                                 }}>
+//                                  {t("work_list.call")}
+//                              </Button>
+//                             </a>
+//                             </TableCell>
+//                         </TableRow>
+//                     );
+//                 })}
+//             </TableBody>
+//         </Table>
+
+//             </TableContainer>
+//             {formik.touched.selectedRow && formik.errors.selectedRow && (
+//                 <FormHelperText error style={{ color: 'red', textAlign: 'center', marginTop: '10px' }}>
+//                 {formik.errors.selectedRow}
+//                 </FormHelperText>
+//             )}
+//             <Stack direction="row" spacing={2} sx={{ marginTop: "10px", justifyContent: "center" }}>
+//             <Button type="submit" variant="contained" color="primary" size="small">
+//                 {t("work_list.assign")}
+//             </Button>
+//             <Button type="button" variant="contained" color="error" size="small" onClick={onClose}>
+//                 {t("work_list.close")}
+//             </Button>
+//         </Stack>
+//             </form>
+//         </AlertDialog>
+//     );
+// };
+
+const TableEmployeeListline = ({
+  open,
+  setOpen,
+  headerModal,
+  getListAsignMechanic,
+  getAllLean,
+  infoMachineUnderRepair,
+}) => {
+  const {
+    factory,
+    floor,
+    user_name: authUserName,
+    lean,
+  } = useSelector((state) => state.auth.user);
+  const [t] = useTranslation("global");
+  const dispatch = useDispatch();
+  const [expandedRows, setExpandedRows] = useState({});
+  const [selectedRow, setSelectedRow] = useState(null);
+  const languages = localStorage.getItem("languages");
+  const [lines, setLines] = useState([]);
+  const [listMachineRepair, setListMachineRepair] = useState([]);
+  const electric = useSelector((state) => state.electric);
+
+  const validationSchema = Yup.object({
+    line: Yup.string().required(t("work_list.error_select_line")),
+    remark: Yup.string().required(t("work_list.error_enter_remark")),
+    selectedRow: Yup.mixed().required(t("work_list.error_select_mechanic")),
+  });
+
+  // Formik khởi tạo
+  const formik = useFormik({
+    initialValues: {
+      line: "",
+      remark: "",
+      id_machine: "",
+      id_task: "",
+      selectedRow: null,
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      console.log("Selected Line:", values.line);
+      console.log("Remark:", values.remark);
+      console.log("Selected User:", values.selectedRow);
+      console.log("id_machine:", values.id_machine);
+      console.log("id_task:", values.id_task);
+   
+
+      const { user_name: user_machine, factory, lean } = values.selectedRow;
+
+      dispatch(
+        call_support({
+          floor,
+          factory,
+          line: values.line,
+          status: 1,
+          user_machine,
+          user_owner: authUserName,
+          remark: values.remark,
+          support_detail: '',
+          name_machine: values.id_machine,
+          id_task: values.id_task,
+          lang: languages,
+        })
+      );
+
+      setSelectedRow(null);
+      setListMachineRepair([])
+      formik.resetForm();
+      setOpen(false);
+    },
+  });
+
+  const handleRowSelect = (rowData) => {
+    formik.setFieldValue("selectedRow", rowData);
+    setSelectedRow(rowData);
+  };
+
+  const handleChangeMachineLine = async (line) => {
+    formik.setFieldValue("id_task",'')
+    formik.setFieldValue("id_machine",'')
+    setListMachineRepair('')
+    await dispatch(get_Machine_Under_Repair({ line, factory }));
+  };
+
+  const onClose = () => {
+    formik.resetForm();
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    if (Array.isArray(getAllLean) && getAllLean.length > 0) {
+      const leanData = getAllLean.map((item) => item.lean);
+      setLines(leanData);
+    }
+  }, [getAllLean]);
+  useEffect(() => {
+    // console.log(infoMachineUnderRepair);
+    // if (
+    //   Array.isArray(infoMachineUnderRepair) &&
+    //   infoMachineUnderRepair.length > 0
+    // ) {
+    //   const machineData = infoMachineUnderRepair.map((item) => item.id_machine);
+    //   setListMachineRepair(machineData);
+    // }
+
+    if (
+      Array.isArray(infoMachineUnderRepair) &&
+      infoMachineUnderRepair.length > 0
+    ) {
+      const machineData = infoMachineUnderRepair.map((item) => ({
+        label: item.id_machine,
+        value: item.id,
+      }));
+      setListMachineRepair(machineData);
+    }
+  }, [infoMachineUnderRepair]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (electric.errorCode !== null) {
+        let icon = "error";
+        if (electric.errorCode === 0) {
+          icon = "success";
+        }
+        Toast.fire({
+          icon: icon,
+          title: electric.errorMessage,
+        });
+        await dispatch(setErrorCode(null, ""));
+      }
+    };
+    fetchData();
+  }, [electric, dispatch]);
+
+  return (
+    <AlertDialog open={open} setOpen={setOpen} headerModal={headerModal}>
+      <form onSubmit={formik.handleSubmit}>
+        <div
+          style={{
+            padding: "20px",
+            paddingBottom: "10px",
+            display: "flex",
+            flexDirection: "row",
+            gap: "10px",
+            alignItems: "flex-start",
+          }}
+        >
+          <FormControl
+            error={formik.touched.line && Boolean(formik.errors.line)}
+            variant="outlined"
+            style={{ minWidth: "150px", width: "50%" }}
+            size="small"
+          >
+            {/* <InputLabel>{t("work_list.select_line")}</InputLabel> */}
+
+            <Autocomplete
+              freeSolo
+              size="small"
+              value={formik.values.line || ""} // Tránh undefined nếu chưa có giá trị
+              onChange={(event, newValue) => {
+                handleChangeMachineLine(newValue);
+                formik.setFieldValue("line", newValue); // Cập nhật giá trị vào Formik
+              }}
+              onInputChange={(event, newInputValue) => {
+                formik.setFieldValue("line", newInputValue); // Đảm bảo cập nhật khi người dùng nhập thủ công
+              }}
+              options={lines.length > 0 ? lines : []} // Sử dụng danh sách 'lines' từ trước
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={t("work_list.select_line")} // Nhãn tương tự như của Select
+                  variant="outlined"
+                  placeholder={t("work_list.select_line")}
+                  fullWidth
+                />
+              )}
+            />
+          </FormControl>
+          <FormControl
+            error={formik.touched.line && Boolean(formik.errors.line)}
+            variant="outlined"
+            style={{ minWidth: "150px", width: "50%" }}
+            size="small"
+          >
+            <InputLabel>{t("work_list.id_machine_support")}</InputLabel>
+            {/* <Select
+              name="id_machine"
+              // value={formik.values.id_machine || ""}
+              value={formik.values.id_machine || ""} 
+              // onChange={formik.handleChange}
+              onChange={(event) => {
+                const selectedMachine = listMachineRepair.find(
+                  (machine) => machine.value === event.target.value
+                );
+                // console.log({selectedMachine})
+                // console.log(formik.values.id_machine)
+                formik.setFieldValue("id_machine", selectedMachine); // Lưu cả đối tượng `{ label, value }` vào formik
+                formik.setFieldValue("id_task", selectedMachine.value); // Lưu cả đối tượng `{ label, value }` vào formik
+              }}
+              displayEmpty
+              label={t("work_list.id_machine")}
             >
-                <Button type="button" variant="contained" color="primary" size="small" onClick={onAsignTask}>
-                    {t("work_list.assign")}
-                </Button>
-                <Button type="button" variant="contained" color="error" size="small" onClick={onClose}>
-                    {t("work_list.close")}
-                </Button>
-            </Stack>
-        </AlertDialog>
+              {listMachineRepair.length > 0 ? (
+                listMachineRepair.map((machine, index) => (
+                  <MenuItem key={index} value={machine.value}>
+                    {machine.label}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem disabled>{t("work_list.no_select")}</MenuItem>
+              )}
+            </Select> */}
+            <Select
+  name="id_task"
+  value={formik.values.id_task  || ""} // Sử dụng `id_machine` làm `label`
+  onChange={(event) => {
+    const selectedMachine = listMachineRepair.find(
+      (machine) => machine.value === event.target.value
     );
+    formik.setFieldValue("id_machine", selectedMachine.label); // Lưu `label` vào `id_machine`
+    formik.setFieldValue("id_task", selectedMachine.value); // Lưu `value` vào `id_task`
+  }}
+  displayEmpty
+  label={t("work_list.id_machine_support")}
+>
+  {listMachineRepair.length > 0 ? (
+    listMachineRepair.map((machine, index) => (
+      <MenuItem key={index} value={machine.value}>
+        {machine.label}
+      </MenuItem>
+    ))
+  ) : (
+    <MenuItem disabled>{t("work_list.no_select")}</MenuItem>
+  )}
+</Select>
+
+            {/* <Autocomplete
+              freeSolo
+              value={formik.values.id_machine || ""} // Tránh undefined nếu chưa có giá trị
+              onChange={(event, newValue) => {
+                formik.setFieldValue("id_machine", newValue); // Cập nhật giá trị vào Formik
+              }}
+              onInputChange={(event, newInputValue) => {
+                formik.setFieldValue("id_machine", newInputValue); // Đảm bảo cập nhật khi người dùng nhập thủ công
+              }}
+              options={listMachineRepair.length > 0 ? listMachineRepair : []} // Sử dụng danh sách 'lines' từ trước
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={t("work_list.select_line")} // Nhãn tương tự như của Select
+                  variant="outlined"
+                  placeholder={t("work_list.select_line")}
+                  fullWidth
+                />
+              )}
+            /> */}
+            <FormHelperText>
+              {formik.touched.line && formik.errors.line
+                ? formik.errors.line
+                : ""}
+            </FormHelperText>
+          </FormControl>
+        </div>
+
+        <div
+          style={{
+            paddingBottom: "20px",
+            paddingLeft: "20px",
+            paddingRight: "20px",
+
+            display: "flex",
+            flexDirection: "row",
+            gap: "10px",
+            alignItems: "flex-start",
+          }}
+        >
+          <TextField
+            label={t("work_list.remark")}
+            name="remark"
+            value={formik.values.remark}
+            onChange={formik.handleChange}
+            variant="outlined"
+            fullWidth
+            multiline
+            rows={1}
+            error={formik.touched.remark && Boolean(formik.errors.remark)}
+            helperText={formik.touched.remark && formik.errors.remark}
+          />
+        </div>
+
+        <TableContainer>
+          <Table
+            stickyHeader
+            aria-label="sticky table table-fixed"
+            style={{ tableLayout: "fixed" }}
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  style={{
+                    fontWeight: "bold",
+                    whiteSpace: "nowrap",
+                    width: "200px",
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                  }}
+                >
+                  {t("work_list.name")}
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontWeight: "bold",
+                    whiteSpace: "nowrap",
+                    width: "100px",
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                  }}
+                >
+                  {t("work_list.lean")}
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontWeight: "bold",
+                    whiteSpace: "nowrap",
+                    width: "150px",
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                  }}
+                >
+                  {t("work_list.floor")}
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontWeight: "bold",
+                    whiteSpace: "nowrap",
+                    width: "160px",
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                  }}
+                >
+                  {t("work_list.total_fix")}
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontWeight: "bold",
+                    whiteSpace: "nowrap",
+                    width: "160px",
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                  }}
+                >
+                  {/* {t("work_list.call")} */}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {getListAsignMechanic?.map((row, index) => {
+                const isSelected = selectedRow === row;
+                return (
+                  <TableRow
+                    key={index}
+                    style={{
+                      backgroundColor: isSelected ? "#83ace7" : "transparent",
+                    }}
+                  >
+                    <TableCell
+                      sx={{ whiteSpace: "nowrap" }}
+                      style={{ color: isSelected ? "#fff" : "#000" }}
+                    >
+                      {row.user_name} - {row.name}
+                    </TableCell>
+                    <TableCell style={{ color: isSelected ? "#fff" : "#000" }}>
+                      {row.lean}
+                    </TableCell>
+                    <TableCell
+                      sx={{ whiteSpace: "nowrap" }}
+                      style={{
+                        color: isSelected ? "#fff" : "#000",
+                        width: "100%",
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {row.floor}
+                      {row.floors ? ` (${row.floors})` : ""}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        color: isSelected ? "#fff" : "#000",
+                        textAlign: "center",
+                      }}
+                    >
+                      {row.totalFix}
+                    </TableCell>
+                    <TableCell>
+                      <a
+                        href={
+                          row.phone_number
+                            ? "tel:+" + row.phone_number
+                            : "tel:+19008198"
+                        }
+                      >
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          sx={{ whiteSpace: "nowrap" }}
+                          onClick={() => handleRowSelect(row)}
+                        >
+                          {t("work_list.call")}
+                        </Button>
+                      </a>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        {formik.touched.selectedRow && formik.errors.selectedRow && (
+          <FormHelperText
+            error
+            style={{ color: "red", textAlign: "center", marginTop: "10px" }}
+          >
+            {formik.errors.selectedRow}
+          </FormHelperText>
+        )}
+
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{ marginTop: "10px", justifyContent: "center" }}
+        >
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            size="small"
+          >
+            {t("work_list.assign")}
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            color="error"
+            size="small"
+            onClick={onClose}
+          >
+            {t("work_list.close")}
+          </Button>
+        </Stack>
+      </form>
+    </AlertDialog>
+  );
 };
 
 const WorkListScreen = () => {
-    const [t] = useTranslation("global");
-    const dispatch = useDispatch();
-    const [open, setOpen] = useState(false);
-    const [task, setTask] = useState({});
-    const languages = localStorage.getItem('languages');
-    // const [page, setPage] = useState(0);
-    // const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [t] = useTranslation("global");
+  const dispatch = useDispatch();
+  const [openEmployeeList, setOpenEmployeeList] = useState(false);
+  const [openEmployeeListline, setOpenEmployeeListline] = useState(false);
+  const [task, setTask] = useState({});
+  const languages = localStorage.getItem("languages");
+  // const [page, setPage] = useState(0);
+  // const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    // const handleChangePage = (event, newPage) => {
-    //     setPage(newPage);
-    // };
+  // const handleChangePage = (event, newPage) => {
+  //     setPage(newPage);
+  // };
 
-    // const handleChangeRowsPerPage = (event) => {
-    //     setRowsPerPage(+event.target.value);
-    //     setPage(0);
-    // };
+  // const handleChangeRowsPerPage = (event) => {
+  //     setRowsPerPage(+event.target.value);
+  //     setPage(0);
+  // };
 
-    const { factory, floor, user_name, lean, position } = useSelector(
-        (state) => state.auth.user
-    );
+  const { factory, floor, user_name, lean, position } = useSelector(
+    (state) => state.auth.user
+  );
 
-    const { dataTaskReportDamageList, getListAsignMechanic } = useSelector(
-        (state) => state.electric
-    );
+  const {
+    dataTaskReportDamageList,
+    getListAsignMechanic,
+    getAllLean,
+    infoMachineUnderRepair,
+  } = useSelector((state) => state.electric);
 
-    const [socket, setSocket] = useState("");
-    const socketRef = useRef();
+  const [socket, setSocket] = useState("");
+  const socketRef = useRef();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            await dispatch(get_task_damage({ factory, floor, user_name, lean }));
-        };
-        fetchData();
-
-        socketRef.current = socketIOClient.connect(host);
-        socketRef.current.on("message", (data) => {
-            console.log(data);
-            
-        });
-        socketRef.current.on(`${user_name}`, (data) => {
-            setSocket(data);
-        });
-        return () => {
-            socketRef.current.disconnect();
-            
-        };
-    }, [factory, floor, user_name, position, lean, dispatch, socket]);
-
-    const handleClickOpen = async (row) => {
-        const { id_machine } = row;
-        await dispatch(
-            get_list_asign_mechanic({ id_machine, floor, factory, position, lean })
-        );
-        setTask(row);
-        setOpen(true);
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(get_task_damage({ factory, floor, user_name, lean }));
     };
+    fetchData();
 
-    return (
-        <Box component="div">
-            <BreadCrumb breadCrumb={t("work_list.work_list")} />
-            <Box
-                component="div"
-                sx={{ display: "block", margin: "0 auto" }}
+    socketRef.current = socketIOClient.connect(host);
+    socketRef.current.on("message", (data) => {
+      console.log(data);
+    });
+    socketRef.current.on(`${user_name}`, (data) => {
+      setSocket(data);
+    });
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        console.log('Trang đã trở lại, load lại...');
+        fetchData();
+      }
+    };
+  
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+
+    return () => {
+      // socketRef.current.disconnect();
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+  
+    };
+  }, [factory, floor, user_name, position, lean, dispatch, socket]);
+
+  const handleClickOpen = async (row) => {
+    const { id_machine } = row;
+    await dispatch(
+      get_list_asign_mechanic({ id_machine, floor, factory, position, lean })
+    );
+
+    setTask(row);
+    setOpenEmployeeList(true);
+  };
+
+  const handleClickOpenline = async () => {
+    await dispatch(get_list_asign_mechanic({ floor, factory, position, lean }));
+    await dispatch(get_all_lean({ floor, factory }));
+    setOpenEmployeeListline(true);
+  };
+
+  return (
+    <Box component="div">
+      <BreadCrumb breadCrumb={t("work_list.work_list")} />
+      <Box component="div" sx={{ display: "block", margin: "0 auto" }}>
+        <Grid container justifyContent="flex-end">
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                whiteSpace: "nowrap",
+              }}
+              onClick={() => handleClickOpenline()}
             >
-                <Paper sx={PaperStyle} elevation={5}>
-                 
-                    <TableContainer>
-                        <Table stickyHeader aria-label="sticky table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell
-                                        style={{
-                                            fontWeight: "bold",
-                                            minWidth: "120px",
-                                            backgroundColor: "#1976d2",
-                                            color: "#fff",
-                                        }}
-                                    >
-                                        {t("work_list.date")}
-                                    </TableCell>
-                                    <TableCell
-                                        style={{
-                                            fontWeight: "bold",
-                                            minWidth: "120px",
-                                            backgroundColor: "#1976d2",
-                                            color: "#fff",
-                                        }}
-                                    >
-                                        {t("work_list.id_machine")}
-                                    </TableCell>
-                                    <TableCell
-                                        style={{
-                                            fontWeight: "bold",
-                                            minWidth: "120px",
-                                            backgroundColor: "#1976d2",
-                                            color: "#fff",
-                                        }}
-                                    >
-                                        {t("work_list.remark")}
-                                    </TableCell>
-                                    <TableCell
-                                        style={{
-                                            fontWeight: "bold",
-                                            minWidth: "150px",
-                                            backgroundColor: "#1976d2",
-                                            color: "#fff",
-                                        }}
-                                    >
-                                        {t("work_list.requester")}
-                                    </TableCell>
-                                    <TableCell
-                                        style={{
-                                            fontWeight: "bold",
-                                            minWidth: "150px",
-                                            backgroundColor: "#1976d2",
-                                            color: "#fff",
-                                        }}
-                                    >
-                                        {t("work_list.floor")}
-                                    </TableCell>
-                                    <TableCell
-                                        style={{
-                                            fontWeight: "bold",
-                                            minWidth: "120px",
-                                            backgroundColor: "#1976d2",
-                                            color: "#fff",
-                                        }}
-                                    ></TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {dataTaskReportDamageList?.map((row, index) => (
-                                    <TableRow
-                                        key={index}
-                                        sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                                    >
-                                        <TableCell component="th" scope="row">
-                                        {row.date_user_request.split("T")[1].slice(0, -8)}
-                                        &ensp;
-                                        {row.date_user_request.split("T")[0]}
-                                    
-                                           
-                                        </TableCell>
-                                        <TableCell component="th" scope="row">
-                                            {row.id_machine}
-                                        </TableCell>
-                                        <TableCell>{languages === "EN" ? row.info_reason_en: row.info_reason_vn}</TableCell>
-                                        <TableCell>
-                                            {row.name} - {row.id_user_request}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row.floor}
-                                            {/* {row.floor} -  {row.floors} */}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                sx={{
-                                                    whiteSpace: "nowrap",
-                                                }}
-                                                onClick={() => handleClickOpen(row)}
-                                            >
-                                                {t("work_list.assign")}
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    {/* <TablePagination
+              {t("sidebar.support")}
+            </Button>
+          </Grid>
+        </Grid>
+
+        <Paper sx={PaperStyle} elevation={5}>
+          <TableContainer>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    style={{
+                      fontWeight: "bold",
+                      minWidth: "120px",
+                      backgroundColor: "#1976d2",
+                      color: "#fff",
+                    }}
+                  >
+                    {t("work_list.date")}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontWeight: "bold",
+                      minWidth: "120px",
+                      backgroundColor: "#1976d2",
+                      color: "#fff",
+                    }}
+                  >
+                    {t("work_list.id_machine")}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontWeight: "bold",
+                      minWidth: "120px",
+                      backgroundColor: "#1976d2",
+                      color: "#fff",
+                    }}
+                  >
+                    {t("work_list.remark")}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontWeight: "bold",
+                      minWidth: "150px",
+                      backgroundColor: "#1976d2",
+                      color: "#fff",
+                    }}
+                  >
+                    {t("work_list.requester")}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontWeight: "bold",
+                      minWidth: "150px",
+                      backgroundColor: "#1976d2",
+                      color: "#fff",
+                    }}
+                  >
+                    {t("work_list.floor")}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontWeight: "bold",
+                      minWidth: "120px",
+                      backgroundColor: "#1976d2",
+                      color: "#fff",
+                    }}
+                  ></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {dataTaskReportDamageList?.map((row, index) => (
+                  <TableRow
+                    key={index}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row?.date_user_request?.split("T")[1].slice(0, -8)}
+                      &ensp;
+                      {row?.date_user_request?.split("T")[0]}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.id_machine}
+                    </TableCell>
+                    <TableCell>
+                      {languages === "EN"
+                        ? row.info_reason_en
+                        : languages === "MM"
+                        ? row.info_reason_mm
+                        : row.info_reason_vn}{" "}
+                      {row.other_reason && "(" + row.other_reason + ")"}
+                    </TableCell>
+
+                    <TableCell>
+                      {row.name} - {row.id_user_request}
+                    </TableCell>
+                    <TableCell>
+                      {row.floor}
+                      {/* {row.floor} -  {row.floors} */}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{
+                          whiteSpace: "nowrap",
+                        }}
+                        onClick={() => handleClickOpen(row)}
+                      >
+                        {t("work_list.assign")}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {/* <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
                         count={dataTaskReportDamageList?.length || 0}
@@ -479,18 +1307,28 @@ const WorkListScreen = () => {
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     /> */}
-                </Paper>
-            </Box>
+        </Paper>
+      </Box>
 
-            <TableEmployeeList
-                open={open}
-                setOpen={setOpen}
-                headerModal={t("work_list.employee_list")}
-                getListAsignMechanic={getListAsignMechanic}
-                task={task}
-            />
-        </Box>
-    );
+      <TableEmployeeList
+        open={openEmployeeList}
+        setOpen={setOpenEmployeeList}
+        headerModal={t("work_list.employee_list")}
+        getListAsignMechanic={getListAsignMechanic}
+        task={task}
+      />
+
+      <TableEmployeeListline
+        open={openEmployeeListline}
+        setOpen={setOpenEmployeeListline}
+        headerModal={t("work_list.employee_list")}
+        getListAsignMechanic={getListAsignMechanic}
+        getAllLean={getAllLean}
+        infoMachineUnderRepair={infoMachineUnderRepair}
+        task={task}
+      />
+    </Box>
+  );
 };
 
 export default WorkListScreen;

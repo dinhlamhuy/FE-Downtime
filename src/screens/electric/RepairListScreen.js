@@ -192,7 +192,7 @@ const RepairlistScreen = () => {
                   Array.from(
                     new Set(
                       getListRepairMechanic.flatMap((mechanic) =>
-                        mechanic.floor.split(",").map((floor) => floor.trim())
+                        mechanic?.floor?.split(",").map((floor) => floor.trim())
                       )
                     )
                   ).map((floor) => (
@@ -244,7 +244,7 @@ const RepairlistScreen = () => {
                   },
                 }}
               >
-                Daily
+                {t("repair_list.day")}
               </ToggleButton>
               <ToggleButton
                 value="WEEK"
@@ -264,7 +264,7 @@ const RepairlistScreen = () => {
                   },
                 }}
               >
-                Weekly
+                {t("repair_list.week")}
               </ToggleButton>
               <ToggleButton
                 value="MONTH"
@@ -284,7 +284,7 @@ const RepairlistScreen = () => {
                   },
                 }}
               >
-                Monthly
+                {t("repair_list.month")}
               </ToggleButton>
             </ToggleButtonGroup>
           </Box>
@@ -341,6 +341,7 @@ const RepairlistScreen = () => {
                       whiteSpace: "nowrap",
                       backgroundColor: "#1976d2",
                       color: "#fff",
+                      width: "100px"
                     }}
                     align="center"
                   >
@@ -408,13 +409,12 @@ const RepairlistScreen = () => {
                         }}
                       >
                         {ItemRowSpan > 0 && (
-                          <TableCell rowSpan={ItemRowSpan}>
-                            {row.ID_Code
-                              ? languages === "EN"
-                                ? row.Name_en
-                                : row.Name_vn
-                              : "UnKnown"}
-                          </TableCell>
+                      <TableCell rowSpan={ItemRowSpan}>
+                      {row.ID_Code
+                        ? languages === "VN" ? row.Name_vn : row.Name_en // Show Vietnamese or default to English
+                        : languages === "VN" ? "Không có" : languages === "MM" ? "မသိ" : "Unknown"} {/* Handle "Unknown" in different languages */}
+                    </TableCell>
+                    
                         )}
                         {ItemRowSpan === 0 && (
                           <TableCell style={{ display: "none" }} />
@@ -423,9 +423,13 @@ const RepairlistScreen = () => {
                         <TableCell align="center">{row.floor}</TableCell>
                         <TableCell align="center">{row.line}</TableCell>
                         <TableCell align="center">{row.Alltimes}</TableCell>
-                        <TableCell align="center">{languages === "EN"
-                                ? row.info_reason_en
-                                : row.info_reason_vn}</TableCell>
+                        <TableCell align="center">
+                            {languages === "EN" 
+                                ? row.info_reason_en 
+                                : languages === "MM" 
+                                ? row.info_reason_mm 
+                                : row.info_reason_vn} {row.other_reason && '('+row.other_reason + ')'}
+                        </TableCell>
                         <TableCell align="center">{row.SumMinute}</TableCell>
                         <TableCell align="center">{row.Frequency}</TableCell>
                       </TableRow>

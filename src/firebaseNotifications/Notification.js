@@ -5,7 +5,13 @@ import { requestForToken, onMessageListener } from "./firebase";
 const Notification = () => {
   const [notification, setNotification] = useState({ title: "", body: "" });
 
-  const notify = () => toast(<ToastDisplay />);
+  const notify = () => toast(<ToastDisplay />,{
+  
+    style: {
+      maxWidth: "90%", // Tăng chiều rộng thông báo
+      whiteSpace: "pre-wrap", // Đảm bảo xuống dòng nếu nội dung dài
+    },
+  });
 
   function ToastDisplay() {
     return (
@@ -15,10 +21,10 @@ const Notification = () => {
       //     <p>{notification?.body}</p>
       // </div>
 
-      <div>
+      <div >
         {/* <a href="https://lyv.lacty.com.vn"> */}
-          <b>{notification?.title}</b>
-          <p>{notification?.body}</p>
+          <b style={{fontSize:'1.45rem'}}>{notification?.title}</b>
+          <p style={{fontSize:'1.1rem'}}>{notification?.body}</p>
         {/* </a> */}
       </div>
     );

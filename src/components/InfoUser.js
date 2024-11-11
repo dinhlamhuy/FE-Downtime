@@ -121,7 +121,7 @@ export default function InfoUser() {
       <Box component="form" onSubmit={formik.handleSubmit} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
-            label="Date From"
+            label={t("personal_info.date_from")}
             id="DateFrom"
             name="DateFrom"
             format="DD-MM-YYYY"
@@ -145,7 +145,7 @@ export default function InfoUser() {
         </Grid>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
-            label="Date To"
+            label={t("personal_info.date_to")}
             id="DateTo"
             name="DateTo"
             format="DD-MM-YYYY"

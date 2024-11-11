@@ -1,19 +1,37 @@
-import React from 'react';
-import AlertDialog from "./AlertDialog";
+import React, { useEffect } from 'react';
+import AlertDialog2 from "./AlertDialog2";
 import { Grid, Typography, Box } from "@mui/material";
 
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from 'react-redux';
+import { get_task_receiving_process } from '../redux/features/product';
 
-const DetailInfo = ({ isCheck, open, setOpen, machine, user }) => {
+const ProgressHistoryDetailTask = ({ isCheck, open, setOpen, machine, user }) => {
+
 
     const [t] = useTranslation("global");
     const languages = localStorage.getItem('languages');
-    console.log(isCheck);
+    // console.log(machine);
+    const dispatch = useDispatch();
 
+
+    const { taskReceivingProcess } = useSelector((state) => state.product);
+
+    useEffect(() => {
+        console.log('machine.id', machine)
+        const fetchData = async () => {
+          
+            await dispatch(get_task_receiving_process({ id_task: machine?.id_task }));
+          
+        };
+        fetchData();
+
+  
+    }, [ dispatch]);
     return (
         <>
-            {isCheck && (<AlertDialog
-                open={open}
+            {isCheck && (<AlertDialog2
+                open={open} 
                 setOpen={setOpen}
                 headerModal={t("process_status.status_1_header")}
             >
@@ -86,11 +104,12 @@ const DetailInfo = ({ isCheck, open, setOpen, machine, user }) => {
                         </Grid>
                     </Grid>
                 </Box>
-            </AlertDialog>
+            </AlertDialog2>
         
         )}
+        
         </>
     )
 }
 
-export default DetailInfo;
+export default ProgressHistoryDetailTask;

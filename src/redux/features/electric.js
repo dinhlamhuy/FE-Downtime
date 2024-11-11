@@ -32,9 +32,9 @@ export const get_owner_task_damage = createAsyncThunk("/task/getOwnerMechalist",
     }
 })
 
-export const get_list_status_mechanic = createAsyncThunk("/task/getListStatusMechanic", async ({ position, factory, floor, lean, permission }) => {
+export const get_list_status_mechanic = createAsyncThunk("/task/getListStatusMechanic", async ({ user_name,position, factory, floor, lean, permission }) => {
     try {
-        const data = await ElectricServices.get_list_status_mechanic(position, factory, floor, lean, permission);
+        const data = await ElectricServices.get_list_status_mechanic(user_name,position, factory, floor, lean, permission);
         return data;
     } catch (error) {
         return error.message;
@@ -105,9 +105,9 @@ export const scanner_fix_mechanic = createAsyncThunk("/task/mechanicAccept", asy
     }
 })
 
-export const finish_mechanic = createAsyncThunk("/task/machineCfmfinish", async ({ id_user_mechanic, skill, id_machine, remark_mechanic, lean, factory, language, new_mechanic }) => {
+export const finish_mechanic = createAsyncThunk("/task/machineCfmfinish", async ({ id_user_mechanic, skill, id_machine, remark_mechanic, lean, factory, language, new_mechanic, otherIssue }) => {
     try {
-        const data = await ElectricServices.finish_mechanic(id_user_mechanic, skill, id_machine, remark_mechanic, lean, factory, language, new_mechanic);
+        const data = await ElectricServices.finish_mechanic(id_user_mechanic, skill, id_machine, remark_mechanic, lean, factory, language, new_mechanic, otherIssue);
         return data;
     } catch (error) {
         return error.message;
@@ -170,6 +170,82 @@ export const get_info_skill = createAsyncThunk("/task/getInforSkill", async () =
     }
 })
 
+export const get_all_lean = createAsyncThunk("/user/getAllLean", async ({ factory, floor }) => {
+    try {
+        const data = await ElectricServices.get_all_lean(factory, floor);
+        return data;
+    } catch (error) {
+        return error.message;
+    }
+});
+export const call_support = createAsyncThunk("/task/callSupport", async ({ floor, factory, line, status, user_machine, user_owner, remark, support_detail, name_machine, id_task, lang }) => {
+        try {
+            const data = await ElectricServices.call_support( floor,factory,line,status,user_machine,user_owner,remark,support_detail, name_machine, id_task, lang);
+            return data;
+        } catch (error) {
+            return error.message;
+        }
+    }
+);
+export const get_task_support = createAsyncThunk("/task/getTaskSupport", async ({ user_machine, factory }) => {
+    try {
+        const data = await ElectricServices.get_task_support( user_machine, factory);
+        return data;
+    } catch (error) {
+        return error.message;
+    }
+}
+);
+export const get_history_task_support = createAsyncThunk("/task/getHistoryTaskSupport", async ({ user_machine, factory }) => {
+    try {
+        const data = await ElectricServices.get_history_task_support( user_machine, factory);
+        return data;
+    } catch (error) {
+        return error.message;
+    }
+}
+);
+export const accept_support = createAsyncThunk("/task/acceptSupport", async ({id, factory, line, status, user_machine,support_detail, lang }) => {
+    try {
+        const data = await ElectricServices.accept_support( id, factory, line, status, user_machine,support_detail, lang);
+        return data;
+    } catch (error) {
+        return error.message;
+    }
+}
+);
+
+export const get_all_floor = createAsyncThunk("/user/getAllFloor", async ({factory }) => {
+    try {
+        const data = await ElectricServices.get_all_floor( factory);
+        return data;
+    } catch (error) {
+        return error.message;
+    }
+}
+);
+export const get_Machine_Under_Repair = createAsyncThunk("/task/getMachineUnderRepair", async ({line,factory }) => {
+    try {
+        const data = await ElectricServices.getMachineUnderRepair( line,factory);
+        return data;
+    } catch (error) {
+        return error.message;
+    }
+}
+);
+
+export const change_floor = createAsyncThunk("/task/changeFloor", async ({floor, factory , user_name,lang}) => {
+    try {
+        const data = await ElectricServices.change_floor( floor, factory , user_name,lang);
+        return data;
+    } catch (error) {
+        return error.message;
+    }
+}
+);
+
+
+
 export const electricSlice = createSlice({
     name: "electric",
     initialState: {
@@ -182,6 +258,7 @@ export const electricSlice = createSlice({
         infoCalculate: [],
         infoTask: [],
         infoSkill: [],
+        infoMachineUnderRepair: [],
         getListStatusMechanic: [],
         getListAsignMechanic: [],
         getListStatusTaskDetail: [],
@@ -189,6 +266,13 @@ export const electricSlice = createSlice({
         getTop5LongestRepairTime: [],
         getTop3BrokenMachines: [],
         countStatusTask: {},
+        getAllLean: [],
+        callSupport: [],
+        getTaskSupport:[],
+        getHistoryTaskSupport: [],
+        acceptSupport: [],
+        getAllFloor: [],
+        changeFloor: [],
     },
     reducers: {
         setErrorCode: (state, action) => {
@@ -258,6 +342,33 @@ export const electricSlice = createSlice({
         });
         builder.addCase(get_top3_broken_machines.fulfilled, (state, action) => {
             state.getTop3BrokenMachines = action.payload.data;
+        });
+        builder.addCase(get_all_lean.fulfilled, (state, action) => {
+            state.getAllLean = action.payload.data;
+        });
+        builder.addCase(call_support.fulfilled, (state, action) => {
+            state.errorCode = action.payload.error_code;
+            state.errorMessage = action.payload.error_message;
+        });
+        builder.addCase(get_task_support.fulfilled, (state, action) => {
+            state.getTaskSupport = action.payload.data;
+        });
+        builder.addCase(get_history_task_support.fulfilled, (state, action) => {
+            state.getHistoryTaskSupport = action.payload.data;
+        });
+        builder.addCase(accept_support.fulfilled, (state, action) => {
+            state.errorCode = action.payload.error_code;
+            state.errorMessage = action.payload.error_message;
+        });
+        builder.addCase(get_all_floor.fulfilled, (state, action) => {
+            state.getAllFloor = action.payload.data;
+        });
+        builder.addCase(get_Machine_Under_Repair.fulfilled, (state, action) => {
+            state.infoMachineUnderRepair = action.payload.data;
+        });
+        builder.addCase(change_floor.fulfilled, (state, action) => {
+            state.errorCode = action.payload.error_code;
+            state.errorMessage = action.payload.error_message;
         });
     }
 })

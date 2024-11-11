@@ -39,79 +39,79 @@ const Scanner = (props) => {
       console.log(err);
     }
 
-    // const startScanning = async () => {
-    //   try {
-    //     const devices = await navigator.mediaDevices.enumerateDevices();
-    //     const videoDevices = devices.filter(
-    //       (device) => device.kind === "videoinput"
-    //     );
+    const startScanning = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(
+          (device) => device.kind === "videoinput"
+        );
 
-    //     let rearCameraId = null;
-    //     for (const device of videoDevices) {
-    //       if (device.label.toLowerCase().includes("back")) {
-    //         rearCameraId = device.deviceId;
-    //         break;
-    //       }
-    //     }
+        let rearCameraId = null;
+        for (const device of videoDevices) {
+          if (device.label.toLowerCase().includes("back")) {
+            rearCameraId = device.deviceId;
+            break;
+          }
+        }
 
-    //     const selectedCameraId = rearCameraId || videoDevices[0]?.deviceId;
+        const selectedCameraId = rearCameraId || videoDevices[0]?.deviceId;
 
-    //     if (selectedCameraId) {
-    //       scannerRef.current?.start(selectedCameraId, {
-    //         facingMode: "environment",
-    //       }, (result) => {
-    //         scannerRef.current?.clear();
-    //         setScannerResult(result);
-    //       });
-    //     }
-    //   } catch (error) {
-    //      console.log(error);
-    //   }
-    // };
+        if (selectedCameraId) {
+          scannerRef.current?.start(selectedCameraId, {
+            facingMode: "environment",
+          }, (result) => {
+            scannerRef.current?.clear();
+            setScannerResult(result);
+          });
+        }
+      } catch (error) {
+         console.log(error);
+      }
+    };
 
-    // startScanning();
-
-
-    // const buttonElement = document.getElementById("html5-qrcode-button-camera-permission");
-
-    // if (buttonElement) {
-    //   buttonElement.textContent = t("scanner.btn_req_camera_permission");
-    //   buttonElement.addEventListener("click", handleCameraPermission);
-    // }
+    startScanning();
 
 
-    // // Clean up function
-    // return () => {
-    //   scannerRef.current?.clear();
-    //   scanner.clear();
+    const buttonElement = document.getElementById("html5-qrcode-button-camera-permission");
 
-    //   if (buttonElement) {
-    //     buttonElement.removeEventListener("click", handleCameraPermission);
-    //   }
-    // };
+    if (buttonElement) {
+      buttonElement.textContent = t("scanner.btn_req_camera_permission");
+      buttonElement.addEventListener("click", handleCameraPermission);
+    }
+
+
+    // Clean up function
+    return () => {
+      scannerRef.current?.clear();
+      scanner.clear();
+
+      if (buttonElement) {
+        buttonElement.removeEventListener("click", handleCameraPermission);
+      }
+    };
 
 
   }, [scannerResult, setScannerResult, idMachine, t]);
 
-  // function handleCameraPermission() {
-  //   navigator.mediaDevices.getUserMedia({ video: true })
-  //     .then((stream) => {
-  //       stream.getTracks().forEach(function (track) {
-  //         track.stop();
-  //       });
-  //       console.log("Camera permission granted");
-  //     })
-  //     .catch((error) => {
-  //       // alert(String(error))
-  //       const alertNotFound = document.getElementById(`render-${idMachine}__header_message`);
+  function handleCameraPermission() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        stream.getTracks().forEach(function (track) {
+          track.stop();
+        });
+        console.log("Camera permission granted");
+      })
+      .catch((error) => {
+        // alert(String(error))
+        const alertNotFound = document.getElementById(`render-${idMachine}__header_message`);
      
-  //       if (String(error) === "NotFoundError: Requested device not found") {
-  //         alertNotFound.textContent = t("scanner.alert_not_found");
-  //       } else {
-  //         alertNotFound.textContent = t("scanner.alert_not_permisson");
-  //       }
-  //     });
-  // }
+        if (String(error) === "NotFoundError: Requested device not found") {
+          alertNotFound.textContent = t("scanner.alert_not_found");
+        } else {
+          alertNotFound.textContent = t("scanner.alert_not_permisson");
+        }
+      });
+  }
 
   return (
     <>

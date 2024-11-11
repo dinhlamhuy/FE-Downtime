@@ -165,6 +165,7 @@ const TableEmployeeList = ({ open, setOpen, headerModal, getListAsignMechanic, t
                             >
                                 {t("work_list.floor")}
                             </TableCell>
+                    
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -423,6 +424,7 @@ const OwnerWorkListScreen = () => {
                                         >
                                             {t("work_list.floor")}
                                         </TableCell>
+                                      
                                         <TableCell
                                             style={{
                                                 fontWeight: "bold",
@@ -430,7 +432,9 @@ const OwnerWorkListScreen = () => {
                                                 backgroundColor: "#1976d2",
                                                 color: "#fff",
                                             }}
-                                        ></TableCell>
+                                        >    
+                                        </TableCell>
+
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -441,16 +445,25 @@ const OwnerWorkListScreen = () => {
                                             sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                                         >
                                             <TableCell component="th" scope="row">
-                                                {row.date_user_request.split("T")[1].slice(0, -8)}
+                                                {row?.date_user_request?.split("T")[1].slice(0, -8)}
                                                 &ensp;
-                                                {row.date_user_request.split("T")[0]}
+                                                {row?.date_user_request?.split("T")[0]}
 
 
                                             </TableCell>
                                             <TableCell component="th" scope="row">
                                                 {row.id_machine}
                                             </TableCell>
-                                            <TableCell>{languages === "EN" ? row.info_reason_en : row.info_reason_vn}</TableCell>
+                                            <TableCell>
+                                                {languages === "EN" 
+                                                    ? row.info_reason_en 
+                                                    : languages === "VN" 
+                                                        ? row.info_reason_vn 
+                                                        : languages === "MM" 
+                                                            ? row.info_reason_mm 
+                                                            : row.info_reason_en 
+                                                }
+                                            </TableCell>
                                             <TableCell>
                                                 {row.name} - {row.id_user_request}
                                             </TableCell>

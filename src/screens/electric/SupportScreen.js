@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Box, Tabs, Tab } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { get_work_list_report_employee, get_history_mechanic } from "../../redux/features/electric";
+import { get_task_support, get_history_task_support } from "../../redux/features/electric";
 import BreadCrumb from "../../components/BreadCrumb";
 import ProgressStatus from "../../components/ProgressStatus";
 import History from "../../components/History";
@@ -10,6 +10,8 @@ import { BASE_URL } from "../../utils/env";
 
 import { useTranslation } from "react-i18next";
 import { get_all_machine } from "../../redux/features/machine";
+import SupportStatus from "../../components/SupportStatus";
+import SupportHistory from "../../components/SupportHistory";
 
 const host = BASE_URL;
 
@@ -39,30 +41,26 @@ function CustomTabPanel(props) {
   );
 }
 
-const StatusScreen = () => {
+const SupportScreen = () => {
   const [socket, setSocket] = useState("");
   const socketRef = useRef();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { workListReportEmployee, historyListReportMechanic } = useSelector((state) => state.electric);
+  const { getTaskSupport, getHistoryTaskSupport } = useSelector((state) => state.electric);
 
   const [value, setValue] = useState(0);
 
   const [t] = useTranslation("global");
 
   useEffect(() => {
-    
     const fetchData = async () => {
       const { user_name, factory, lean } = user;
       const id_user_mechanic = user_name;
 
       if (value === 1) {
-       
-        await dispatch(get_history_mechanic({ id_user_mechanic, factory }));
+        await dispatch(get_history_task_support({ user_machine: id_user_mechanic , factory }));
       } else {
-        await dispatch(get_all_machine({ factory }));
-
-        await dispatch(get_work_list_report_employee({ id_user_mechanic, factory, lean }));
+        await dispatch(get_task_support({ user_machine: id_user_mechanic , factory }));
         
       }
     }
@@ -78,7 +76,6 @@ const StatusScreen = () => {
     socketRef.current.on(`${user.user_name}`, (data) => {
       setSocket(data);
     });
-
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         console.log('Trang đã trở lại, load lại...');
@@ -88,76 +85,23 @@ const StatusScreen = () => {
   
     document.addEventListener('visibilitychange', handleVisibilityChange);
     
-    // return () => {
-    //   document.removeEventListener('visibilitychange', handleVisibilityChange);
-    // };
-    return () => {
-      if (socketRef.current) {
-      socketRef.current.disconnect();
-    }
-    document.removeEventListener('visibilitychange', handleVisibilityChange);
 
+    return () => {
+      // socketRef.current.disconnect();
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+  
     };
   }, [user, dispatch, socket, value])
-  // useEffect(() => {
-   
-  // }, []);
 
-
-  // const fetchData = useCallback(async () => {
-  //   const { user_name, factory, lean } = user;
-  //   const id_user_mechanic = user_name;
-
-  //   if (value === 1) {
-  //     await dispatch(get_history_mechanic({ id_user_mechanic, factory }));
-  //   } else {
-  //     await dispatch(get_all_machine({ factory }));
-  //     await dispatch(get_work_list_report_employee({ id_user_mechanic, factory, lean }));
-  //   }
-  // }, [dispatch, user, value]);
-  // useEffect(() => {
-  //   fetchData(); // Gọi hàm fetch khi `value` hoặc `user` thay đổi
-
-  //   // Khởi tạo socket chỉ một lần
-  //   if (!socketRef.current) {
-  //     socketRef.current = socketIOClient.connect(host);
-
-  //     socketRef.current.on("message", (data) => {
-  //       console.log(data);
-  //     });
-
-  //     socketRef.current.on(user.user_name, (data) => {
-  //       // setSocketData(data); // Lưu dữ liệu từ socket
-        
-  //     });
-
-  //     socketRef.current.on("disconnect", () => {
-  //       console.log("Socket disconnected. Reconnecting...");
-  //       socketRef.current.connect(); // Tự động kết nối lại khi mất kết nối
-  //     });
-  //   }
-
-  //   // Xử lý khi quay lại từ nền
-  //   const handleVisibilityChange = () => {
-  //     if (document.visibilityState === "visible" && socketRef.current?.disconnected) {
-  //       console.log("App resumed. Reconnecting socket...");
-  //       socketRef.current.connect(); // Kết nối lại khi quay lại từ nền
-  //     }
-  //   };
-
-  //   document.addEventListener("visibilitychange", handleVisibilityChange);
-
-  //   return () => {
-  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
-  //     socketRef.current?.disconnect(); // Ngắt kết nối khi component unmount
-  //   };
-  // }, [fetchData, user]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const breadCrumbText = value === 0 ? t("process_status.process_status") : t("process_status.history");
+  const breadCrumbText = value === 0 ? 'Trạng thái hỗ trợ': 'Lịch sử hỗ trợ';
   return (
     <Box component="div">
       <BreadCrumb breadCrumb={breadCrumbText} />
@@ -184,14 +128,15 @@ const StatusScreen = () => {
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          <ProgressStatus listReport={workListReportEmployee} user={user} />
+          <SupportStatus listReport={getTaskSupport} user={user} />
         </CustomTabPanel>
+        
         <CustomTabPanel value={value} index={1}>
-          <History historyListReport={historyListReportMechanic} user={user} />
+          <SupportHistory historyListReport={getHistoryTaskSupport} user={user} />
         </CustomTabPanel>
       </Box>
     </Box>
   );
 };
 
-export default StatusScreen;
+export default SupportScreen;

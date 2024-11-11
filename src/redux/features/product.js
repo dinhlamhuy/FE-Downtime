@@ -23,9 +23,9 @@ export const get_report_damage = createAsyncThunk("damage_report/getTaskInfo", a
 
 export const report_damage = createAsyncThunk(
     "/damage_report/callMechanic",
-    async ({ id_machine, id_user_request, remark, factory, fixer, language }) => {
+    async ({ id_machine, id_user_request, remark, factory, fixer, language, otherIssue }) => {
         try {
-            const data = await ProductServices.report_damage(id_machine, id_user_request, remark, factory, fixer, language);
+            const data = await ProductServices.report_damage(id_machine, id_user_request, remark, factory, fixer, language, otherIssue);
             return data;
         } catch (error) {
             return error.message;
@@ -35,6 +35,14 @@ export const report_damage = createAsyncThunk(
 export const get_info_reason = createAsyncThunk("/damage_report/getInforReason", async () => {
     try {
         const data = await ProductServices.get_info_reason();
+        return data;
+    } catch (error) {
+        return error.message;
+    }
+})
+export const get_task_receiving_process = createAsyncThunk("/task/getTaskRecordHistory", async ({id_task}) => {
+    try {
+        const data = await ProductServices.get_task_receiving_process({id_task});
         return data;
     } catch (error) {
         return error.message;
@@ -71,6 +79,7 @@ export const productSlice = createSlice({
         requestListReportProduct: [],
         historyListReportProduct: [],
         infoReason: [],
+        taskReceivingProcess: [],
 
     },
     reducers: {
@@ -100,6 +109,9 @@ export const productSlice = createSlice({
         });
         builder.addCase(get_info_reason.fulfilled, (state, action) => {
             state.infoReason = action.payload.data;
+        });
+        builder.addCase(get_task_receiving_process.fulfilled, (state, action) => {
+            state.taskReceivingProcess = action.payload.data;
         });
     },
 });

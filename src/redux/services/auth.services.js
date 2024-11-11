@@ -1,5 +1,6 @@
 import axios from "axios";
 import { BASE_URL } from "../../utils/env";
+import authHeader from "./auth_header";
 
 const login = (username, password, factory, token, language) => {
     return axios
@@ -25,6 +26,30 @@ const login = (username, password, factory, token, language) => {
             return error.response.data;
         });
 };
+const updateInfo = (username,  factory) => {
+   
+    return axios
+        .post(BASE_URL + "/user/updateUser", {
+            username:username,
+            factory:factory
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+                ...authHeader(),
+            }
+        })
+        .then((response) => {
+            const res = response.data;
+            // console.log(res.data)
+            if (res && res.data && res.data.user_name) {
+                // console.log(res.data)
+                localStorage.setItem("user", JSON.stringify(res.data));
+            }
+            return res;
+        }).catch((error) => {
+            return error.response.data;
+        });
+};
 
 const logout = () => {
     localStorage.removeItem("access_token");
@@ -33,7 +58,7 @@ const logout = () => {
 
 const AuthService = {
     login,
-    logout,
+    logout,updateInfo
 };
 
 export default AuthService;

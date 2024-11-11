@@ -32,20 +32,33 @@ const ContentStyle = {
 const ChartRepair = ({ getTop5LongestRepairTime }) => {
     const { t } = useTranslation("global");
     const languages = localStorage.getItem('languages') || 'EN';
+    const [currentLanguage, setCurrentLanguage] = useState(languages);
+
+    // Đối tượng chứa các bản dịch cho các ngôn ngữ
+    const translations = {
+        EN: {
+            no_data: "No Data"
+        },
+        VN: {
+            no_data: "Không có dữ liệu"
+        },
+        MM: {
+            no_data: "ဒေတာမရှိပါ"
+        }
+    };
+
     const [chartData, setChartData] = useState({
         labels: [],
-        datasets: [
-            {
-                label: t("personal_info.minutes"),
-                data: [],
-                backgroundColor: '#0088FE',
-                borderColor: '#fff',
-                borderWidth: 2,
-            }
-        ],
+        datasets: [{
+            label: t("personal_info.minutes"),
+            data: [],
+            backgroundColor: '#0088FE',
+            borderColor: '#fff',
+            borderWidth: 2,
+        }],
         options: {
             indexAxis: 'y',
-            maintainAspectRatio: false,  
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: "bottom"
@@ -62,10 +75,10 @@ const ChartRepair = ({ getTop5LongestRepairTime }) => {
                 },
                 tooltip: {
                     callbacks: {
-                        label: function(tooltipItem) {
-                            const value = tooltipItem.raw.toFixed(1); // Round to one decimal
-                            const label = t("personal_info.minutes"); // Label "minutes"
-                            return `${label}: ${value}`; // Display label and rounded value
+                        label: function (tooltipItem) {
+                            const value = tooltipItem.raw.toFixed(1); // Làm tròn đến một chữ số thập phân
+                            const label = t("personal_info.minutes"); // Nhãn "phút"
+                            return `${label}: ${value}`; // Hiển thị nhãn và giá trị đã làm tròn
                         }
                     }
                 }
@@ -80,9 +93,6 @@ const ChartRepair = ({ getTop5LongestRepairTime }) => {
                         borderColor: '#000',
                         borderWidth: 1
                     },
-                    border: {
-                        color: '#874e4e',
-                    }
                 },
                 y: {
                     ticks: {
@@ -92,9 +102,6 @@ const ChartRepair = ({ getTop5LongestRepairTime }) => {
                         borderColor: '#000',
                         borderWidth: 1
                     },
-                    border: {
-                        color: '#874e4e',
-                    }
                 }
             },
             layout: {
@@ -103,12 +110,13 @@ const ChartRepair = ({ getTop5LongestRepairTime }) => {
                     left: 20
                 }
             },
-            barPercentage: 1.5, 
-            categoryPercentage: 0.4, 
+            barPercentage: 1.5,
+            categoryPercentage: 0.4,
         }
     });
 
     useEffect(() => {
+        setCurrentLanguage(languages);
         if (getTop5LongestRepairTime && getTop5LongestRepairTime.length > 0) {
             const label = t("personal_info.minutes");
             setChartData(prevData => ({
@@ -141,7 +149,7 @@ const ChartRepair = ({ getTop5LongestRepairTime }) => {
                 {chartData.labels.length > 0 ? (
                     <Bar data={chartData} options={chartData.options} height={400} width={600} />
                 ) : (
-                    <Typography>No Data</Typography>
+                    <Typography>{translations[currentLanguage]?.no_data || translations["EN"].no_data}</Typography>
                 )}
             </Box>
         </Box>
