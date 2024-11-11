@@ -8,7 +8,7 @@ const DetailInfo = ({ isCheck, open, setOpen, machine, user }) => {
 
     const [t] = useTranslation("global");
     const languages = localStorage.getItem('languages');
-    console.log(isCheck);
+    // console.log(isCheck);
 
     return (
         <>

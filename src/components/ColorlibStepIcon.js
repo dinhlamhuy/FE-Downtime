@@ -34,7 +34,7 @@ const ColorlibStepIconRoot2 = styled("div")(({ theme, ownerState }) => ({
   width: 30,
   height: 30,
 
-  display: "none",
+  display: "flex",
   borderRadius: "50%",
   justifyContent: "center",
   alignItems: "center",

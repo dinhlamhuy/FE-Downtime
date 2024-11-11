@@ -56,7 +56,7 @@ const ProgressStatus = ({ listReport, user }) => {
       label: t("process_status.status_1"),
       description: t("process_status.status_1_"),
       performAction: function (status, lean, id_machine) {
-        setActiveModal("detailInfo");
+        setActiveModal("detailInfo2");
         setIdMachine(id_machine);
         setOpen(true);
       },
@@ -201,22 +201,22 @@ const ProgressStatus = ({ listReport, user }) => {
                       >
                         {steps.map((step, index) => {
                           if (index === 1) {
-                            return ( <></>
-                              // <Step 
-                              // sx={{ marginTop:'-30px', marginBottom:'-30px', marginLeft:'30px'}}
-                              //   key={index}
-                              //   onClick={() => {
-                              //     step.performAction(
-                              //       product.status,
-                              //       user.lean,
-                              //       product.id_machine
-                              //     );
-                              //   }}
-                              // >
-                              //   <StepLabel StepIconComponent={ColorlibStepIcon}>
-                              //     {/* History */}
-                              //   </StepLabel>
-                              // </Step>
+                            return ( 
+                              <Step 
+                              sx={{ marginTop:'-30px', marginBottom:'-30px', marginLeft:'30px'}}
+                                key={index}
+                                onClick={() => {
+                                  step.performAction(
+                                    product.status,
+                                    user.lean,
+                                    product.id_machine
+                                  );
+                                }}
+                              >
+                                <StepLabel StepIconComponent={ColorlibStepIcon}>
+                                  History
+                                </StepLabel>
+                              </Step>
                             );
                           } else {
                             return (
@@ -253,7 +253,7 @@ const ProgressStatus = ({ listReport, user }) => {
                   user={user}
                 />
               )}
-              {activeModal === "detailInfo" && (
+              {activeModal === "detailInfo2" && (
                 <ProgressHistoryDetailTask
                   isCheck={idMachine === product.id_machine}
                   machine={product}
