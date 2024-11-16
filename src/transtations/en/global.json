@@ -115,9 +115,9 @@
     "status_4_validate_repair_method": "Please choose repair method!",
     "status_4_validate_remark_repair_method": "Please enter the repair method!",
     "status_4_validate_space": "Please do not enter spaces!",
-    "status_4_validate_machine_new_code" : "Please enter the new machine code!",
+    "status_4_validate_machine_new_code": "Please enter the new machine code!",
     "status_4_validate_other_method": "Please enter another method!",
-    "new_code_machine":"New code Machine",
+    "new_code_machine": "New code Machine",
     "owner_mechanic": "Owner:",
     "time_fix": "Repair time:",
     "hours": "hours",
@@ -125,7 +125,9 @@
     "seconds": "seconds",
     "other_method": "Other method",
     "official": "Official:",
-    "enter_details": "Support details"
+    "enter_details": "Support details",
+    "no_response": " didn't accept of mechanic leader",
+    "reject": " didn't approve the task"
   },
   "personal_info": {
     "search_info": "Look up information",
@@ -145,9 +147,9 @@
     "time_fix": "Repair time",
     "service_repair_machine": "Service and repair machine",
     "repair_method": "Repair methods",
-    "top_machine" : "Top long repairing machine",
-    "top_breakdown" : "Top machine breakdown",
-    "minutes":  "Minutes",
+    "top_machine": "Top long repairing machine",
+    "top_breakdown": "Top machine breakdown",
+    "minutes": "Minutes",
     "frequency": "Frequency"
   },
   "scanner": {
@@ -173,15 +175,14 @@
     "close": "Close",
     "alert_table": "Please select a data row in the table!",
     "total_skills": "Total skill",
-    "total_fix" : "Total Machine Repairs",
-    "hide" : "Hide",
-    "see_more" : "See more",
-    "select_line" : "Select Line",
+    "total_fix": "Total Machine Repairs",
+    "hide": "Hide",
+    "see_more": "See more",
+    "select_line": "Select Line",
     "error_select_line": "Please select a line",
     "error_enter_remark": "Please enter a remark",
     "error_select_mechanic": "Please select a mechanic",
-     "no_select":"No Found"
-
+    "no_select": "No Found"
   },
   "employee_list": {
     "employee_list": "Employee List",
@@ -197,8 +198,8 @@
     "available": "Available",
     "fixing": "Fixing",
     "task": "Task",
-    "choose_floor" : "Choose floor",
-    "confirm":"Confirm",
+    "choose_floor": "Choose floor",
+    "confirm": "Confirm",
     "cancel": "Cancel",
     "change_floor": "Change Floor",
     "error_choose_floor": "Please select at least one floor!"
@@ -213,23 +214,23 @@
     "fixing_time": "Repairing",
     "fixed": "Done",
     "waiting": "Waiting",
-    "fixing" : "Repairing"
-    },
-    "repair_list": {
-      "repair_list": "Machinery-maintenance",
-      "name_machine": "Machine Name",
-      "machine_code": "ID Machine",
-      "workshop": "Floor",
-      "reason": "Reason",
-      "conveyor": "Line",
-      "number_of_breakdowns": "Breakdowns",
-      "total_time": "Total Time",
-      "efficiency": "Frequency",
-      "day": "Day",
-      "week": "Week",
-      "month": "Month",
-      "daily": "Daily",
-      "weekly": "Weekly",
-      "monthly": "Monthly"
-    }
+    "fixing": "Repairing"
+  },
+  "repair_list": {
+    "repair_list": "Machinery-maintenance",
+    "name_machine": "Machine Name",
+    "machine_code": "ID Machine",
+    "workshop": "Floor",
+    "reason": "Reason",
+    "conveyor": "Line",
+    "number_of_breakdowns": "Breakdowns",
+    "total_time": "Total Time",
+    "efficiency": "Frequency",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly"
+  }
 }

@@ -8,6 +8,7 @@ const Sup_DetailInfo = ({ open, setOpen, task, user }) => {
 
     const [t] = useTranslation("global");
     const languages = localStorage.getItem('languages');
+    // console.log(task)
 
     return (
         <>

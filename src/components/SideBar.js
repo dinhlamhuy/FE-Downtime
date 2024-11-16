@@ -78,7 +78,7 @@ const SideBar = ({ sideBarMenu, user, children, open, onToggle, onClose }) => {
             </Box>
             {/* Content Body */}
 
-            <Box component="nav">
+            <Box component="nav" >
                 <AppBar
                     position="static"
                     style={{
@@ -89,7 +89,7 @@ const SideBar = ({ sideBarMenu, user, children, open, onToggle, onClose }) => {
                         zIndex: "11",
                     }}
                 >
-                    <Toolbar>
+                    <Toolbar >
                         <IconButton onClick={onToggle}>
                             <MenuIcon style={{ color: "#fff" }} />
                         </IconButton>

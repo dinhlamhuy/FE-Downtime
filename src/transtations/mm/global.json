@@ -124,7 +124,9 @@
     "seconds": "စက္ကန့်",
     "other_method": "အခြားနည်းလမ်း",
     "official": "အရာရှိ:",
-    "enter_details": "ပံ့ပိုးမှုအသေးစိတ်"
+    "enter_details": "ပံ့ပိုးမှုအသေးစိတ်",
+    "no_response": " didn't accept of mechanic leader",
+    "reject": " didn't approve the task"
   },
   "personal_info": {
     "search_info": "အချက်အလက်ရှာဖွေပါ",

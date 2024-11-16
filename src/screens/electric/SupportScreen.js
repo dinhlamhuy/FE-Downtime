@@ -51,6 +51,7 @@ const SupportScreen = () => {
   const [value, setValue] = useState(0);
 
   const [t] = useTranslation("global");
+ 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -132,7 +133,7 @@ const SupportScreen = () => {
         </CustomTabPanel>
         
         <CustomTabPanel value={value} index={1}>
-          <SupportHistory historyListReport={getHistoryTaskSupport} user={user} />
+          <SupportHistory historyListReport={getHistoryTaskSupport} user={user}  />
         </CustomTabPanel>
       </Box>
     </Box>

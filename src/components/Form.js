@@ -58,9 +58,9 @@ const Form = (props) => {
     const handleAutocompleteChange = (event, values) => {
         formik.setFieldValue("remark", values);
     
-        const hasId35 = values.some((item) => item.id === 35);
+        const hasId999 = values.some((item) => item.id === 999);
         
-        if (!hasId35) {
+        if (!hasId999) {
             setAdditionalInput(""); 
             formik.setFieldValue("otherIssue", ""); 
         }
@@ -96,12 +96,12 @@ const Form = (props) => {
             )
             .min(1, t("info_machine_damage.validate_remark")),
             otherIssue: Yup.string().test(
-                "is-required-when-id-35",
+                "is-required-when-id-999",
                 t("info_machine_damage.validate_other_issue"), 
                 function(value) {
                     const { remark } = this.parent; 
-                    const hasId35 = Array.isArray(remark) && remark.some(item => item.id === 35); 
-                    if (hasId35) {
+                    const hasId999 = Array.isArray(remark) && remark.some(item => item.id === 999); 
+                    if (hasId999) {
                         return !!value;
                     }
                     return true;
@@ -480,7 +480,7 @@ const Form = (props) => {
                         </Grid>
                         <Grid item xs={6} md={6}>
                             {
-                                formik.values.remark.some((item) => item.id === 35) && (
+                                formik.values.remark.some((item) => item.id === 999) && (
                                 <TextField
                                     name="otherIssue"
                                     variant="outlined"

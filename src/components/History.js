@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Stepper,
   Step,
@@ -23,6 +23,7 @@ import DetailInfo from "./DetailInfo";
 import DetailFinish from "./DetailFinish";
 
 import { useTranslation } from "react-i18next";
+import ProgressHistoryDetailTask from "./ProgressHistoryDetailTask";
 
 export default function History({ historyListReport, user }) {
   const [historyList, setHistoryList] = useState(historyListReport || []);
@@ -31,13 +32,23 @@ export default function History({ historyListReport, user }) {
   const [idMachine, setIdMachine] = useState("");
   const [checkDate, setCheckDate] = useState("");
   const [t] = useTranslation("global");
-
+  
   const steps = [
     {
       label: t("process_status.status_1"),
       description: t("process_status.status_1_"),
       performAction: function (status, lean, id_machine, date_user_request) {
         setActiveModal("detailInfo");
+        setIdMachine(id_machine);
+        setCheckDate(date_user_request);
+        setOpen(true);
+      },
+    },
+    {
+      label: t("process_status.status_1"),
+      description: t("process_status.status_1_"),
+      performAction: function (status, lean, id_machine, date_user_request) {
+        setActiveModal("detailInfo2");
         setIdMachine(id_machine);
         setCheckDate(date_user_request);
         setOpen(true);
@@ -85,7 +96,7 @@ export default function History({ historyListReport, user }) {
     return null;
   }
   return (
-    <Stack sx={{ width: "100%" }} spacing={2}>
+    <Stack    spacing={2}>
       {historyListReport === null
         ? []
         : historyListReport.map((item, index) => (
@@ -116,10 +127,12 @@ export default function History({ historyListReport, user }) {
                       }
                       color="primary"
                     />{" "}
-                    - <Chip label={item["id_machine"]} color="primary" /> - 
-                    {item["line_req"]
-                      ? (<Chip label={item["line_req"]} color="primary" />)
-                      : ""}
+                    - <Chip label={item["id_machine"]} color="primary" /> -
+                    {item["line_req"] ? (
+                      <Chip label={item["line_req"]} color="primary" />
+                    ) : (
+                      ""
+                    )}
                   </Typography>
                 </ListItemText>
                 {historyList.includes(index) ? (
@@ -140,26 +153,52 @@ export default function History({ historyListReport, user }) {
                       sx={{ width: "100%", padding: "0 15px" }}
                     >
                       <Stepper
-                        activeStep={item["status"] - 1}
+                        activeStep={item["status"] }
                         orientation="vertical"
                       >
-                        {steps.map((step, index) => (
-                          <Step
-                            key={index}
-                            onClick={() =>
-                              step.performAction(
-                                item.status,
-                                user.lean,
-                                item.id_machine,
-                                item.date_user_request
-                              )
-                            }
-                          >
-                            <StepLabel StepIconComponent={ColorlibStepIcon}>
-                              {step.label} - {step.description}
-                            </StepLabel>
-                          </Step>
-                        ))}
+                        {steps.map((step, index) => {
+                          if (index === 1) {
+                            return (
+                              <Step
+                                sx={{
+                                  marginTop: "-30px",
+                                  marginBottom: "-30px",
+                                  marginLeft: "30px",
+                                }}
+                                key={index}
+                                onClick={() => {
+                                  step.performAction(
+                                    item.status,
+                                    user.lean,
+                                    item.id_machine
+                                  );
+                                }}
+                              >
+                                <StepLabel StepIconComponent={ColorlibStepIcon}>
+                                  History of request
+                                </StepLabel>
+                              </Step>
+                            );
+                          } else {
+                            return (
+                              <Step
+                                key={index}
+                                onClick={() =>
+                                  step.performAction(
+                                    item.status,
+                                    user.lean,
+                                    item.id_machine,
+                                    item.date_user_request
+                                  )
+                                }
+                              >
+                                <StepLabel StepIconComponent={ColorlibStepIcon}>
+                                  {step.label} - {step.description}
+                                </StepLabel>
+                              </Step>
+                            );
+                          }
+                        })}
                       </Stepper>
                     </Card>
                   </ListItem>
@@ -173,6 +212,15 @@ export default function History({ historyListReport, user }) {
                     idMachine === item.id_machine &&
                     checkDate === item.date_user_request
                   }
+                  machine={item}
+                  open={open}
+                  setOpen={setOpen}
+                  user={user}
+                />
+              )}
+              {activeModal === "detailInfo2" && (
+                <ProgressHistoryDetailTask
+                  isCheck={idMachine === item.id_machine}
                   machine={item}
                   open={open}
                   setOpen={setOpen}

@@ -50,6 +50,7 @@ const StatusScreen = () => {
 
   const [t] = useTranslation("global");
 
+
   useEffect(() => {
     
     const fetchData = async () => {
@@ -161,7 +162,7 @@ const StatusScreen = () => {
   return (
     <Box component="div">
       <BreadCrumb breadCrumb={breadCrumbText} />
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: "100%" }}  >
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={value}
@@ -186,8 +187,8 @@ const StatusScreen = () => {
         <CustomTabPanel value={value} index={0}>
           <ProgressStatus listReport={workListReportEmployee} user={user} />
         </CustomTabPanel>
-        <CustomTabPanel value={value} index={1}>
-          <History historyListReport={historyListReportMechanic} user={user} />
+        <CustomTabPanel value={value} index={1} >
+          <History historyListReport={historyListReportMechanic} user={user}  />
         </CustomTabPanel>
       </Box>
     </Box>

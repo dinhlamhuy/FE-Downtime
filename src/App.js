@@ -5,6 +5,7 @@ import LoginScreen from "./screens/LoginScreen.js";
 import { useDispatch } from "react-redux";
 import { updateInfo } from "./redux/features/auth.js";
 import { useEffect } from "react";
+import TaskScreen from "./screens/admin/TaskScreen.js";
 
 function App() {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<LoginScreen />} />
+      <Route path="/admin" element={<TaskScreen />} />
       <Route path="/electric/*" element={<ElectricScreen />} />
       <Route path="/product/*" element={<ProductionScreen />} />
     </Routes>

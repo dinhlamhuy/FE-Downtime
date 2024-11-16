@@ -125,7 +125,10 @@
     "seconds": "giây",
     "other_method": "Phương pháp khác",
     "official" : "Cán bộ:",
-    "enter_details": "Chi tiết hỗ trợ"
+    "enter_details": "Chi tiết hỗ trợ",
+    "no_response": " không phản hồi task cán bộ đã giao",
+    "reject": " đã từ chối task"
+
 
   },
   "personal_info": {

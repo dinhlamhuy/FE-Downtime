@@ -36,6 +36,7 @@ const ProgressStatus = ({ listReport, user }) => {
   const [openProgress, setOpenProgress] = useState(listReport || []);
   const [open, setOpen] = useState(false);
   const [activeModal, setActiveModal] = useState("");
+  // console.log(activeModal)
   const [scannerResult, setScannerResult] = useState("");
   // const [scannerResult, setScannerResult] = useState("IT-PC12");
   const [idMachine, setIdMachine] = useState("");
@@ -66,6 +67,7 @@ const ProgressStatus = ({ listReport, user }) => {
       description: t("process_status.status_2_"),
       performAction: function (status, lean, id_machine) {
         if (status === 1 && (lean === "TD" || lean === "TM")) {
+          console.log('trạng thái',status)
           setActiveModal("confirm");
           setIdMachine(id_machine);
           setOpen(true);
@@ -195,7 +197,8 @@ const ProgressStatus = ({ listReport, user }) => {
                     >
                       <Stepper
                         activeStep={
-                          product["status"] === 1 ? 1 : product["status"] - 1
+                          // product["status"] === 1 ? 1 :
+                           product["status"] 
                         }
                         orientation="vertical"
                       >
@@ -206,6 +209,8 @@ const ProgressStatus = ({ listReport, user }) => {
                               sx={{ marginTop:'-30px', marginBottom:'-30px', marginLeft:'30px'}}
                                 key={index}
                                 onClick={() => {
+                           
+
                                   step.performAction(
                                     product.status,
                                     user.lean,
@@ -214,7 +219,7 @@ const ProgressStatus = ({ listReport, user }) => {
                                 }}
                               >
                                 <StepLabel StepIconComponent={ColorlibStepIcon}>
-                                  History
+                                History of request
                                 </StepLabel>
                               </Step>
                             );
@@ -223,6 +228,7 @@ const ProgressStatus = ({ listReport, user }) => {
                               <Step 
                                 key={index}
                                 onClick={() => {
+                                  // console.log( product.status)
                                   step.performAction(
                                     product.status,
                                     user.lean,

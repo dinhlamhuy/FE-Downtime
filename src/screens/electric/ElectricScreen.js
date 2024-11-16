@@ -95,7 +95,8 @@ const ElectricScreen = () => {
         <React.Fragment>
             {auth.user !== null &&
                 (auth.user?.permission === 1 || auth.user?.permission === 2 || auth.user?.permission === 0) ? (
-                <SideBar
+                <SideBar 
+         
                     sideBarMenu={sideBarMenu}
                     user={auth.user}
                     open={isSidebarOpen}

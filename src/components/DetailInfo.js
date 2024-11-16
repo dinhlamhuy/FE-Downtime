@@ -8,7 +8,7 @@ const DetailInfo = ({ isCheck, open, setOpen, machine, user }) => {
 
     const [t] = useTranslation("global");
     const languages = localStorage.getItem('languages');
-    // console.log(isCheck);
+    console.log(machine);
 
     return (
         <>
@@ -62,9 +62,10 @@ const DetailInfo = ({ isCheck, open, setOpen, machine, user }) => {
                                 {machine.lean_req ? machine.lean_req : user.lean}
                             </Typography>
                         </Grid>
+                      
                         <Grid item xs={6} md={6}>
                             <Typography variant="div" sx={{ fontSize: "14px", fontWeight: "500" }}>
-                                {t("process_status.status_1_mechanic")} {" "}
+                                {machine.fixer ==='TM' ? t("info_machine_damage.mechanic") : t("info_machine_damage.electrician")}: {" "}
                             </Typography>
                             <Typography variant="div" sx={{ fontSize: "14px", color: "gray" }}>
                                 {/* {machine?.name_machanic ? machine?.name_machanic : machine?.name} */}
