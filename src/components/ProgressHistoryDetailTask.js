@@ -15,15 +15,17 @@ const ProgressHistoryDetailTask = ({
   const [t] = useTranslation("global");
   const dispatch = useDispatch();
   const { taskReceivingProcess } = useSelector((state) => state.product);
-console.log(
-
-    machine?.id_task
-    )
+// console.log(machine)
   useEffect(() => {
     const fetchData = async () => {
       if (isCheck && machine?.id_task) {
         await dispatch(
           get_task_receiving_process({ id_task: machine.id_task })
+        );
+      }
+      if (isCheck && machine?.id) {
+        await dispatch(
+          get_task_receiving_process({ id_task: machine.id })
         );
       }
     };
