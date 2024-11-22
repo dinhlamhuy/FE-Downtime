@@ -11,6 +11,7 @@ import RepairScreen from "../screens/electric/RepairListScreen";
 import OwnerUserListScreen from "../screens/electric/OwnerUserListScreen";
 import OwnerWorkListScreen from "../screens/electric/OwnerWorkListScreen";
 import SupportScreen from "../screens/electric/SupportScreen";
+import TaskScreen from "../screens/admin/TaskScreen";
 
 
 function RoutesElectric() {
@@ -32,6 +33,8 @@ function RoutesElectric() {
                     <Route path="/list-user" element={<UserlistScreen />} />    {/* copy lại code cũ */}
                     <Route path="/user" element={<InfoUserScreen />} />
                     <Route path="/status" element={<StatusScreen />} />
+                    
+                    {auth.user?.user_name==='CBTM' && (<Route path="/task" element={<TaskScreen />} />)}
                 </>
             ) : (
                 <>

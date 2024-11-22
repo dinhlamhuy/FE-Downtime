@@ -30,6 +30,35 @@ const ElectricScreen = () => {
     };
 
     let sideBarMenu = [];
+    if(auth.user?.user_name==='CBTM') {
+        sideBarMenu = [
+            {
+                icon: <WorkOutlineOutlinedIcon />,
+                text: t("sidebar.work_list"),
+                path: "/electric",
+            },
+            {
+                icon: <RecentActorsOutlinedIcon />,
+                text: t("sidebar.employee_list"),
+                path: "/electric/list-user",
+            },
+            {
+                icon: <BadgeOutlinedIcon />,
+                text: t("sidebar.info_user"),
+                path: "/electric/user",
+            },
+            {
+                icon: <AutorenewIcon />,
+                text: t("sidebar.process_status"),
+                path: "/electric/status",
+            },
+            {
+                icon: <AutorenewIcon />,
+                text: 'task',
+                path: "/electric/task",
+            }
+        ];
+    } else
     if (auth.user?.permission === 1) {
         sideBarMenu = [
             {
@@ -89,7 +118,7 @@ const ElectricScreen = () => {
                 path: "/electric/support",
             },
         ];
-    }
+    } 
 
     return (
         <React.Fragment>
