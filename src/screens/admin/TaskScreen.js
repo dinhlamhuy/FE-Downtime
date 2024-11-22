@@ -263,7 +263,7 @@ export default function TaskScreen() {
     // >
       <div>
         {/* Search Fields */}
-        <div style={{marginTop:'-4.5rem', zIndex:'9999999px', position:'fixed', right:'2rem' }}>
+        <div style={{marginTop:'-4.5rem', zIndex:'9999999', position:'fixed', right:'2rem' }}>
           <FormControl style={{ minWidth: 120 }}>
             <InputLabel id="Fac" sx={{background:'white'}}>Factory</InputLabel>
             <Select labelId="Fac"
