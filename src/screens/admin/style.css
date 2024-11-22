@@ -1,0 +1,19 @@
+.tdStyle {
+    word-break: break-all !important;
+    overflow: auto !important;
+    padding: 5px !important;
+    text-align: center !important;
+}
+.thStyle{
+
+    resize: horizontal !important;
+    overflow: auto !important;
+    background: blue !important;
+    color: #fff !important;
+    text-align: center !important;
+
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    padding-top: 4.5px !important;
+    padding-bottom: 4.5px !important;
+}

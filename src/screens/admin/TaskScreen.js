@@ -13,92 +13,14 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Typography,
+  Typography,Modal, useMediaQuery,Box
 } from "@mui/material";
 import axios from "axios";
 import { BASE_URL } from "../../utils/env";
 import ProgressHistoryDetailTask from "../../components/ProgressHistoryDetailTask";
-import { useSelector } from "react-redux";
-// import SideBar from "../../components/SideBar";
-
-// import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
-// import RecentActorsOutlinedIcon from "@mui/icons-material/RecentActorsOutlined";
-// import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
-// import AutorenewIcon from "@mui/icons-material/Autorenew";
-import { useTranslation } from "react-i18next";
-// import Diversity3OutlinedIcon from "@mui/icons-material/Diversity3Outlined";
-// import SettingsTwoToneIcon from "@mui/icons-material/SettingsTwoTone";
-
+import "./style.css";
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 export default function TaskScreen() {
-  const auth = useSelector((state) => state.auth);
-  const [t] = useTranslation("global");
-
-  // let sideBarMenu = [];
-  // if (auth.user?.permission === 1) {
-  //   sideBarMenu = [
-  //     {
-  //       icon: <WorkOutlineOutlinedIcon />,
-  //       text: "Chi tiết công việc",
-  //       path: "/admin",
-  //     },
-  //     {
-  //       icon: <WorkOutlineOutlinedIcon />,
-  //       text: t("sidebar.work_list"),
-  //       path: "/electric",
-  //     },
-  //     {
-  //       icon: <RecentActorsOutlinedIcon />,
-  //       text: t("sidebar.employee_list"),
-  //       path: "/electric/list-user",
-  //     },
-  //     {
-  //       icon: <BadgeOutlinedIcon />,
-  //       text: t("sidebar.info_user"),
-  //       path: "/electric/user",
-  //     },
-  //     {
-  //       icon: <AutorenewIcon />,
-  //       text: t("sidebar.process_status"),
-  //       path: "/electric/status",
-  //     },
-  //   ];
-  // } else if (auth.user?.permission === 0) {
-  //   sideBarMenu = [
-  //     {
-  //       icon: <WorkOutlineOutlinedIcon />,
-  //       text: t("sidebar.work_list"),
-  //       path: "/electric",
-  //     },
-  //     {
-  //       icon: <RecentActorsOutlinedIcon />,
-  //       text: t("sidebar.employee_list"),
-  //       path: "/electric/list-user",
-  //     },
-  //     {
-  //       icon: <SettingsTwoToneIcon />,
-  //       text: t("sidebar.machinery_maintenance"),
-  //       path: "/electric/list-repair",
-  //     },
-  //   ];
-  // } else if (auth.user?.permission === 2) {
-  //   sideBarMenu = [
-  //     {
-  //       icon: <AutorenewIcon />,
-  //       text: t("sidebar.process_status"),
-  //       path: "/electric/status",
-  //     },
-  //     {
-  //       icon: <BadgeOutlinedIcon />,
-  //       text: t("sidebar.info_user"),
-  //       path: "/electric/user",
-  //     },
-  //     {
-  //       icon: <Diversity3OutlinedIcon />,
-  //       text: "Danh sách hỗ trợ",
-  //       path: "/electric/support",
-  //     },
-  //   ];
-  // }
   const [data, setData] = useState([]);
   const today = new Date().toISOString().split("T")[0];
   const [factory, setFactory] = useState("LHG");
@@ -108,7 +30,8 @@ export default function TaskScreen() {
   const [open, setOpen] = useState(false);
   const [idMachine, setIdMachine] = useState("");
   // const [isSidebarOpen, setSidebarOpen] = useState(false);
-
+  const isSmallScreen = useMediaQuery("(max-width: 600px)");
+  const [openModal, setOpenModal] = useState(false);
   const [searchTerms, setSearchTerms] = useState({
     id: "",
     id_machine: "",
@@ -136,13 +59,7 @@ export default function TaskScreen() {
       return cellValue.includes(searchTerm);
     });
   });
-  // const handleSidebarToggle = () => {
-  //   setSidebarOpen(!isSidebarOpen);
-  // };
 
-  // const handleSidebarClose = () => {
-  //   setSidebarOpen(false);
-  // };
   const HandleViewHistory = (id_task) => {
     setOpen(true);
     setIdMachine(id_task);
@@ -253,629 +170,607 @@ export default function TaskScreen() {
       remark_mechanic: "",
     });
   };
+
+  const renderSearchForm = () => (
+    <div style={{ padding: "10px", background: "white", borderRadius: "8px" }}>
+      <FormControl style={{ minWidth: 120, marginBottom: "10px" }}>
+        <InputLabel id="Fac" sx={{background:'#fff'}}>Factory</InputLabel>
+        <Select
+          labelId="Fac"
+          size="small"
+          value={factory}
+          onChange={(e) => setFactory(e.target.value)}
+        >
+          <MenuItem value="LHG">LHG</MenuItem>
+          <MenuItem value="LVL">LVL</MenuItem>
+          <MenuItem value="LYV">LYV</MenuItem>
+          <MenuItem value="LYM">LYM</MenuItem>
+        </Select>
+      </FormControl>
+      <TextField
+        size="small"
+        label="Từ Ngày"
+        type="date"
+        value={fromDate}
+        onChange={(e) => setFromDate(e.target.value)}
+        InputLabelProps={{ shrink: true }}
+        style={{ marginBottom: "10px", width: "100%" }}
+      />
+      <TextField
+        size="small"
+        label="Đến Ngày"
+        type="date"
+        value={toDate}
+        onChange={(e) => setToDate(e.target.value)}
+        InputLabelProps={{ shrink: true }}
+        style={{ marginBottom: "10px", width: "100%" }}
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={fetchData}
+        style={{ marginBottom: "10px", width: "100%" }}
+      >
+        Tìm kiếm
+      </Button>
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={HandleResetFiltered}
+        style={{ width: "100%" }}
+      >
+        Reset
+      </Button>
+    </div>
+  );
+
   return (
-    // <SideBar
-    //   sideBarMenu={sideBarMenu}
-    //   user={auth.user}
-    //   open={isSidebarOpen}
-    //   onToggle={handleSidebarToggle}
-    //   onClose={handleSidebarClose}
-    // >
-      <div>
-        {/* Search Fields */}
-        <div style={{marginTop:'-4.5rem', zIndex:'9999999', position:'fixed', right:'2rem' }}>
-          <FormControl style={{ minWidth: 120 }}>
-            <InputLabel id="Fac" sx={{background:'white'}}>Factory</InputLabel>
-            <Select labelId="Fac"
-              size="small"
-              value={factory}
-              onChange={(e) => setFactory(e.target.value)}
-            >
-              <MenuItem value="LHG">LHG</MenuItem>
-              <MenuItem value="LVL">LVL</MenuItem>
-              <MenuItem value="LYV">LYV</MenuItem>
-              <MenuItem value="LYM">LYM</MenuItem>
-            </Select>
-          </FormControl>{" "}
-          &emsp;
-          <TextField
-            size="small"
-            label="Từ Ngày"
-            type="date"
-            value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            style={{ marginRight: "10px" }}
-          />
-          <TextField
-            size="small"
-            label="Đến Ngày"
-            type="date"
-            value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            style={{ marginRight: "10px" }}
-          />
-          <Button variant="contained" color="primary" onClick={fetchData}>
-            Tìm kiếm
-          </Button>
-          &emsp;
+    <div>
+    <>
           <Button
-            variant="outlined"
-            color="secondary"
-            onClick={HandleResetFiltered}
+            variant="outline"
+            sx={{color:'gray'}}
+            onClick={() => setOpenModal(true)}
+            style={{ position: "fixed", right: "2rem", marginTop: "-4.5rem", zIndex: 999999 }}
           >
-            Reset
+            <FilterAltOutlinedIcon />
           </Button>
-        </div>
-        <div sx={{ padding: "5px" }}>
-          {/* Data Table */}
-          <TableContainer
-            component={Paper}
-            sx={{
-              maxHeight: "70vh", // Giới hạn chiều cao bảng
-              overflowY: "auto", // Cuộn dọc
-            }}
+          <Modal
+            open={openModal}
+            onClose={() => setOpenModal(false)}
+            aria-labelledby="filter-modal-title"
+            aria-describedby="filter-modal-description"
           >
-            <Table
-              stickyHeader
+            <Box
               sx={{
-                tableLayout: "fixed",
-                // minWidth: "100vw",
-                // border: "1px solid black",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: !isSmallScreen ? "40%" : "90%",
              
+                bgcolor: "background.paper",
+                borderRadius: 2,
+                boxShadow: 24,
+                p: 4,
               }}
             >
-              <TableHead sx={{ background: "blue", color: "#fff" }}>
-                <TableRow sx={{ "& th": { border: "1px solid gray",   fontSize:'0.8rem', "& .MuiTypography-root":{fontSize:'0.8rem',} } }}>
-                  <TableCell
-                    onClick={() => handleSort("id")}
-                    sx={{
-                      width: "70px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",
-                      padding:'5px'
+              {renderSearchForm()}
+            </Box>
+          </Modal>
+        </>
+     
 
-                    }}
-                  >
-                    ID task{" "}
-                    {sortConfig.key === "id" &&
+      
+      <div sx={{ padding: "5px" }}>
+        {/* Data Table */}
+        <TableContainer
+          component={Paper}
+          sx={{
+            maxHeight: "75vh", // Giới hạn chiều cao bảng
+            overflowY: "auto", // Cuộn dọc
+          }}
+        >
+          <Table
+            stickyHeader
+            sx={{
+              tableLayout: "fixed",
+              // minWidth: "100vw",
+              // border: "1px solid black",
+            }}
+          >
+            <TableHead sx={{ background: "blue", color: "#fff" }}>
+              <TableRow
+                sx={{
+                  "& th": {
+                    border: "1px solid gray",
+                    fontSize: "0.8rem",
+                    "& .MuiTypography-root": { fontSize: "0.8rem" },
+                  },
+                }}
+              >
+                <TableCell
+                  onClick={() => handleSort("id")}
+                  className="thStyle"
+                  sx={{
+                    width: "70px",
+                  
+                  }}
+                >
+                  ID task{" "}
+                  {sortConfig.key === "id" &&
+                    (sortConfig.direction === "asc" ? "▲" : "▼")}
+                </TableCell>
+                <TableCell
+                className="thStyle"
+                  sx={{
+                    width: "100px",
+                  
+                  }}
+                >
+                  <Typography onClick={() => handleSort("id_machine")}>
+                    {" "}
+                    ID Máy{" "}
+                    {sortConfig.key === "id_machine" &&
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      width: "100px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",
-                      padding:'5px'
-                    }}
-                  >
-                    <Typography onClick={() => handleSort("id_machine")}>
-                      {" "}
-                      ID Máy{" "}
-                      {sortConfig.key === "id_machine" &&
-                        (sortConfig.direction === "asc" ? "▲" : "▼")}
-                    </Typography>
-                    <TextField
+                  </Typography>
+                  <TextField
+                    size="small"
+                    variant="standard"
+                    placeholder="Machine"
+                    sx={{ background: "white" }}
+                    value={searchTerms.id_machine}
+                    onChange={(e) =>
+                      setSearchTerms({
+                        ...searchTerms,
+                        id_machine: e.target.value,
+                      })
+                    }
+                  />
+                </TableCell>
+                <TableCell
+                  onClick={() => handleSort("Name_vn")}
+                  className="thStyle"
+                  sx={{
+                    width: "220px",
+                  
+                  }}
+                >
+                  Tên Máy(VN){" "}
+                  {sortConfig.key === "Name_vn" &&
+                    (sortConfig.direction === "asc" ? "▲" : "▼")}
+                </TableCell>
+                <TableCell
+                className="thStyle"
+                  sx={{
+                    width: "120px",
+                  
+                  }}
+                >
+                  <Typography onClick={() => handleSort("floor_user_request")}>
+                    {" "}
+                    Mặt lầu{" "}
+                    {sortConfig.key === "floor_user_request" &&
+                      (sortConfig.direction === "asc" ? "▲" : "▼")}
+                  </Typography>
+                  <TextField
+                    size="small"
+                    variant="standard"
+                    placeholder="Floor"
+                    sx={{ background: "white" }}
+                    value={searchTerms.floor_user_request}
+                    onChange={(e) =>
+                      setSearchTerms({
+                        ...searchTerms,
+                        floor_user_request: e.target.value,
+                      })
+                    }
+                  />
+                </TableCell>
+                <TableCell
+                className="thStyle"
+                  sx={{
+                    width: "90px",
+                  
+                  }}
+                >
+                  <Typography onClick={() => handleSort("Line")}>
+                    Line{" "}
+                    {sortConfig.key === "Line" &&
+                      (sortConfig.direction === "asc" ? "▲" : "▼")}
+                  </Typography>
+                  <TextField
+                    size="small"
+                    variant="standard"
+                    placeholder="Line"
+                    sx={{ background: "white" }}
+                    value={searchTerms.Line}
+                    onChange={(e) =>
+                      setSearchTerms({ ...searchTerms, Line: e.target.value })
+                    }
+                  />
+                </TableCell>
+                <TableCell
+                className="thStyle"
+                  sx={{
+                    width: "100px",
+                  
+                  }}
+                >
+                  <Typography onClick={() => handleSort("id_user_request")}>
+                    CBSX{" "}
+                    {sortConfig.key === "id_user_request" &&
+                      (sortConfig.direction === "asc" ? "▲" : "▼")}
+                  </Typography>
+                  <TextField
+                    size="small"
+                    variant="standard"
+                    placeholder="CBSX"
+                    sx={{ background: "white" }}
+                    value={searchTerms.id_user_request}
+                    onChange={(e) =>
+                      setSearchTerms({
+                        ...searchTerms,
+                        id_user_request: e.target.value,
+                      })
+                    }
+                  />
+                </TableCell>
+                <TableCell
+                className="thStyle"
+                  sx={{
+                    width: "100px",
+                  
+                  }}
+                >
+                  <Typography onClick={() => handleSort("fixer")}>
+                    Fixer{" "}
+                    {sortConfig.key === "fixer" &&
+                      (sortConfig.direction === "asc" ? "▲" : "▼")}
+                  </Typography>
+                  <FormControl size="small" fullWidth>
+                    <Select
                       size="small"
-                      variant="standard"
-                      placeholder="Machine"
-                      sx={{ background: "white" }}
-                      value={searchTerms.id_machine}
+                      sx={{ background: "white", height: "2rem" }}
+                      value={searchTerms.fixer}
                       onChange={(e) =>
                         setSearchTerms({
                           ...searchTerms,
-                          id_machine: e.target.value,
+                          fixer: e.target.value,
                         })
                       }
-                    />
-                  </TableCell>
-                  <TableCell
-                    onClick={() => handleSort("Name_vn")}
-                    sx={{
-                      width: "220px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",padding:'5px'
-                    }}
-                  >
-                    Tên Máy(VN){" "}
-                    {sortConfig.key === "Name_vn" &&
-                      (sortConfig.direction === "asc" ? "▲" : "▼")}
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      width: "120px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",padding:'5px'
-                    }}
-                  >
-                    <Typography
-                      onClick={() => handleSort("floor_user_request")}
                     >
-                      {" "}
-                      Mặt lầu{" "}
-                      {sortConfig.key === "floor_user_request" &&
-                        (sortConfig.direction === "asc" ? "▲" : "▼")}
-                    </Typography>
-                    <TextField
-                      size="small"
-                      variant="standard"
-                      placeholder="Floor"
-                      sx={{ background: "white" }}
-                      value={searchTerms.floor_user_request}
+                      <MenuItem value="">ALL</MenuItem>
+                      <MenuItem value="TM">TM</MenuItem>
+                      <MenuItem value="TD">TD</MenuItem>
+                    </Select>
+                  </FormControl>
+                </TableCell>
+                <TableCell
+                className="thStyle"
+                  sx={{
+                    width: "200px",
+                  
+                  }}
+                >
+                  <Typography onClick={() => handleSort("id_mechanic")}>
+                    Thợ sửa{" "}
+                    {sortConfig.key === "id_mechanic" &&
+                      (sortConfig.direction === "asc" ? "▲" : "▼")}
+                  </Typography>
+                  <TextField
+                    size="small"
+                    variant="standard"
+                    placeholder="Thợ sửa"
+                    sx={{ background: "white" }}
+                    value={searchTerms.id_mechanic}
+                    onChange={(e) =>
+                      setSearchTerms({
+                        ...searchTerms,
+                        id_mechanic: e.target.value,
+                      })
+                    }
+                  />
+                </TableCell>
+                <TableCell
+                  onClick={() => handleSort("date_user_request")}
+                  className="thStyle"
+                  sx={{
+                    width: "145px",
+                  
+                  }}
+                >
+                  Ngày Yêu Cầu{" "}
+                  {sortConfig.key === "date_user_request" &&
+                    (sortConfig.direction === "asc" ? "▲" : "▼")}
+                </TableCell>
+                <TableCell
+                  onClick={() => handleSort("accept")}
+                  className="thStyle"
+                  sx={{
+                    width: "145px",
+                  
+                  }}
+                >
+                  Ngày Xác Nhận{" "}
+                  {sortConfig.key === "accept" &&
+                    (sortConfig.direction === "asc" ? "▲" : "▼")}
+                </TableCell>
+                <TableCell
+                  onClick={() => handleSort("fixing")}
+                  className="thStyle"
+                  sx={{
+                    width: "145px",
+                  
+                  }}
+                >
+                  Ngày Sửa Chữa{" "}
+                  {sortConfig.key === "fixing" &&
+                    (sortConfig.direction === "asc" ? "▲" : "▼")}
+                </TableCell>
+                <TableCell
+                  onClick={() => handleSort("finish")}
+                  className="thStyle"
+                  sx={{
+                    width: "145px",
+                  
+                  }}
+                >
+                  Ngày Hoàn Thành{" "}
+                  {sortConfig.key === "finish" &&
+                    (sortConfig.direction === "asc" ? "▲" : "▼")}
+                </TableCell>
+                <TableCell
+                className="thStyle"
+                  sx={{
+                    width: "140px",
+                   
+                  }}
+                >
+                  <Typography onClick={() => handleSort("status")}>
+                    Trạng Thái{" "}
+                    {sortConfig.key === "status" &&
+                      (sortConfig.direction === "asc" ? "▲" : "▼")}
+                  </Typography>
+                  <FormControl size="small" fullWidth>
+                    <Select
+                      sx={{ background: "white", height: "2rem" }}
+                      value={searchTerms.status}
                       onChange={(e) =>
                         setSearchTerms({
                           ...searchTerms,
-                          floor_user_request: e.target.value,
+                          status: e.target.value,
                         })
                       }
-                    />
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      width: "90px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",padding:'5px'
-                    }}
-                  >
-                    <Typography onClick={() => handleSort("Line")}>
-                      Line{" "}
-                      {sortConfig.key === "Line" &&
-                        (sortConfig.direction === "asc" ? "▲" : "▼")}
-                    </Typography>
-                    <TextField
-                      size="small"
-                      variant="standard"
-                      placeholder="Line"
-                      sx={{ background: "white" }}
-                      value={searchTerms.Line}
-                      onChange={(e) =>
-                        setSearchTerms({ ...searchTerms, Line: e.target.value })
-                      }
-                    />
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      width: "100px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",padding:'5px'
-                    }}
-                  >
-                    <Typography onClick={() => handleSort("id_user_request")}>
-                      CBSX{" "}
-                      {sortConfig.key === "id_user_request" &&
-                        (sortConfig.direction === "asc" ? "▲" : "▼")}
-                    </Typography>
-                    <TextField
-                      size="small"
-                      variant="standard"
-                      placeholder="CBSX"
-                      sx={{ background: "white" }}
-                      value={searchTerms.id_user_request}
-                      onChange={(e) =>
-                        setSearchTerms({
-                          ...searchTerms,
-                          id_user_request: e.target.value,
-                        })
-                      }
-                    />
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      width: "100px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",padding:'5px'
-                    }}
-                  >
-                    <Typography onClick={() => handleSort("fixer")}>
-                      Fixer{" "}
-                      {sortConfig.key === "fixer" &&
-                        (sortConfig.direction === "asc" ? "▲" : "▼")}
-                    </Typography>
-                    <FormControl size="small"  fullWidth>
-                      
-                      <Select
-                        size="small"
-                        sx={{ background: "white",height:'2rem' }}
-                        value={searchTerms.fixer}
-                        onChange={(e) =>
-                          setSearchTerms({
-                            ...searchTerms,
-                            fixer: e.target.value,
-                          })
-                        }
-                      >
-                        <MenuItem value="">ALL</MenuItem>
-                        <MenuItem value="TM">TM</MenuItem>
-                        <MenuItem value="TD">TD</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      width: "200px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",padding:'5px'
-                    }}
-                  >
-                    <Typography onClick={() => handleSort("id_mechanic")}>
-                      Thợ sửa{" "}
-                      {sortConfig.key === "id_mechanic" &&
-                        (sortConfig.direction === "asc" ? "▲" : "▼")}
-                    </Typography>
-                    <TextField
-                      size="small"
-                      variant="standard"
-                      placeholder="Thợ sửa"
-                      sx={{ background: "white" }}
-                      value={searchTerms.id_mechanic}
-                      onChange={(e) =>
-                        setSearchTerms({
-                          ...searchTerms,
-                          id_mechanic: e.target.value,
-                        })
-                      }
-                    />
-                  </TableCell>
-                  <TableCell
-                    onClick={() => handleSort("date_user_request")}
-                    sx={{
-                      width: "145px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",padding:'5px'
-                    }}
-                  >
-                    Ngày Yêu Cầu{" "}
-                    {sortConfig.key === "date_user_request" &&
+                    >
+                      <MenuItem value="">ALL</MenuItem>
+                      <MenuItem value="1">REQUESTED</MenuItem>
+                      <MenuItem value="2">CONFIRMED</MenuItem>
+                      <MenuItem value="3">FIXING</MenuItem>
+                      <MenuItem value="4">FINISH</MenuItem>
+                    </Select>
+                  </FormControl>
+                </TableCell>
+                <TableCell
+                className="thStyle"
+                  sx={{
+                    width: "200px",
+                  
+                  }}
+                >
+                  <Typography onClick={() => handleSort("id_owner")}>
+                    Cán bộ thợ{" "}
+                    {sortConfig.key === "id_owner" &&
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
-                  </TableCell>
+                  </Typography>
+                  <TextField
+                    size="small"
+                    variant="standard"
+                    placeholder="Owner"
+                    sx={{ background: "white" }}
+                    value={searchTerms.id_owner}
+                    onChange={(e) =>
+                      setSearchTerms({
+                        ...searchTerms,
+                        id_owner: e.target.value,
+                      })
+                    }
+                  />
+                </TableCell>
+
+                <TableCell
+                  onClick={() => handleSort("info_reason_vn")}
+                  sx={{
+                    width: "150px",
+                    textAlign: "center",
+                    resize: "horizontal",
+                    overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
+                  }}
+                >
+                  Lỗi máy{" "}
+                  {sortConfig.key === "info_reason_vn" &&
+                    (sortConfig.direction === "asc" ? "▲" : "▼")}
+                </TableCell>
+                <TableCell
+                  onClick={() => handleSort("info_skill_vn")}
+                  sx={{
+                    width: "110px",
+                    textAlign: "center",
+                    resize: "horizontal",
+                    overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
+                  }}
+                >
+                  PP sửa chữa{" "}
+                  {sortConfig.key === "info_skill_vn" &&
+                    (sortConfig.direction === "asc" ? "▲" : "▼")}
+                </TableCell>
+                <TableCell
+                  onClick={() => handleSort("remark_mechanic")}
+                  sx={{
+                    width: "110px",
+                    textAlign: "center",
+                    resize: "horizontal",
+                    overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
+                  }}
+                >
+                  Ghi chú{" "}
+                  {sortConfig.key === "remark_mechanic" &&
+                    (sortConfig.direction === "asc" ? "▲" : "▼")}
+                </TableCell>
+
+                <TableCell
+                  sx={{
+                    width: "110px",
+                    background: "blue",
+                    color: "#fff",
+                    textAlign: "center",
+                  }}
+                >
+                  Lịch sử
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody
+              sx={{
+                "& td": {
+                  border: "1px solid gray",
+                  fontSize: "0.8rem",
+                  "& .MuiTypography-root": { fontSize: "0.8rem" },
+                },
+              }}
+            >
+              {getProcessedData().map((row, index) => (
+                <TableRow
+                  key={index}
+                  sx={{
+                    background: index % 2 === 0 ? "white" : "#FFE3E3",
+                    "& td": {
+                      // border: "1px solid black",
+                      color:
+                        row.status == "1"
+                          ? "red"
+                          : row.status == "2"
+                          ? "orange"
+                          : row.status == "3"
+                          ? "Green"
+                          : "blue", // Border cho các ô trong Body
+                    },
+                  }}
+                >
                   <TableCell
-                    onClick={() => handleSort("accept")}
                     sx={{
-                      width: "145px",
-                      textAlign: "center",
-                      resize: "horizontal",
+                      wordBreak: "break-all",
                       overflow: "auto",
-                      background: "blue",
-                      color: "#fff",padding:'5px'
+                      textAlign: "center",
+                      padding: 0,
                     }}
                   >
-                    Ngày Xác Nhận{" "}
-                    {sortConfig.key === "accept" &&
-                      (sortConfig.direction === "asc" ? "▲" : "▼")}
+                    {row.id}
                   </TableCell>
-                  <TableCell
-                    onClick={() => handleSort("fixing")}
-                    sx={{
-                      width: "145px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",padding:'5px'
-                    }}
-                  >
-                    Ngày Sửa Chữa{" "}
-                    {sortConfig.key === "fixing" &&
-                      (sortConfig.direction === "asc" ? "▲" : "▼")}
-                  </TableCell>
-                  <TableCell
-                    onClick={() => handleSort("finish")}
-                    sx={{
-                      width: "145px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",padding:'5px'
-                    }}
-                  >
-                    Ngày Hoàn Thành{" "}
-                    {sortConfig.key === "finish" &&
-                      (sortConfig.direction === "asc" ? "▲" : "▼")}
-                  </TableCell>
+                  <TableCell className="tdStyle">{row.id_machine}</TableCell>
                   <TableCell
                     sx={{
-                      width: "140px",
-                      textAlign: "center",
-                      resize: "horizontal",
+                      wordBreak: "break-all",
                       overflow: "auto",
-                      background: "blue",
-                      color: "#fff"
+                      padding: "3px",
                     }}
                   >
-                    <Typography onClick={() => handleSort("status")}>
-                      Trạng Thái{" "}
-                      {sortConfig.key === "status" &&
-                        (sortConfig.direction === "asc" ? "▲" : "▼")}
-                    </Typography>
-                    <FormControl size="small" sx={{ m: 1 }} fullWidth>
-                      
-                      <Select
-                       
-                        sx={{ background: "white", height:'2rem' }}
-                        value={searchTerms.status}
-                        onChange={(e) =>
-                          setSearchTerms({
-                            ...searchTerms,
-                            status: e.target.value,
-                          })
-                        }
-                      >
-                        <MenuItem value="">ALL</MenuItem>
-                        <MenuItem value="1">REQUESTED</MenuItem>
-                        <MenuItem value="2">CONFIRMED</MenuItem>
-                        <MenuItem value="3">FIXING</MenuItem>
-                        <MenuItem value="4">FINISH</MenuItem>
-                      </Select>
-                    </FormControl>
+                    {row.Name_vn}
+                  </TableCell>
+                  <TableCell className="tdStyle">
+                    {row.floor_user_request}
+                  </TableCell>
+                  <TableCell className="tdStyle">{row.Line}</TableCell>
+                  <TableCell className="tdStyle">
+                    {row.id_user_request}
+                  </TableCell>
+                  <TableCell className="tdStyle">{row.fixer}</TableCell>
+
+                  <TableCell className="tdStyle">
+                    {row.id_mechanic &&
+                      row.id_mechanic + " - " + row.name_mechanic}
+                  </TableCell>
+                  <TableCell className="tdStyle">
+                    {row.date_user_request && formatDate(row.date_user_request)}
+                  </TableCell>
+                  <TableCell className="tdStyle">
+                    {row.accept && formatDate(row.accept)}
+                  </TableCell>
+                  <TableCell className="tdStyle">
+                    {row.fixing && formatDate(row.fixing)}
+                  </TableCell>
+                  <TableCell className="tdStyle">
+                    {row.finish && formatDate(row.finish)}
                   </TableCell>
                   <TableCell
-                    sx={{
-                      width: "200px",
+                    className="tdStyle"
+                    style={{
+                      fontWeight: "bold",
                       textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",padding:'5px'
+                      padding: 0,
+                      color:
+                        row.status == "1"
+                          ? "red"
+                          : row.status == "2"
+                          ? "orange"
+                          : row.status == "3"
+                          ? "Green"
+                          : "blue",
                     }}
                   >
-                    <Typography onClick={() => handleSort("id_owner")}>
-                      Cán bộ thợ{" "}
-                      {sortConfig.key === "id_owner" &&
-                        (sortConfig.direction === "asc" ? "▲" : "▼")}
-                    </Typography>
-                    <TextField
-                      size="small"
-                      variant="standard"
-                      placeholder="Owner"
-                      sx={{ background: "white" }}
-                      value={searchTerms.id_owner}
-                      onChange={(e) =>
-                        setSearchTerms({
-                          ...searchTerms,
-                          id_owner: e.target.value,
-                        })
-                      }
-                    />
+                    {row.status === 1
+                      ? "REQUESTED"
+                      : row.status === 2
+                      ? "CONFIRMED"
+                      : row.status === 3
+                      ? "FIXING"
+                      : "FINISH"}
+                  </TableCell>
+                  <TableCell className="tdStyle">
+                    {row.id_owner && row.id_owner + " - " + row.name_owner}
+                  </TableCell>
+                  <TableCell className="tdStyle">
+                    {row.info_reason_vn}{" "}
+                    {row.other_reason && "(" + row.other_reason + ")"}
                   </TableCell>
 
-                  <TableCell
-                    onClick={() => handleSort("info_reason_vn")}
-                    sx={{
-                      width: "150px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",
-                    }}
-                  >
-                    Lỗi máy{" "}
-                    {sortConfig.key === "info_reason_vn" &&
-                      (sortConfig.direction === "asc" ? "▲" : "▼")}
+                  <TableCell className="tdStyle">
+                    {row.info_skill_vn}
+                    {row.other_skill && "(" + row.other_skill + ")"}
                   </TableCell>
-                  <TableCell
-                    onClick={() => handleSort("info_skill_vn")}
-                    sx={{
-                      width: "110px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",
-                    }}
-                  >
-                    PP sửa chữa{" "}
-                    {sortConfig.key === "info_skill_vn" &&
-                      (sortConfig.direction === "asc" ? "▲" : "▼")}
-                  </TableCell>
-                  <TableCell
-                    onClick={() => handleSort("remark_mechanic")}
-                    sx={{
-                      width: "110px",
-                      textAlign: "center",
-                      resize: "horizontal",
-                      overflow: "auto",
-                      background: "blue",
-                      color: "#fff",
-                    }}
-                  >
-                    Ghi chú{" "}
-                    {sortConfig.key === "remark_mechanic" &&
-                      (sortConfig.direction === "asc" ? "▲" : "▼")}
+                  <TableCell className="tdStyle">
+                    {row.remark_mechanic}
                   </TableCell>
 
-                  <TableCell
-                    sx={{
-                      width: "110px",
-                      background: "blue",
-                      color: "#fff",
-                      textAlign: "center",
-                
-                    }}
-                  >
-                    Lịch sử
+                  <TableCell sx={{ padding: "0", fontSize: "0.8rem" }}>
+                    <Button
+                      sx={{ width: "100%", fontSize: "0.8rem" }}
+                      onClick={() => HandleViewHistory(row.id)}
+                    >
+                      Lịch sử
+                    </Button>
+                    {activeModal && (
+                      <ProgressHistoryDetailTask
+                        isCheck={idMachine === row.id}
+                        machine={row}
+                        open={open}
+                        setOpen={setOpen}
+                        user={""}
+                      />
+                    )}
                   </TableCell>
                 </TableRow>
-  
-              </TableHead>
-              <TableBody sx={{ "& td": { border: "1px solid gray",   fontSize:'0.8rem', "& .MuiTypography-root":{fontSize:'0.8rem',} } }}>
-                {getProcessedData().map((row, index) => (
-                  <TableRow
-                    key={index}
-                    sx={{ background:index % 2===0 ? 'white':'#FFE3E3',
-                      "& td": {
-                        // border: "1px solid black",
-                        color:
-                          row.status == "1"
-                            ? "red"
-                            : row.status == "2"
-                            ? "orange"
-                            : row.status == "3"
-                            ? "Green"
-                            : "blue", // Border cho các ô trong Body
-                      },
-                    }}
-                  >
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto", textAlign: "center", padding:0, }}
-                    >
-                      {row.id}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto", textAlign: "center", padding:'3px' }}
-                    >
-                      {row.id_machine}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto", padding:'3px' }}
-                    >
-                      {row.Name_vn}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto", textAlign: "center", padding:0, }}
-                    >
-                      {row.floor_user_request}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto", textAlign: "center", padding:0, }}
-                    >
-                      {row.Line}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto", textAlign: "center", padding:0, }}
-                    >
-                      {row.id_user_request}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto",   textAlign: "center", padding:0, }}
-                    >
-                      {row.fixer}
-                    </TableCell>
-
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto",padding:'5px' }}
-                    >
-                      {row.id_mechanic &&
-                        row.id_mechanic + " - " + row.name_mechanic}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto",padding:'5px', textAlign:'center' }}
-                    >
-                      {row.date_user_request &&
-                        formatDate(row.date_user_request)}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto",padding:'5px', textAlign:'center' }}
-                    >
-                      {row.accept && formatDate(row.accept)}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto",padding:'5px', textAlign:'center' }}
-                    >
-                      {row.fixing && formatDate(row.fixing)}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto",padding:'5px', textAlign:'center' }}
-                    >
-                      {row.finish && formatDate(row.finish)}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto",padding:'5px' }}
-                      style={{
-                        fontWeight: "bold",
-                        textAlign: "center", padding:0,
-                        color:
-                          row.status == "1"
-                            ? "red"
-                            : row.status == "2"
-                            ? "orange"
-                            : row.status == "3"
-                            ? "Green"
-                            : "blue",
-                      }}
-                    >
-                      {row.status === 1
-                        ? "REQUESTED"
-                        : row.status === 2
-                        ? "CONFIRMED"
-                        : row.status === 3
-                        ? "FIXING"
-                        : "FINISH"}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto",padding:'5px' }}
-                    >
-                      {row.id_owner && row.id_owner + " - " + row.name_owner}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto",textAlign: "center", padding:'5px' }}
-                    >
-                      {row.info_reason_vn}{" "}
-                      {row.other_reason && "(" + row.other_reason + ")"}
-                    </TableCell>
-
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto",textAlign: "center", padding:'5px' }}
-                    >
-                      {row.info_skill_vn}
-                      {row.other_skill && "(" + row.other_skill + ")"}
-                    </TableCell>
-                    <TableCell
-                      sx={{ wordBreak: "break-all", overflow: "auto",padding:'5px', textAlign:'center' }}
-                    >
-                      {row.remark_mechanic}
-                    </TableCell>
-
-                    <TableCell sx={{      padding:'0', fontSize:'0.8rem'}}>
-                      <Button sx={{width:'100%', fontSize:'0.8rem'}} onClick={() => HandleViewHistory(row.id)}>
-                        Lịch sử
-                      </Button>
-                      {activeModal && (
-                        <ProgressHistoryDetailTask
-                          isCheck={idMachine === row.id}
-                          machine={row}
-                          open={open}
-                          setOpen={setOpen}
-                          user={""}
-                        />
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
-    // </SideBar>
+    </div>
   );
 }
