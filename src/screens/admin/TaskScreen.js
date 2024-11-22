@@ -13,13 +13,18 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Typography,Modal, useMediaQuery,Box
+  Typography,
+  Modal,
+  useMediaQuery,
+  Box,
 } from "@mui/material";
 import axios from "axios";
 import { BASE_URL } from "../../utils/env";
 import ProgressHistoryDetailTask from "../../components/ProgressHistoryDetailTask";
 import "./style.css";
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
+import { useTranslation } from "react-i18next";
 export default function TaskScreen() {
   const [data, setData] = useState([]);
   const today = new Date().toISOString().split("T")[0];
@@ -32,6 +37,8 @@ export default function TaskScreen() {
   // const [isSidebarOpen, setSidebarOpen] = useState(false);
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
   const [openModal, setOpenModal] = useState(false);
+  const [t] = useTranslation("global");
+  const languages = localStorage.getItem('languages');
   const [searchTerms, setSearchTerms] = useState({
     id: "",
     id_machine: "",
@@ -174,7 +181,9 @@ export default function TaskScreen() {
   const renderSearchForm = () => (
     <div style={{ padding: "10px", background: "white", borderRadius: "8px" }}>
       <FormControl style={{ minWidth: 120, marginBottom: "10px" }}>
-        <InputLabel id="Fac" sx={{background:'#fff'}}>Factory</InputLabel>
+        <InputLabel id="Fac" sx={{ background: "#fff" }}>
+          Factory
+        </InputLabel>
         <Select
           labelId="Fac"
           size="small"
@@ -189,7 +198,7 @@ export default function TaskScreen() {
       </FormControl>
       <TextField
         size="small"
-        label="Từ Ngày"
+        label={t("personal_info.date_from")}
         type="date"
         value={fromDate}
         onChange={(e) => setFromDate(e.target.value)}
@@ -198,7 +207,7 @@ export default function TaskScreen() {
       />
       <TextField
         size="small"
-        label="Đến Ngày"
+        label={t("personal_info.date_to")}
         type="date"
         value={toDate}
         onChange={(e) => setToDate(e.target.value)}
@@ -211,7 +220,7 @@ export default function TaskScreen() {
         onClick={fetchData}
         style={{ marginBottom: "10px", width: "100%" }}
       >
-        Tìm kiếm
+        {t("personal_info.btn_search")}
       </Button>
       <Button
         variant="outlined"
@@ -226,42 +235,45 @@ export default function TaskScreen() {
 
   return (
     <div>
-    <>
-          <Button
-            variant="outline"
-            sx={{color:'gray'}}
-            onClick={() => setOpenModal(true)}
-            style={{ position: "fixed", right: "2rem", marginTop: "-4.5rem", zIndex: 999999 }}
-          >
-            <FilterAltOutlinedIcon />
-          </Button>
-          <Modal
-            open={openModal}
-            onClose={() => setOpenModal(false)}
-            aria-labelledby="filter-modal-title"
-            aria-describedby="filter-modal-description"
-          >
-            <Box
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: !isSmallScreen ? "40%" : "90%",
-             
-                bgcolor: "background.paper",
-                borderRadius: 2,
-                boxShadow: 24,
-                p: 4,
-              }}
-            >
-              {renderSearchForm()}
-            </Box>
-          </Modal>
-        </>
-     
+      <>
+        <Button
+          variant="outline"
+          sx={{ color: "gray" }}
+          onClick={() => setOpenModal(true)}
+          style={{
+            position: "fixed",
+            right: "2rem",
+            marginTop: "-4.5rem",
+            zIndex: 999999,
+          }}
+        >
+          <FilterAltOutlinedIcon />
+        </Button>
+        <Modal
+          open={openModal}
+          onClose={() => setOpenModal(false)}
+          aria-labelledby="filter-modal-title"
+          aria-describedby="filter-modal-description"
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: !isSmallScreen ? "40%" : "90%",
 
-      
+              bgcolor: "background.paper",
+              borderRadius: 2,
+              boxShadow: 24,
+              p: 4,
+            }}
+          >
+            {renderSearchForm()}
+          </Box>
+        </Modal>
+      </>
+
       <div sx={{ padding: "5px" }}>
         {/* Data Table */}
         <TableContainer
@@ -294,23 +306,21 @@ export default function TaskScreen() {
                   className="thStyle"
                   sx={{
                     width: "70px",
-                  
                   }}
                 >
-                  ID task{" "}
+                  ID {t("employee_list.task")}
                   {sortConfig.key === "id" &&
                     (sortConfig.direction === "asc" ? "▲" : "▼")}
                 </TableCell>
                 <TableCell
-                className="thStyle"
+                  className="thStyle"
                   sx={{
                     width: "100px",
-                  
                   }}
                 >
                   <Typography onClick={() => handleSort("id_machine")}>
                     {" "}
-                    ID Máy{" "}
+                    {t("info_machine_damage.id_machine")}
                     {sortConfig.key === "id_machine" &&
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
                   </Typography>
@@ -333,23 +343,21 @@ export default function TaskScreen() {
                   className="thStyle"
                   sx={{
                     width: "220px",
-                  
                   }}
                 >
-                  Tên Máy(VN){" "}
+                  {t("info_machine_damage.name_machine")}
                   {sortConfig.key === "Name_vn" &&
                     (sortConfig.direction === "asc" ? "▲" : "▼")}
                 </TableCell>
                 <TableCell
-                className="thStyle"
+                  className="thStyle"
                   sx={{
                     width: "120px",
-                  
                   }}
                 >
                   <Typography onClick={() => handleSort("floor_user_request")}>
-                    {" "}
-                    Mặt lầu{" "}
+                    {t("info_machine_damage.floor")}
+
                     {sortConfig.key === "floor_user_request" &&
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
                   </Typography>
@@ -368,14 +376,13 @@ export default function TaskScreen() {
                   />
                 </TableCell>
                 <TableCell
-                className="thStyle"
+                  className="thStyle"
                   sx={{
                     width: "90px",
-                  
                   }}
                 >
                   <Typography onClick={() => handleSort("Line")}>
-                    Line{" "}
+                    {t("repair_status.conveyor")}
                     {sortConfig.key === "Line" &&
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
                   </Typography>
@@ -391,14 +398,14 @@ export default function TaskScreen() {
                   />
                 </TableCell>
                 <TableCell
-                className="thStyle"
+                  className="thStyle"
                   sx={{
                     width: "100px",
-                  
                   }}
                 >
                   <Typography onClick={() => handleSort("id_user_request")}>
-                    CBSX{" "}
+                    {t("process_status.status_1_user_request")}
+
                     {sortConfig.key === "id_user_request" &&
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
                   </Typography>
@@ -417,10 +424,9 @@ export default function TaskScreen() {
                   />
                 </TableCell>
                 <TableCell
-                className="thStyle"
+                  className="thStyle"
                   sx={{
                     width: "100px",
-                  
                   }}
                 >
                   <Typography onClick={() => handleSort("fixer")}>
@@ -447,14 +453,13 @@ export default function TaskScreen() {
                   </FormControl>
                 </TableCell>
                 <TableCell
-                className="thStyle"
+                  className="thStyle"
                   sx={{
                     width: "200px",
-                  
                   }}
                 >
                   <Typography onClick={() => handleSort("id_mechanic")}>
-                    Thợ sửa{" "}
+                    {t("process_status.status_3")}
                     {sortConfig.key === "id_mechanic" &&
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
                   </Typography>
@@ -477,10 +482,9 @@ export default function TaskScreen() {
                   className="thStyle"
                   sx={{
                     width: "145px",
-                  
                   }}
                 >
-                  Ngày Yêu Cầu{" "}
+                  {t("process_status.status_1_date")}
                   {sortConfig.key === "date_user_request" &&
                     (sortConfig.direction === "asc" ? "▲" : "▼")}
                 </TableCell>
@@ -489,10 +493,10 @@ export default function TaskScreen() {
                   className="thStyle"
                   sx={{
                     width: "145px",
-                  
                   }}
                 >
-                  Ngày Xác Nhận{" "}
+                  {" "}
+                  {t("process_status.status_4_confirm")}
                   {sortConfig.key === "accept" &&
                     (sortConfig.direction === "asc" ? "▲" : "▼")}
                 </TableCell>
@@ -501,10 +505,9 @@ export default function TaskScreen() {
                   className="thStyle"
                   sx={{
                     width: "145px",
-                  
                   }}
                 >
-                  Ngày Sửa Chữa{" "}
+                  {t("process_status.status_3_")}
                   {sortConfig.key === "fixing" &&
                     (sortConfig.direction === "asc" ? "▲" : "▼")}
                 </TableCell>
@@ -513,22 +516,22 @@ export default function TaskScreen() {
                   className="thStyle"
                   sx={{
                     width: "145px",
-                  
                   }}
                 >
-                  Ngày Hoàn Thành{" "}
+                  {t("info_machine_damage.alert_success")}
+
                   {sortConfig.key === "finish" &&
                     (sortConfig.direction === "asc" ? "▲" : "▼")}
                 </TableCell>
                 <TableCell
-                className="thStyle"
+                  className="thStyle"
                   sx={{
                     width: "140px",
-                   
                   }}
                 >
                   <Typography onClick={() => handleSort("status")}>
-                    Trạng Thái{" "}
+                    {t("employee_list.active_status")}
+
                     {sortConfig.key === "status" &&
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
                   </Typography>
@@ -552,14 +555,13 @@ export default function TaskScreen() {
                   </FormControl>
                 </TableCell>
                 <TableCell
-                className="thStyle"
+                  className="thStyle"
                   sx={{
                     width: "200px",
-                  
                   }}
                 >
                   <Typography onClick={() => handleSort("id_owner")}>
-                    Cán bộ thợ{" "}
+                    {t("process_status.official")}
                     {sortConfig.key === "id_owner" &&
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
                   </Typography>
@@ -589,7 +591,7 @@ export default function TaskScreen() {
                     color: "#fff",
                   }}
                 >
-                  Lỗi máy{" "}
+                  {t("repair_list.reason")}
                   {sortConfig.key === "info_reason_vn" &&
                     (sortConfig.direction === "asc" ? "▲" : "▼")}
                 </TableCell>
@@ -604,7 +606,7 @@ export default function TaskScreen() {
                     color: "#fff",
                   }}
                 >
-                  PP sửa chữa{" "}
+                  {t("personal_info.method_machine")}
                   {sortConfig.key === "info_skill_vn" &&
                     (sortConfig.direction === "asc" ? "▲" : "▼")}
                 </TableCell>
@@ -619,20 +621,21 @@ export default function TaskScreen() {
                     color: "#fff",
                   }}
                 >
-                  Ghi chú{" "}
+                  {t("work_list.remark")}
+
                   {sortConfig.key === "remark_mechanic" &&
                     (sortConfig.direction === "asc" ? "▲" : "▼")}
                 </TableCell>
 
                 <TableCell
                   sx={{
-                    width: "110px",
+                    width: "70px",
                     background: "blue",
                     color: "#fff",
                     textAlign: "center",
                   }}
                 >
-                  Lịch sử
+                  {t("process_status.history")}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -736,12 +739,13 @@ export default function TaskScreen() {
                     {row.id_owner && row.id_owner + " - " + row.name_owner}
                   </TableCell>
                   <TableCell className="tdStyle">
-                    {row.info_reason_vn}{" "}
+                    {/* {row.info_reason_vn}{" "} */}
+                    {languages ==='VN' ?  row.info_reason_vn : row.info_reason_en}
                     {row.other_reason && "(" + row.other_reason + ")"}
                   </TableCell>
 
                   <TableCell className="tdStyle">
-                    {row.info_skill_vn}
+                    {languages ==='VN' ?  row.info_skill_vn : row.info_skill_en}
                     {row.other_skill && "(" + row.other_skill + ")"}
                   </TableCell>
                   <TableCell className="tdStyle">
@@ -753,7 +757,7 @@ export default function TaskScreen() {
                       sx={{ width: "100%", fontSize: "0.8rem" }}
                       onClick={() => HandleViewHistory(row.id)}
                     >
-                      Lịch sử
+                      <RemoveRedEyeOutlinedIcon />
                     </Button>
                     {activeModal && (
                       <ProgressHistoryDetailTask
