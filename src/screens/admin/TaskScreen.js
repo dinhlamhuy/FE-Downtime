@@ -50,7 +50,6 @@ export default function TaskScreen() {
   });
 
   const filteredData = data.filter((row) => {
-    
     return Object.keys(searchTerms).every((key) => {
       const searchTerm = searchTerms[key].toLowerCase();
       const cellValue = String(row[key] || "").toLowerCase();
@@ -60,8 +59,8 @@ export default function TaskScreen() {
 
   const HandleViewHistory = (id_task) => {
     setOpen(true);
-    setIdMachine(id_task)
-    setActiveModal(true)
+    setIdMachine(id_task);
+    setActiveModal(true);
     // console.log('hehe', id_task)
   };
 
@@ -83,25 +82,25 @@ export default function TaskScreen() {
           todate: toDate,
         },
       });
-      setSearchTerms({
-        id: "",
-        id_machine: "",
-        Name_vn: "",
-        floor_user_request: "",
-        Line: "",
-        name_user_request: "",
-        fixer: "",
-        id_mechanic: "",
-        date_user_request: "",
-        accept: "",
-        fixing: "",
-        finish: "",
-        status: "",
-        id_owner: "",
-        info_reason_vn: "",
-        info_skill_vn: "",
-        remark_mechanic: "",
-      });
+      // setSearchTerms({
+      //   id: "",
+      //   id_machine: "",
+      //   Name_vn: "",
+      //   floor_user_request: "",
+      //   Line: "",
+      //   name_user_request: "",
+      //   fixer: "",
+      //   id_mechanic: "",
+      //   date_user_request: "",
+      //   accept: "",
+      //   fixing: "",
+      //   finish: "",
+      //   status: "",
+      //   id_owner: "",
+      //   info_reason_vn: "",
+      //   info_skill_vn: "",
+      //   remark_mechanic: "",
+      // });
       setData(response.data.data || []);
     } catch (error) {
       console.error("Lỗi khi gọi API:", error);
@@ -147,6 +146,27 @@ export default function TaskScreen() {
     return filteredData;
   };
 
+  const HandleResetFiltered=()=>{
+     setSearchTerms({
+        id: "",
+        id_machine: "",
+        Name_vn: "",
+        floor_user_request: "",
+        Line: "",
+        name_user_request: "",
+        fixer: "",
+        id_mechanic: "",
+        date_user_request: "",
+        accept: "",
+        fixing: "",
+        finish: "",
+        status: "",
+        id_owner: "",
+        info_reason_vn: "",
+        info_skill_vn: "",
+        remark_mechanic: "",
+      });
+  }
   return (
     <div style={{ width: "99vw", padding: "7px" }}>
       {/* Search Fields */}
@@ -185,12 +205,22 @@ export default function TaskScreen() {
         />
         <Button variant="contained" color="primary" onClick={fetchData}>
           Tìm kiếm
+        </Button>&emsp;
+        <Button variant="outlined" color="secondary" onClick={HandleResetFiltered}>
+         Reset
         </Button>
       </div>
       <div sx={{ padding: "5px" }}>
         {/* Data Table */}
-        <TableContainer component={Paper} sx={{ width: "100%" }}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            maxHeight: "90vh", // Giới hạn chiều cao bảng
+            overflowY: "auto", // Cuộn dọc
+          }}
+        >
           <Table
+            stickyHeader
             sx={{
               tableLayout: "fixed",
               minWidth: "100vw",
@@ -207,6 +237,8 @@ export default function TaskScreen() {
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   ID task{" "}
@@ -220,6 +252,8 @@ export default function TaskScreen() {
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   <Typography onClick={() => handleSort("id_machine")}>
@@ -250,6 +284,8 @@ export default function TaskScreen() {
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   Tên Máy(VN){" "}
@@ -263,6 +299,8 @@ export default function TaskScreen() {
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   <Typography onClick={() => handleSort("floor_user_request")}>
@@ -292,6 +330,8 @@ export default function TaskScreen() {
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   <Typography onClick={() => handleSort("Line")}>
@@ -318,6 +358,8 @@ export default function TaskScreen() {
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   <Typography onClick={() => handleSort("id_user_request")}>
@@ -346,6 +388,8 @@ export default function TaskScreen() {
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   <Typography onClick={() => handleSort("fixer")}>
@@ -380,6 +424,8 @@ export default function TaskScreen() {
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   <Typography onClick={() => handleSort("id_mechanic")}>
@@ -409,6 +455,7 @@ export default function TaskScreen() {
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
                   }}
                 >
                   Ngày Yêu Cầu{" "}
@@ -423,6 +470,7 @@ export default function TaskScreen() {
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
                   }}
                 >
                   Ngày Xác Nhận{" "}
@@ -433,10 +481,12 @@ export default function TaskScreen() {
                   onClick={() => handleSort("fixing")}
                   sx={{
                     width: "115px",
-                    color: "#fff",
+
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   Ngày Sửa Chữa{" "}
@@ -447,10 +497,12 @@ export default function TaskScreen() {
                   onClick={() => handleSort("finish")}
                   sx={{
                     width: "115px",
-                    color: "#fff",
+
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   Ngày Hoàn Thành{" "}
@@ -460,10 +512,12 @@ export default function TaskScreen() {
                 <TableCell
                   sx={{
                     width: "100px",
-                    color: "#fff",
+
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   <Typography onClick={() => handleSort("status")}>
@@ -495,10 +549,12 @@ export default function TaskScreen() {
                 <TableCell
                   sx={{
                     width: "200px",
-                    color: "#fff",
+
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   <Typography onClick={() => handleSort("id_owner")}>
@@ -525,10 +581,12 @@ export default function TaskScreen() {
                   onClick={() => handleSort("info_reason_vn")}
                   sx={{
                     width: "150px",
-                    color: "#fff",
+
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   Lỗi máy{" "}
@@ -539,10 +597,12 @@ export default function TaskScreen() {
                   onClick={() => handleSort("info_skill_vn")}
                   sx={{
                     width: "110px",
-                    color: "#fff",
+
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   PP sửa chữa{" "}
@@ -553,10 +613,12 @@ export default function TaskScreen() {
                   onClick={() => handleSort("remark_mechanic")}
                   sx={{
                     width: "110px",
-                    color: "#fff",
+
                     textAlign: "center",
                     resize: "horizontal",
                     overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
                   Ghi chú{" "}
@@ -565,7 +627,7 @@ export default function TaskScreen() {
                 </TableCell>
 
                 <TableCell
-                  sx={{ width: "80px", color: "#fff", textAlign: "center" }}
+                  sx={{ width: "80px",background: "blue", color: "#fff" , textAlign: "center" }}
                 >
                   Lịch sử
                 </TableCell>
@@ -687,13 +749,15 @@ export default function TaskScreen() {
                     <Button onClick={() => HandleViewHistory(row.id)}>
                       Lịch sử
                     </Button>
-                    {activeModal && <ProgressHistoryDetailTask
-                      isCheck={idMachine === row.id}
-                      machine={row}
-                      open={open}
-                      setOpen={setOpen}
-                      user={""}
-                    /> }
+                    {activeModal && (
+                      <ProgressHistoryDetailTask
+                        isCheck={idMachine === row.id}
+                        machine={row}
+                        open={open}
+                        setOpen={setOpen}
+                        user={""}
+                      />
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
