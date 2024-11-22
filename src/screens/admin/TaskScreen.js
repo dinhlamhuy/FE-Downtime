@@ -114,70 +114,59 @@ export default function TaskScreen() {
     });
     setData(sortedData);
   };
-  const getProcessedData = () => {
-    let filteredData = [...data].filter((row) => {
-      return Object.keys(searchTerms).every((key) => {
-        if (!searchTerms[key]) return true; // Không lọc nếu không có từ khóa
+  // const getProcessedData = () => {
+  //   let filteredData = [...data].filter((row) => {
+  //     return Object.keys(searchTerms).every((key) => {
+  //       if (!searchTerms[key]) return true; // Không lọc nếu không có từ khóa
+  //       if (key === "id_mechanic") {
+  //         return (
+  //           row["id_mechanic"]
+  //             ?.toString()
+  //             .trim()
+  //             .toLowerCase()
+  //             .includes(searchTerms[key].toString().trim().toLowerCase()) ||
+  //           row["name_mechanic"]
+  //             ?.toString()
+  //             .trim()
+  //             .toLowerCase()
+  //             .includes(searchTerms[key].toString().trim().toLowerCase())
+  //         );
+  //       }
+  //       if (key === "id_owner") {
+  //         return (
+  //           row["id_owner"]
+  //             ?.toString()
+  //             .trim()
+  //             .toLowerCase()
+  //             .includes(searchTerms[key].toString().trim().toLowerCase()) ||
+  //           row["name_owner"]
+  //             ?.toString()
+  //             .trim()
+  //             .toLowerCase()
+  //             .includes(searchTerms[key].toString().trim().toLowerCase())
+  //         );
+  //       }
+  //       return row[key]
+  //         ?.toString()
+  //         .trim()
+  //         .toLowerCase()
+  //         .includes(searchTerms[key].toString().trim().toLowerCase());
+  //     });
+  //   });
 
-        // return row[key]
-        //   ?.toString()
-        //   .trim()
-        //   .toLowerCase()
-        //   .includes(searchTerms[key].toString().trim().toLowerCase());
+ 
+  //   if (sortConfig.key) {
+  //     filteredData.sort((a, b) => {
+  //       if (a[sortConfig.key] < b[sortConfig.key])
+  //         return sortConfig.direction === "asc" ? -1 : 1;
+  //       if (a[sortConfig.key] > b[sortConfig.key])
+  //         return sortConfig.direction === "asc" ? 1 : -1;
+  //       return 0;
+  //     });
+  //   }
 
-        if (key === "id_mechanic") {
-          return (
-            row["id_mechanic"]
-              ?.toString()
-              .trim()
-              .toLowerCase()
-              .includes(searchTerms[key].toString().trim().toLowerCase()) ||
-            row["name_mechanic"]
-              ?.toString()
-              .trim()
-              .toLowerCase()
-              .includes(searchTerms[key].toString().trim().toLowerCase())
-          );
-        }
-        if (key === "id_owner") {
-          return (
-            row["id_owner"]
-              ?.toString()
-              .trim()
-              .toLowerCase()
-              .includes(searchTerms[key].toString().trim().toLowerCase()) ||
-            row["name_owner"]
-              ?.toString()
-              .trim()
-              .toLowerCase()
-              .includes(searchTerms[key].toString().trim().toLowerCase())
-          );
-        }
-
-        // Trường hợp thông thường
-        return row[key]
-          ?.toString()
-          .trim()
-          .toLowerCase()
-          .includes(searchTerms[key].toString().trim().toLowerCase());
-        //   });
-        // });
-      });
-    });
-
-    // Sắp xếp dữ liệu
-    if (sortConfig.key) {
-      filteredData.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key])
-          return sortConfig.direction === "asc" ? -1 : 1;
-        if (a[sortConfig.key] > b[sortConfig.key])
-          return sortConfig.direction === "asc" ? 1 : -1;
-        return 0;
-      });
-    }
-
-    return filteredData;
-  };
+  //   return filteredData;
+  // };
 
   const HandleResetFiltered = () => {
     setSearchTerms({
@@ -200,6 +189,58 @@ export default function TaskScreen() {
       remark_mechanic: "",
     });
   };
+
+  const getProcessedData = () => {
+    const matchValue = (rowValue, searchValue) => {
+    
+      return (
+        rowValue
+          ?.toString()
+          .trim()
+          .toLowerCase()
+          .includes(searchValue.toString().trim().toLowerCase())
+      );
+    };
+  
+    let filteredData = [...data].filter((row) => {
+      return Object.keys(searchTerms).every((key) => {
+        if (!searchTerms[key]) return true; // Không lọc nếu không có từ khóa
+  
+        const searchValue = searchTerms[key];
+        // Trường hợp đặc biệt: id_mechanic hoặc name_mechanic
+        if (key === "id_mechanic") {
+          // console.log(searchValue)
+          return (
+            matchValue(row["id_mechanic"], searchValue) ||
+            matchValue(row["name_mechanic"], searchValue)
+          );
+        }
+        // Trường hợp đặc biệt: id_owner hoặc name_owner
+        if (key === "id_owner") {
+          return (
+            matchValue(row["id_owner"], searchValue) ||
+            matchValue(row["name_owner"], searchValue)
+          );
+        }
+        // Trường hợp thông thường
+        return matchValue(row[key], searchValue);
+      });
+    });
+  
+    // Sắp xếp dữ liệu
+    if (sortConfig.key) {
+      filteredData.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key])
+          return sortConfig.direction === "asc" ? -1 : 1;
+        if (a[sortConfig.key] > b[sortConfig.key])
+          return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+  
+    return filteredData;
+  };
+  
 
   const renderSearchForm = () => (
     <div style={{ padding: "10px", background: "white", borderRadius: "8px" }}>
@@ -360,16 +401,14 @@ export default function TaskScreen() {
         <TableContainer
           component={Paper}
           sx={{
-            maxHeight: "75vh", // Giới hạn chiều cao bảng
-            overflowY: "auto", // Cuộn dọc
+            maxHeight: "75vh",
+            overflowY: "auto",
           }}
         >
           <Table
             stickyHeader
             sx={{
               tableLayout: "fixed",
-              // minWidth: "100vw",
-              // border: "1px solid black",
             }}
           >
             <TableHead sx={{ background: "blue", color: "#fff" }}>
@@ -554,7 +593,7 @@ export default function TaskScreen() {
                       setSearchTerms({
                         ...searchTerms,
                         id_mechanic: e.target.value,
-                        name_mechanic: e.target.value,
+                        // name_mechanic: e.target.value,
                       })
                     }
                   />
@@ -657,7 +696,7 @@ export default function TaskScreen() {
                       setSearchTerms({
                         ...searchTerms,
                         id_owner: e.target.value,
-                        name_owner: e.target.value,
+                        // name_owner: e.target.value,
                       })
                     }
                   />
@@ -734,18 +773,18 @@ export default function TaskScreen() {
               {getProcessedData().map((row, index) => (
                 <TableRow
                   key={index}
-                  onClick={() => setActiveRow(index)} // Đặt hàng được click là active
+                  onClick={() => setActiveRow(index)}
                   sx={{
-                    // background: index % 2 === 0 ? "white" : "#FFE3E3",
+
                     backgroundColor:
                       activeRow === index
                         ? "#D3E3F3"
                         : index % 2 === 0
                         ? "white"
-                        : "#FFE3E3", // Màu nền khi active
+                        : "#FFE3E3",
                     cursor: "pointer",
                     "& td": {
-                      // border: "1px solid black",
+
                       color:
                         row.status == "1"
                           ? "red"
