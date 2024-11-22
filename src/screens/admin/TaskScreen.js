@@ -22,7 +22,7 @@ import axios from "axios";
 import { BASE_URL } from "../../utils/env";
 import ProgressHistoryDetailTask from "../../components/ProgressHistoryDetailTask";
 import "./style.css";
-import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { useTranslation } from "react-i18next";
 export default function TaskScreen() {
@@ -34,11 +34,12 @@ export default function TaskScreen() {
   const [toDate, setToDate] = useState(today);
   const [open, setOpen] = useState(false);
   const [idMachine, setIdMachine] = useState("");
+  const [activeRow, setActiveRow] = useState(null);
   // const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const isSmallScreen = useMediaQuery("(max-width: 600px)");
+  const isSmallScreen = useMediaQuery("(max-width: 700px)");
   const [openModal, setOpenModal] = useState(false);
   const [t] = useTranslation("global");
-  const languages = localStorage.getItem('languages');
+  const languages = localStorage.getItem("languages");
   const [searchTerms, setSearchTerms] = useState({
     id: "",
     id_machine: "",
@@ -92,25 +93,8 @@ export default function TaskScreen() {
           todate: toDate,
         },
       });
-      // setSearchTerms({
-      //   id: "",
-      //   id_machine: "",
-      //   Name_vn: "",
-      //   floor_user_request: "",
-      //   Line: "",
-      //   name_user_request: "",
-      //   fixer: "",
-      //   id_mechanic: "",
-      //   date_user_request: "",
-      //   accept: "",
-      //   fixing: "",
-      //   finish: "",
-      //   status: "",
-      //   id_owner: "",
-      //   info_reason_vn: "",
-      //   info_skill_vn: "",
-      //   remark_mechanic: "",
-      // });
+      setActiveRow(null);
+
       setData(response.data.data || []);
     } catch (error) {
       console.error("Lỗi khi gọi API:", error);
@@ -134,11 +118,50 @@ export default function TaskScreen() {
     let filteredData = [...data].filter((row) => {
       return Object.keys(searchTerms).every((key) => {
         if (!searchTerms[key]) return true; // Không lọc nếu không có từ khóa
+
+        // return row[key]
+        //   ?.toString()
+        //   .trim()
+        //   .toLowerCase()
+        //   .includes(searchTerms[key].toString().trim().toLowerCase());
+
+        if (key === "id_mechanic") {
+          return (
+            row["id_mechanic"]
+              ?.toString()
+              .trim()
+              .toLowerCase()
+              .includes(searchTerms[key].toString().trim().toLowerCase()) ||
+            row["name_mechanic"]
+              ?.toString()
+              .trim()
+              .toLowerCase()
+              .includes(searchTerms[key].toString().trim().toLowerCase())
+          );
+        }
+        if (key === "id_owner") {
+          return (
+            row["id_owner"]
+              ?.toString()
+              .trim()
+              .toLowerCase()
+              .includes(searchTerms[key].toString().trim().toLowerCase()) ||
+            row["name_owner"]
+              ?.toString()
+              .trim()
+              .toLowerCase()
+              .includes(searchTerms[key].toString().trim().toLowerCase())
+          );
+        }
+
+        // Trường hợp thông thường
         return row[key]
           ?.toString()
           .trim()
           .toLowerCase()
           .includes(searchTerms[key].toString().trim().toLowerCase());
+        //   });
+        // });
       });
     });
 
@@ -182,7 +205,7 @@ export default function TaskScreen() {
     <div style={{ padding: "10px", background: "white", borderRadius: "8px" }}>
       <FormControl style={{ minWidth: 120, marginBottom: "10px" }}>
         <InputLabel id="Fac" sx={{ background: "#fff" }}>
-          Factory
+          {t("login.factory")}
         </InputLabel>
         <Select
           labelId="Fac"
@@ -235,44 +258,102 @@ export default function TaskScreen() {
 
   return (
     <div>
-      <>
-        <Button
-          variant="outline"
-          sx={{ color: "gray" }}
-          onClick={() => setOpenModal(true)}
+      {!isSmallScreen ? (
+        <div
           style={{
-            position: "fixed",
-            right: "2rem",
             marginTop: "-4.5rem",
-            zIndex: 999999,
+            zIndex: "9999999",
+            position: "absolute",
+            right: "2rem",
           }}
         >
-          <FilterAltOutlinedIcon />
-        </Button>
-        <Modal
-          open={openModal}
-          onClose={() => setOpenModal(false)}
-          aria-labelledby="filter-modal-title"
-          aria-describedby="filter-modal-description"
-        >
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: !isSmallScreen ? "40%" : "90%",
+          <FormControl style={{ minWidth: 120, background: "white" }}>
+            <InputLabel id="Fac" sx={{ background: "white" }}>
+              {t("login.factory")}
+            </InputLabel>
+            <Select
+              labelId="Fac"
+              size="small"
+              value={factory}
+              onChange={(e) => setFactory(e.target.value)}
+            >
+              <MenuItem value="LHG">LHG</MenuItem>
+              <MenuItem value="LVL">LVL</MenuItem>
+              <MenuItem value="LYV">LYV</MenuItem>
+              <MenuItem value="LYM">LYM</MenuItem>
+            </Select>
+          </FormControl>
 
-              bgcolor: "background.paper",
-              borderRadius: 2,
-              boxShadow: 24,
-              p: 4,
+          <TextField
+            size="small"
+            label={t("personal_info.date_from")}
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            style={{ marginRight: "10px", background: "white" }}
+          />
+          <TextField
+            size="small"
+            label={t("personal_info.date_to")}
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            style={{ marginRight: "10px", background: "white" }}
+          />
+          <Button variant="contained" color="primary" onClick={fetchData}>
+            {t("personal_info.btn_search")}
+          </Button>
+
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={HandleResetFiltered}
+          >
+            Reset
+          </Button>
+        </div>
+      ) : (
+        <>
+          <Button
+            variant="outline"
+            sx={{ color: "gray" }}
+            onClick={() => setOpenModal(true)}
+            style={{
+              position: "absolute",
+              right: "2rem",
+              marginTop: "-4.5rem",
+              zIndex: 999999,
             }}
           >
-            {renderSearchForm()}
-          </Box>
-        </Modal>
-      </>
+            <FilterAltOutlinedIcon />
+          </Button>
+          <Modal
+            open={openModal}
+            onClose={() => setOpenModal(false)}
+            aria-labelledby="filter-modal-title"
+            aria-describedby="filter-modal-description"
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: !isSmallScreen ? "40%" : "90%",
+
+                bgcolor: "background.paper",
+                borderRadius: 2,
+                boxShadow: 24,
+                p: 4,
+              }}
+            >
+              {renderSearchForm()}
+            </Box>
+          </Modal>
+        </>
+      )}
 
       <div sx={{ padding: "5px" }}>
         {/* Data Table */}
@@ -473,6 +554,7 @@ export default function TaskScreen() {
                       setSearchTerms({
                         ...searchTerms,
                         id_mechanic: e.target.value,
+                        name_mechanic: e.target.value,
                       })
                     }
                   />
@@ -575,6 +657,7 @@ export default function TaskScreen() {
                       setSearchTerms({
                         ...searchTerms,
                         id_owner: e.target.value,
+                        name_owner: e.target.value,
                       })
                     }
                   />
@@ -651,8 +734,16 @@ export default function TaskScreen() {
               {getProcessedData().map((row, index) => (
                 <TableRow
                   key={index}
+                  onClick={() => setActiveRow(index)} // Đặt hàng được click là active
                   sx={{
-                    background: index % 2 === 0 ? "white" : "#FFE3E3",
+                    // background: index % 2 === 0 ? "white" : "#FFE3E3",
+                    backgroundColor:
+                      activeRow === index
+                        ? "#D3E3F3"
+                        : index % 2 === 0
+                        ? "white"
+                        : "#FFE3E3", // Màu nền khi active
+                    cursor: "pointer",
                     "& td": {
                       // border: "1px solid black",
                       color:
@@ -740,12 +831,14 @@ export default function TaskScreen() {
                   </TableCell>
                   <TableCell className="tdStyle">
                     {/* {row.info_reason_vn}{" "} */}
-                    {languages ==='VN' ?  row.info_reason_vn : row.info_reason_en}
+                    {languages === "VN"
+                      ? row.info_reason_vn
+                      : row.info_reason_en}
                     {row.other_reason && "(" + row.other_reason + ")"}
                   </TableCell>
 
                   <TableCell className="tdStyle">
-                    {languages ==='VN' ?  row.info_skill_vn : row.info_skill_en}
+                    {languages === "VN" ? row.info_skill_vn : row.info_skill_en}
                     {row.other_skill && "(" + row.other_skill + ")"}
                   </TableCell>
                   <TableCell className="tdStyle">
