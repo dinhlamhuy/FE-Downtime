@@ -17,6 +17,11 @@ import {
   Modal,
   useMediaQuery,
   Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 import axios from "axios";
 import { BASE_URL } from "../../utils/env";
@@ -25,25 +30,31 @@ import "./style.css";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { cancel_report_damage } from "../../redux/features/product";
 export default function TaskScreen() {
   const [data, setData] = useState([]);
   const today = new Date().toISOString().split("T")[0];
   const [factory, setFactory] = useState("LHG");
   const [fromDate, setFromDate] = useState(today);
   const [activeModal, setActiveModal] = useState("");
+  const [activeRowForConfirm, setActiveRowForConfirm] = useState(null);
   const [toDate, setToDate] = useState(today);
   const [open, setOpen] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
   const [idMachine, setIdMachine] = useState("");
   const [activeRow, setActiveRow] = useState(null);
   // const [isSidebarOpen, setSidebarOpen] = useState(false);
   const isSmallScreen = useMediaQuery("(max-width: 700px)");
   const [openModal, setOpenModal] = useState(false);
   const [t] = useTranslation("global");
+  const dispatch = useDispatch();
   const languages = localStorage.getItem("languages");
   const [searchTerms, setSearchTerms] = useState({
     id: "",
     id_machine: "",
     Name_vn: "",
+    id_user_request:"",
     floor_user_request: "",
     Line: "",
     name_user_request: "",
@@ -154,7 +165,6 @@ export default function TaskScreen() {
   //     });
   //   });
 
- 
   //   if (sortConfig.key) {
   //     filteredData.sort((a, b) => {
   //       if (a[sortConfig.key] < b[sortConfig.key])
@@ -175,6 +185,7 @@ export default function TaskScreen() {
       Name_vn: "",
       floor_user_request: "",
       Line: "",
+      id_user_request:"",
       name_user_request: "",
       fixer: "",
       id_mechanic: "",
@@ -190,22 +201,31 @@ export default function TaskScreen() {
     });
   };
 
+  const onCancel = async (id_machine, user_name, factory) => {
+    const language = languages;
+
+    await dispatch(
+      cancel_report_damage({ user_name, id_machine, factory, language })
+    );
+    await fetchData();
+    handleOpenConfirm();
+  };
+
+  const handleOpenConfirm = (index) => setActiveRowForConfirm(index);
+  const handleCloseConfirm = () => setActiveRowForConfirm(null);
   const getProcessedData = () => {
     const matchValue = (rowValue, searchValue) => {
-    
-      return (
-        rowValue
-          ?.toString()
-          .trim()
-          .toLowerCase()
-          .includes(searchValue.toString().trim().toLowerCase())
-      );
+      return rowValue
+        ?.toString()
+        .trim()
+        .toLowerCase()
+        .includes(searchValue.toString().trim().toLowerCase());
     };
-  
+
     let filteredData = [...data].filter((row) => {
       return Object.keys(searchTerms).every((key) => {
         if (!searchTerms[key]) return true; // Không lọc nếu không có từ khóa
-  
+
         const searchValue = searchTerms[key];
         // Trường hợp đặc biệt: id_mechanic hoặc name_mechanic
         if (key === "id_mechanic") {
@@ -226,7 +246,7 @@ export default function TaskScreen() {
         return matchValue(row[key], searchValue);
       });
     });
-  
+
     // Sắp xếp dữ liệu
     if (sortConfig.key) {
       filteredData.sort((a, b) => {
@@ -237,11 +257,9 @@ export default function TaskScreen() {
         return 0;
       });
     }
-  
+
     return filteredData;
   };
-  
-
   const renderSearchForm = () => (
     <div style={{ padding: "10px", background: "white", borderRadius: "8px" }}>
       <FormControl style={{ minWidth: 120, marginBottom: "10px" }}>
@@ -390,7 +408,7 @@ export default function TaskScreen() {
         </>
       )}
 
-      <div sx={{ padding: "5px" }}>
+<div sx={{ padding: "5px" }}>
         {/* Data Table */}
         <TableContainer
           component={Paper}
@@ -753,6 +771,16 @@ export default function TaskScreen() {
                 >
                   {t("process_status.history")}
                 </TableCell>
+                <TableCell
+                  sx={{
+                    width: "90px",
+                    background: "blue",
+                    color: "#fff",
+                    textAlign: "center",
+                  }}
+                >
+                  {t("info_machine_damage.cancel")}
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody
@@ -769,7 +797,6 @@ export default function TaskScreen() {
                   key={index}
                   onClick={() => setActiveRow(index)}
                   sx={{
-
                     backgroundColor:
                       activeRow === index
                         ? "#D3E3F3"
@@ -778,7 +805,6 @@ export default function TaskScreen() {
                         : "#FFE3E3",
                     cursor: "pointer",
                     "& td": {
-
                       color:
                         row.status == "1"
                           ? "red"
@@ -893,6 +919,52 @@ export default function TaskScreen() {
                         setOpen={setOpen}
                         user={""}
                       />
+                    )}
+                  </TableCell>
+                  <TableCell className="tdStyle">
+                    {/* <Button onClick={() => onCancel(row.id_machine, row.id_user_request, row.factory)}>Hủy phiếu</Button> */}
+                    {row.status == "1" && (
+                      <>
+                        <Button
+                          onClick={() => handleOpenConfirm(index)}
+                          sx={{ fontSize: "0.65rem" }}
+                        >
+                          Hủy phiếu
+                        </Button>
+                        <Dialog
+                          open={activeRowForConfirm === index}
+                          onClose={handleCloseConfirm}
+                        >
+                          <DialogTitle>Xác nhận hủy</DialogTitle>
+                          <DialogContent>
+                            <DialogContentText>
+                              Bạn có chắc chắn muốn hủy phiếu của máy{" "}
+                              <b>{row.id_machine}</b> không?
+                            </DialogContentText>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button
+                              onClick={handleCloseConfirm}
+                              color="secondary"
+                            >
+                              Hủy
+                            </Button>
+                            <Button
+                              onClick={() =>
+                                onCancel(
+                                  row.id_machine,
+                                  row.id_user_request,
+                                  row.factory
+                                )
+                              }
+                              color="primary"
+                              autoFocus
+                            >
+                              Xác nhận
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
+                      </>
                     )}
                   </TableCell>
                 </TableRow>

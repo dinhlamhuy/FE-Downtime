@@ -134,7 +134,6 @@ const Form = (props) => {
         
             const { id_machine, id_user_request, factory, fixer, otherIssue } = data; 
             const language = languages;
-        
             await dispatch(
                 report_damage({ 
                     id_machine, 
@@ -146,6 +145,8 @@ const Form = (props) => {
                     language 
                 })
             );
+         
+
         },
     });
     
