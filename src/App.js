@@ -5,7 +5,7 @@ import LoginScreen from "./screens/LoginScreen.js";
 import { useDispatch } from "react-redux";
 import { updateInfo } from "./redux/features/auth.js";
 import { useEffect } from "react";
-import TaskScreen from "./screens/admin/TaskScreen.js";
+import TaskScreen from "./screens/admin/TaskScreen2.js";
 
 function App() {
   const dispatch = useDispatch();
