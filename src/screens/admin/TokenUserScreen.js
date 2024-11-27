@@ -104,9 +104,29 @@ const TokenUserScreen = () => {
       STS: "",
     });
   };
+
+  const fetchFloors = async () => {
+    const { position, floor, lean } = user;
+    const response = await dispatch(get_all_floor({ factory: selectedFac }));
+
+    if (response?.payload?.data) {
+      const floorList = response.payload.data.map((item) => item.floor);
+      setFloors(floorList);
+    } else {
+      console.error("Failed to fetch floors");
+    }
+  };
+
   useEffect(() => {
+    //  dispatch(get_all_floor({ factory: selectedFac }));
+
     setData(getListStatusMechanic);
   }, [getListStatusMechanic]);
+
+  const handleOnClick = async () => {
+    await fetchFloors();
+    await fetchData();
+  };
   const getProcessedData = () => {
     const matchValue = (rowValue, searchValue) => {
       return rowValue
@@ -176,7 +196,7 @@ const TokenUserScreen = () => {
       }
     };
     fetchFloors();
-    fetchData();
+    // fetchData();
 
     socketRef.current = socketIOClient.connect(host);
 
@@ -353,7 +373,7 @@ const TokenUserScreen = () => {
                 />
               </FormControl>
               <FormControl size="small" fullWidth>
-                <Button variant="outline" onClick={() => fetchData()}>
+                <Button variant="outline" onClick={handleOnClick}>
                   Tìm kiếm
                 </Button>
               </FormControl>
@@ -528,7 +548,6 @@ const TokenUserScreen = () => {
                       backgroundColor: "#1976d2",
                       color: "#fff",
                       width: "120px",
-
                     }}
                     align="center"
                   >
@@ -620,7 +639,6 @@ const TokenUserScreen = () => {
                       backgroundColor: "#1976d2",
                       color: "#fff",
                       width: "70px",
-
                     }}
                     align="center"
                   >
@@ -634,7 +652,6 @@ const TokenUserScreen = () => {
                       backgroundColor: "#1976d2",
                       color: "#fff",
                       width: "80px",
-
                     }}
                     align="center"
                   >
@@ -650,7 +667,6 @@ const TokenUserScreen = () => {
                       backgroundColor: "#1976d2",
                       color: "#fff",
                       width: "70px",
-
                     }}
                     align="center"
                   >
@@ -668,8 +684,13 @@ const TokenUserScreen = () => {
                 {getProcessedData().map((row, index) => (
                   <TableRow
                     key={index}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0, paddingRight: "2px",
-                        paddingLeft: "2px", } }}
+                    sx={{
+                      "&:last-child td, &:last-child th": {
+                        border: 0,
+                        paddingRight: "2px",
+                        paddingLeft: "2px",
+                      },
+                    }}
                   >
                     <TableCell align="center">
                       {index + 1}
