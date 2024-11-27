@@ -12,40 +12,47 @@ import OwnerUserListScreen from "../screens/electric/OwnerUserListScreen";
 import OwnerWorkListScreen from "../screens/electric/OwnerWorkListScreen";
 import SupportScreen from "../screens/electric/SupportScreen";
 import TaskScreen from "../screens/admin/TaskScreen";
-
+import TokenUserScreen from "../screens/admin/TokenUserScreen";
 
 function RoutesElectric() {
-    const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth);
 
-    return (
-        <Routes>
-
-            {auth.user?.permission === 0 ? (<>
-                <Route path="/" element={<OwnerWorkListScreen />} />   {/* đổi tên component */}
-                <Route path="/list-user" element={<OwnerUserListScreen />} />  {/* đổi tên component */}
-                <Route path="/list-user/:user_name" element={<InfoUser />} />  
-                <Route path="/list-repair" element={<RepairScreen />} />  
-
+  return (
+    <Routes>
+      {auth.user?.permission === 0 ? (
+        <>
+          {auth.user?.user_name !== "Huii" ? (
+            <>
+              <Route path="/" element={<OwnerWorkListScreen />} />
+              <Route path="/list-user" element={<OwnerUserListScreen />} />
+              <Route path="/list-user/:user_name" element={<InfoUser />} />
+              <Route path="/list-repair" element={<RepairScreen />} />
             </>
-            ) : auth.user?.permission === 1 ? (
-                <>
-                    <Route path="/" element={<WorkListScreen />} />    {/* copy lại code cũ */}
-                    <Route path="/list-user" element={<UserlistScreen />} />    {/* copy lại code cũ */}
-                    <Route path="/user" element={<InfoUserScreen />} />
-                    <Route path="/status" element={<StatusScreen />} />
-                    
-                    {auth.user?.user_name==='CBTM' && (<Route path="/task" element={<TaskScreen />} />)}
-                </>
-            ) : (
-                <>
-                    <Route path="/user" element={<InfoUserScreen />} />
-                    <Route path="/status" element={<StatusScreen />} />
-                    <Route path="/support" element={<SupportScreen />} />
-                </>
-
-            )}
-        </Routes>
-    );
+          ) : (
+            <>
+              <Route path="/" element={<TaskScreen />} />
+              <Route path="/list-user" element={<TokenUserScreen />} />
+            </>
+          )}
+        </>
+      ) : auth.user?.permission === 1 ? (
+        <>
+          <Route path="/" element={<WorkListScreen />} />{" "}
+          {/* copy lại code cũ */}
+          <Route path="/list-user" element={<UserlistScreen />} />{" "}
+          {/* copy lại code cũ */}
+          <Route path="/user" element={<InfoUserScreen />} />
+          <Route path="/status" element={<StatusScreen />} />
+        </>
+      ) : (
+        <>
+          <Route path="/user" element={<InfoUserScreen />} />
+          <Route path="/status" element={<StatusScreen />} />
+          <Route path="/support" element={<SupportScreen />} />
+        </>
+      )}
+    </Routes>
+  );
 }
 
 export default RoutesElectric;
