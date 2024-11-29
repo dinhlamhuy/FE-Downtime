@@ -31,6 +31,7 @@ import {
   change_floor,
   setErrorCode,
 } from "../../redux/features/electric";
+import './style.css';
 import socketIOClient from "socket.io-client";
 import { BASE_URL } from "../../utils/env";
 import { useTranslation } from "react-i18next";
@@ -408,6 +409,7 @@ const TokenUserScreen = () => {
                   }}
                 >
                   <TableCell
+                   className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -420,6 +422,7 @@ const TokenUserScreen = () => {
                     No.
                   </TableCell>
                   <TableCell
+                    className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -449,6 +452,7 @@ const TokenUserScreen = () => {
                     />
                   </TableCell>
                   <TableCell
+                   className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -478,6 +482,7 @@ const TokenUserScreen = () => {
                     />
                   </TableCell>
                   <TableCell
+                   className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -513,6 +518,7 @@ const TokenUserScreen = () => {
                     </FormControl>
                   </TableCell>
                   <TableCell
+                   className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -542,6 +548,7 @@ const TokenUserScreen = () => {
                     />
                   </TableCell>
                   <TableCell
+                   className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -571,6 +578,7 @@ const TokenUserScreen = () => {
                     />
                   </TableCell>
                   <TableCell
+                   className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -600,6 +608,7 @@ const TokenUserScreen = () => {
                     />
                   </TableCell>
                   <TableCell
+                   className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -633,6 +642,7 @@ const TokenUserScreen = () => {
                     </FormControl>
                   </TableCell>
                   <TableCell
+                   className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -645,6 +655,7 @@ const TokenUserScreen = () => {
                     {t("employee_list.task_name")}
                   </TableCell>
                   <TableCell
+                   className="thStyle"
                     onClick={() => handleSort("token_devices")}
                     style={{
                       fontWeight: "bold",
@@ -660,6 +671,7 @@ const TokenUserScreen = () => {
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
                   </TableCell>
                   <TableCell
+                   className="thStyle"
                     onClick={() => handleSort("CountTime")}
                     style={{
                       fontWeight: "bold",
