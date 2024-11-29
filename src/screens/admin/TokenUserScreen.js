@@ -495,7 +495,7 @@ const TokenUserScreen = () => {
                     <FormControl size="small" fullWidth>
                       <Select
                         sx={{ background: "white", height: "2rem" }}
-                        value={searchTerms.lean}
+                        value={searchTerms.lean+'-'+searchTerms.permission}
                         onChange={(e) =>
                           setSearchTerms({
                             ...searchTerms,
