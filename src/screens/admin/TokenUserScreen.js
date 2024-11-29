@@ -31,7 +31,7 @@ import {
   change_floor,
   setErrorCode,
 } from "../../redux/features/electric";
-import './style.css';
+import "./style.css";
 import socketIOClient from "socket.io-client";
 import { BASE_URL } from "../../utils/env";
 import { useTranslation } from "react-i18next";
@@ -49,7 +49,7 @@ import { Language } from "@mui/icons-material";
 const PaperStyle = {
   position: "relative",
   marginTop: "10px",
-  padding: "10px",
+  // padding: "10px",
 };
 
 const host = BASE_URL;
@@ -383,8 +383,8 @@ const TokenUserScreen = () => {
         </Grid>
       </Grid>
 
-      <Box component="div" sx={{ display: "block", margin: "0 auto" }}>
-        <Paper sx={PaperStyle} elevation={5}>
+      <Box component="div" sx={{ margin: "0 auto" }}>
+        <Paper sx={PaperStyle}>
           <TableContainer
             component={Paper}
             sx={{
@@ -397,19 +397,12 @@ const TokenUserScreen = () => {
               sx={{
                 tableLayout: "fixed",
               }}
-              aria-label="sticky table"
+              // aria-label="sticky table"
             >
               <TableHead>
-                <TableRow
-                  sx={{
-                    "& td": {
-                      paddingRight: "2px",
-                      paddingLeft: "2px",
-                    },
-                  }}
-                >
+                <TableRow>
                   <TableCell
-                   className="thStyle"
+                    className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -452,7 +445,7 @@ const TokenUserScreen = () => {
                     />
                   </TableCell>
                   <TableCell
-                   className="thStyle"
+                    className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -482,7 +475,7 @@ const TokenUserScreen = () => {
                     />
                   </TableCell>
                   <TableCell
-                   className="thStyle"
+                    className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -500,7 +493,7 @@ const TokenUserScreen = () => {
                     <FormControl size="small" fullWidth>
                       <Select
                         sx={{ background: "white", height: "2rem" }}
-                        value={searchTerms.lean+'-'+searchTerms.permission}
+                        value={searchTerms.lean + "-" + searchTerms.permission}
                         onChange={(e) =>
                           setSearchTerms({
                             ...searchTerms,
@@ -518,7 +511,7 @@ const TokenUserScreen = () => {
                     </FormControl>
                   </TableCell>
                   <TableCell
-                   className="thStyle"
+                    className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -548,7 +541,7 @@ const TokenUserScreen = () => {
                     />
                   </TableCell>
                   <TableCell
-                   className="thStyle"
+                    className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -578,7 +571,7 @@ const TokenUserScreen = () => {
                     />
                   </TableCell>
                   <TableCell
-                   className="thStyle"
+                    className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -608,7 +601,7 @@ const TokenUserScreen = () => {
                     />
                   </TableCell>
                   <TableCell
-                   className="thStyle"
+                    className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -642,7 +635,7 @@ const TokenUserScreen = () => {
                     </FormControl>
                   </TableCell>
                   <TableCell
-                   className="thStyle"
+                    className="thStyle"
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -655,7 +648,7 @@ const TokenUserScreen = () => {
                     {t("employee_list.task_name")}
                   </TableCell>
                   <TableCell
-                   className="thStyle"
+                    className="thStyle"
                     onClick={() => handleSort("token_devices")}
                     style={{
                       fontWeight: "bold",
@@ -671,7 +664,7 @@ const TokenUserScreen = () => {
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
                   </TableCell>
                   <TableCell
-                   className="thStyle"
+                    className="thStyle"
                     onClick={() => handleSort("CountTime")}
                     style={{
                       fontWeight: "bold",
