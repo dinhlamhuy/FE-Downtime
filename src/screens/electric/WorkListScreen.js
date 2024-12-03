@@ -21,6 +21,8 @@ import {
   Autocomplete,
 } from "@mui/material";
 import BreadCrumb from "../../components/BreadCrumb";
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+
 import { Toast } from "../../utils/toast";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -40,6 +42,7 @@ import { BASE_URL } from "../../utils/env";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import ProgressHistoryDetailTask from "../../components/ProgressHistoryDetailTask";
 const PaperStyle = {
   position: "relative",
   marginTop: "10px",
@@ -1087,10 +1090,21 @@ const TableEmployeeListline = ({
 const WorkListScreen = () => {
   const [t] = useTranslation("global");
   const dispatch = useDispatch();
+
   const [openEmployeeList, setOpenEmployeeList] = useState(false);
   const [openEmployeeListline, setOpenEmployeeListline] = useState(false);
   const [task, setTask] = useState({});
   const languages = localStorage.getItem("languages");
+  const [open, setOpen] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [idMachine, setIdMachine] = useState("");
+  const [activeModal, setActiveModal] = useState("");
+  const HandleViewHistory = (id_task) => {
+    setOpen(true);
+    setIdMachine(id_task);
+    setActiveModal(true);
+    // console.log('hehe', id_task)
+  };
   // const [page, setPage] = useState(0);
   // const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -1244,6 +1258,16 @@ const WorkListScreen = () => {
                   <TableCell
                     style={{
                       fontWeight: "bold",
+                      minWidth: "20px",
+                      backgroundColor: "#1976d2",
+                      color: "#fff",
+                    }}
+                  >
+                 
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontWeight: "bold",
                       minWidth: "120px",
                       backgroundColor: "#1976d2",
                       color: "#fff",
@@ -1280,6 +1304,27 @@ const WorkListScreen = () => {
                     <TableCell>
                       {row.floor}
                       {/* {row.floor} -  {row.floors} */}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{
+                          whiteSpace: "nowrap",
+                        }}
+                        onClick={() => HandleViewHistory(row.id)}
+                      >
+                     <RemoveRedEyeOutlinedIcon />
+                      </Button>
+                      {activeModal && (
+                      <ProgressHistoryDetailTask
+                        isCheck={idMachine === row.id}
+                        machine={row}
+                        open={open}
+                        setOpen={setOpen}
+                        user={""}
+                      />
+                    )}
                     </TableCell>
                     <TableCell>
                       <Button

@@ -317,12 +317,12 @@ const TokenUserScreen = () => {
         </Grid>
         <Grid
           container
-          spacing={2}
+          spacing={4}
           justifyContent="flex-end"
           sx={{ paddingRight: "10px" }}
         >
-          <Grid item sx={{ marginTop: "-20px", marginLeft: "auto" }}>
-            <Box component="div" sx={{ display: "flex" }}>
+          <Grid item  xs={7} md={4} sx={{ marginTop: "-20px", marginLeft: "auto" }}>
+            <Box component="div" sx={{ display: "flex", width:'100%' }}>
               <FormControl size="small" fullWidth>
                 <InputLabel>{t("login.factory")}</InputLabel>
                 <Select
@@ -365,17 +365,17 @@ const TokenUserScreen = () => {
                   </MenuItem>
                 </Select>
               </FormControl>
-              <FormControl size="small" fullWidth>
+              {/* <FormControl size="small" fullWidth>
                 <TextField
                   size="small"
                   variant="outlined"
                   placeholder="UserID"
                   sx={{ background: "white" }}
                 />
-              </FormControl>
+              </FormControl> */}
               <FormControl size="small" fullWidth>
-                <Button variant="outline" onClick={handleOnClick}>
-                  Tìm kiếm
+                <Button variant="contained" onClick={handleOnClick}>
+                  Search
                 </Button>
               </FormControl>
             </Box>
