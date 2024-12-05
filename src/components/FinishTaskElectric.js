@@ -80,7 +80,7 @@ const handleAutocompleteChange = (event, values) => {
 
   const newScannerResult = hasId4 ? scannerResult : '';
   // console.log('Updated Scanner Result:', newScannerResult); 
-  setScannerResult(newScannerResult); 
+  setScannerResult(newScannerResult.trim()); 
   formik.setFieldValue("scannerResult", newScannerResult); 
 };
 

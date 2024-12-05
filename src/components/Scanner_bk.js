@@ -34,7 +34,7 @@ const Scanner = (props) => {
             facingMode: "environment",
           }, (result) => {
             scannerRef.current?.clear();
-            setScannerResult(result);
+            setScannerResult(result.trim());
           });
         }
       } catch (error) {
@@ -61,7 +61,7 @@ const Scanner = (props) => {
 
     function success(result) {
       scanner.clear();
-      setScannerResult(result);
+      setScannerResult(result.trim());
     }
 
     function error(err) {

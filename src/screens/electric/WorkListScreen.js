@@ -61,6 +61,7 @@ const TableEmployeeList = ({
   const { factory, floor, user_name, lean, position } = useSelector(
     (state) => state.auth.user
   );
+  const CurrentOnwer = useSelector((state) => state.auth?.user?.user_name || "");
 
   const [t] = useTranslation("global");
   const dispatch = useDispatch();
@@ -100,15 +101,16 @@ const TableEmployeeList = ({
   };
   const onAsignTask = async () => {
     if (task && selectedRow) {
-      const { id_machine, id_owner_mechanic } = task;
+      const { id_machine } = task;
       const { user_name, factory, lean } = selectedRow;
+  
       const language = languages;
 
       await dispatch(
         owner_asign_task({
           user_name,
           id_machine,
-          id_owner_mechanic,
+          id_owner_mechanic:CurrentOnwer,
           factory,
           lean,
           language,

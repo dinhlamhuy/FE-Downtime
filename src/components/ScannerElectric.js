@@ -27,7 +27,7 @@ const ScannerElectric = (props) => {
         const status = 3;
         const language = languages;
 
-        if (idMachine === scannerResult) {
+        if (idMachine.trim().toLowerCase() === scannerResult.trim().toLowerCase()) {
             dispatch(
                 scanner_fix_mechanic({ id_user_mechanic, id_machine: idMachine, factory, lean, status, language })
             );
@@ -36,7 +36,7 @@ const ScannerElectric = (props) => {
             setOpen(false);
         }
 
-        if (scannerResult !== "" && idMachine !== scannerResult) {
+        if (scannerResult !== "" && idMachine.trim().toLowerCase() !== scannerResult.trim().toLowerCase()) {
             dispatch(setErrorCode(10001, t("process_status.status_3_alert")));
             setScannerResult("");
         }

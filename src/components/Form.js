@@ -67,7 +67,7 @@ const Form = (props) => {
     };
     
     const onCancel = async () => {
-        const id_machine = scannerResult;
+        const id_machine = scannerResult.trim();
         const { user_name, factory } = user;
         const language = languages;
 
@@ -118,7 +118,7 @@ const Form = (props) => {
             Lean: user.lean,
             Floor: user.floor,
             DateReport: dayjs(new Date()),
-            id_machine: scannerResult,
+            id_machine: scannerResult.trim(),
             name_machine: "",
             fixer: "",
             remark: [],
@@ -136,12 +136,12 @@ const Form = (props) => {
             const language = languages;
             await dispatch(
                 report_damage({ 
-                    id_machine, 
+                    id_machine: id_machine.trim(), 
                     id_user_request, 
                     remark, 
                     factory, 
                     fixer, 
-                    otherIssue, 
+                    otherIssue:otherIssue.trim(), 
                     language 
                 })
             );
@@ -153,7 +153,7 @@ const Form = (props) => {
 
 
     useEffect(() => {
-        const id_machine = scannerResult;
+        const id_machine = scannerResult.trim();
         const { factory } = user;
         const getInfoMachine = (factory, id_machine) => {
             return axios.post(BASE_URL + "/damage_report/getMachine", {
