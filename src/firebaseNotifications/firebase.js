@@ -27,59 +27,59 @@ initializeApp(firebaseConfig);
 const messaging = getMessaging();
 
 export const requestForToken = () => {
-  //   return getToken(messaging, {
-  //     vapidKey:
-  //       "BFKo_K0bdHOV5h2lUxzlhDFx4gz0dIEScfhVlJtmcxAvtJOv4p-GewFhrK0qIHGEAVSYVSbdqdDXC7GcqhZcV7c",
-  //   })
-  //     .then((currentToken) => {
-  //       if (currentToken) {
-  //         console.log("current token for client: ", currentToken);
-  //         // Perform any other neccessary action with the token
-  //         return currentToken;
-  //       } else {
-  //         // Show permission request UI
-  //         console.log(
-  //           "No registration token available. Request permission to generate one."
-  //         );
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log("An error occurred while retrieving token. ", err);
-  //     });
-
-  return  Notification.requestPermission()
-    .then((permission) => {
-      if (permission === "granted") {
-        // Nếu được cấp phép, lấy token
-        getToken(messaging, {
-          vapidKey:
-            "BFKo_K0bdHOV5h2lUxzlhDFx4gz0dIEScfhVlJtmcxAvtJOv4p-GewFhrK0qIHGEAVSYVSbdqdDXC7GcqhZcV7c",
-        })
-          .then((currentToken) => {
-            if (currentToken) {
-                console.log("firebase: ", currentToken);
-                //         // Perform any other neccessary action with the token
-                        return currentToken;
-            } else {
-              console.log("No registration token available.");
-             
-            }
-          })
-          .catch((err) => {
-            console.log("An error occurred while retrieving token. ", err);
-          });
-      } else {
-        console.log("Notification permission denied.");
-        // Toast.fire({
-        //   icon: "error",
-        //   title:
-        //     "Notification permission denied. Please enable it in browser settings.",
-        // });
-      }
+    return getToken(messaging, {
+      vapidKey:
+        "BFKo_K0bdHOV5h2lUxzlhDFx4gz0dIEScfhVlJtmcxAvtJOv4p-GewFhrK0qIHGEAVSYVSbdqdDXC7GcqhZcV7c",
     })
-    .catch((error) => {
-      console.error("Error requesting notification permission:", error);
-    });
+      .then((currentToken) => {
+        if (currentToken) {
+          console.log("current token for client: ", currentToken);
+          // Perform any other neccessary action with the token
+          return currentToken;
+        } else {
+          // Show permission request UI
+          console.log(
+            "No registration token available. Request permission to generate one."
+          );
+        }
+      })
+      .catch((err) => {
+        console.log("An error occurred while retrieving token. ", err);
+      });
+
+  // return  Notification.requestPermission()
+  //   .then((permission) => {
+  //     if (permission === "granted") {
+  //       // Nếu được cấp phép, lấy token
+  //       getToken(messaging, {
+  //         vapidKey:
+  //           "BFKo_K0bdHOV5h2lUxzlhDFx4gz0dIEScfhVlJtmcxAvtJOv4p-GewFhrK0qIHGEAVSYVSbdqdDXC7GcqhZcV7c",
+  //       })
+  //         .then((currentToken) => {
+  //           if (currentToken) {
+  //               console.log("firebase: ", currentToken);
+  //               //         // Perform any other neccessary action with the token
+  //                       return currentToken;
+  //           } else {
+  //             console.log("No registration token available.");
+             
+  //           }
+  //         })
+  //         .catch((err) => {
+  //           console.log("An error occurred while retrieving token. ", err);
+  //         });
+  //     } else {
+  //       console.log("Notification permission denied.");
+  //       // Toast.fire({
+  //       //   icon: "error",
+  //       //   title:
+  //       //     "Notification permission denied. Please enable it in browser settings.",
+  //       // });
+  //     }
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error requesting notification permission:", error);
+  //   });
 };
 
 // Handle incoming messages. Called when:
