@@ -107,38 +107,69 @@ export default function LoginScreen() {
 //     });
 
 
-Notification.requestPermission().then((permission) => {
-  if (permission === "granted") {
-    // Nếu được cấp phép, lấy token
-    getToken(messaging, {
-      vapidKey: "BFKo_K0bdHOV5h2lUxzlhDFx4gz0dIEScfhVlJtmcxAvtJOv4p-GewFhrK0qIHGEAVSYVSbdqdDXC7GcqhZcV7c",
-    })
-      .then((currentToken) => {
-        if (currentToken) {
-          console.log("Current token for client: ", currentToken);
-          // Perform any other necessary action with the token
-          setToken(currentToken);  // Lưu token vào state hoặc localStorage
+// Notification.requestPermission().then((permission) => {
+//   if (permission === "granted") {
+//     // Nếu được cấp phép, lấy token
+//     getToken(messaging, {
+//       vapidKey: "BFKo_K0bdHOV5h2lUxzlhDFx4gz0dIEScfhVlJtmcxAvtJOv4p-GewFhrK0qIHGEAVSYVSbdqdDXC7GcqhZcV7c",
+//     })
+//       .then((currentToken) => {
+//         if (currentToken) {
+//           console.log("Current token for client: ", currentToken);
+//           // Perform any other necessary action with the token
+//           setToken(currentToken);  // Lưu token vào state hoặc localStorage
+//         } else {
+//           console.log("No registration token available.");
+//         //   Toast.fire({
+//         //     icon: "error",
+//         //     title: "No registration token available. Request permission to generate one.",
+//         //   });
+//         }
+//       })
+//       .catch((err) => {
+//         console.log("An error occurred while retrieving token. ", err);
+//       });
+//   } else {
+//     console.log("Notification permission denied.");
+//     // Toast.fire({
+//     //   icon: "error",
+//     //   title: "Notification permission denied. Please enable it in browser settings.",
+//     // });
+//   }
+// }).catch((error) => {
+//   console.error("Error requesting notification permission:", error);
+// });
+
+
+  useEffect(() => {
+    Notification.requestPermission()
+      .then((permission) => {
+        if (permission === "granted") {
+          getToken(messaging, {
+            vapidKey: "BFKo_K0bdHOV5h2lUxzlhDFx4gz0dIEScfhVlJtmcxAvtJOv4p-GewFhrK0qIHGEAVSYVSbdqdDXC7GcqhZcV7c",
+          })
+            .then((currentToken) => {
+              if (currentToken) {
+                console.log("Current token for client: ", currentToken);
+                // Save token to state or localStorage
+                setToken(currentToken);
+              } else {
+                console.log("No registration token available.");
+              }
+            })
+            .catch((err) => {
+              console.log("An error occurred while retrieving token. ", err);
+            });
         } else {
-          console.log("No registration token available.");
-        //   Toast.fire({
-        //     icon: "error",
-        //     title: "No registration token available. Request permission to generate one.",
-        //   });
+          console.log("Notification permission denied.");
         }
       })
-      .catch((err) => {
-        console.log("An error occurred while retrieving token. ", err);
+      .catch((error) => {
+        console.error("Error requesting notification permission:", error);
       });
-  } else {
-    console.log("Notification permission denied.");
-    // Toast.fire({
-    //   icon: "error",
-    //   title: "Notification permission denied. Please enable it in browser settings.",
-    // });
-  }
-}).catch((error) => {
-  console.error("Error requesting notification permission:", error);
-});
+  }, []); // Empty array ensures this runs only once
+
+
 
   const validationSchema = Yup.object().shape({
     username: Yup.string().required(t("login.validate_username")),
