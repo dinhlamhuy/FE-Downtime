@@ -70,11 +70,11 @@ export const requestForToken = () => {
           });
       } else {
         console.log("Notification permission denied.");
-        Toast.fire({
-          icon: "error",
-          title:
-            "Notification permission denied. Please enable it in browser settings.",
-        });
+        // Toast.fire({
+        //   icon: "error",
+        //   title:
+        //     "Notification permission denied. Please enable it in browser settings.",
+        // });
       }
     })
     .catch((error) => {
