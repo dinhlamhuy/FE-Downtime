@@ -79,32 +79,32 @@ export default function LoginScreen() {
     localStorage.setItem("languages", event.target.value);
   };
 
-//   getToken(messaging, {
-//     vapidKey:
-//       "BFKo_K0bdHOV5h2lUxzlhDFx4gz0dIEScfhVlJtmcxAvtJOv4p-GewFhrK0qIHGEAVSYVSbdqdDXC7GcqhZcV7c",
-//   })
-//     .then((currentToken) => {
-//       if (currentToken) {
-//         console.log("current token for client: ", currentToken);
-//         // Perform any other neccessary action with the token
-//         // Toast.fire({
-//         //   icon: "success",
-//         //   title: "Accepted for notification",
-//         // });
-//         setToken(currentToken);
-//         return currentToken;
-//       } else {
-//         // Show permission request UI
-//         Toast.fire({
-//           icon: "error",
-//           title:
-//             "No registration token available. Request permission to generate one.",
-//         });
-//       }
-//     })
-//     .catch((err) => {
-//       console.log("An error occurred while retrieving token. ", err);
-//     });
+  getToken(messaging, {
+    vapidKey:
+      "BFKo_K0bdHOV5h2lUxzlhDFx4gz0dIEScfhVlJtmcxAvtJOv4p-GewFhrK0qIHGEAVSYVSbdqdDXC7GcqhZcV7c",
+  })
+    .then((currentToken) => {
+      if (currentToken) {
+        console.log("current token for client: ", currentToken);
+        // Perform any other neccessary action with the token
+        // Toast.fire({
+        //   icon: "success",
+        //   title: "Accepted for notification",
+        // });
+        setToken(currentToken);
+        return currentToken;
+      } else {
+        // Show permission request UI
+        Toast.fire({
+          icon: "error",
+          title:
+            "No registration token available. Request permission to generate one.",
+        });
+      }
+    })
+    .catch((err) => {
+      console.log("An error occurred while retrieving token. ", err);
+    });
 
 
 // Notification.requestPermission().then((permission) => {
@@ -141,33 +141,33 @@ export default function LoginScreen() {
 // });
 
 
-  useEffect(() => {
-    Notification.requestPermission()
-      .then((permission) => {
-        if (permission === "granted") {
-          getToken(messaging, {
-            vapidKey: "BFKo_K0bdHOV5h2lUxzlhDFx4gz0dIEScfhVlJtmcxAvtJOv4p-GewFhrK0qIHGEAVSYVSbdqdDXC7GcqhZcV7c",
-          })
-            .then((currentToken) => {
-              if (currentToken) {
-                console.log("Current token for client: ", currentToken);
-                // Save token to state or localStorage
-                setToken(currentToken);
-              } else {
-                console.log("No registration token available.");
-              }
-            })
-            .catch((err) => {
-              console.log("An error occurred while retrieving token. ", err);
-            });
-        } else {
-          console.log("Notification permission denied.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error requesting notification permission:", error);
-      });
-  }, []); // Empty array ensures this runs only once
+  // useEffect(() => {
+  //   Notification.requestPermission()
+  //     .then((permission) => {
+  //       if (permission === "granted") {
+  //         getToken(messaging, {
+  //           vapidKey: "BFKo_K0bdHOV5h2lUxzlhDFx4gz0dIEScfhVlJtmcxAvtJOv4p-GewFhrK0qIHGEAVSYVSbdqdDXC7GcqhZcV7c",
+  //         })
+  //           .then((currentToken) => {
+  //             if (currentToken) {
+  //               console.log("Current token for client: ", currentToken);
+  //               // Save token to state or localStorage
+  //               setToken(currentToken);
+  //             } else {
+  //               console.log("No registration token available.");
+  //             }
+  //           })
+  //           .catch((err) => {
+  //             console.log("An error occurred while retrieving token. ", err);
+  //           });
+  //       } else {
+  //         console.log("Notification permission denied.");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error requesting notification permission:", error);
+  //     });
+  // }, []); // Empty array ensures this runs only once
 
 
 
