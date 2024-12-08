@@ -69,7 +69,8 @@ const FormScanner = (props) => {
                   onInputChange={(event, newInputValue) => {
                     setSelectedMachineId(newInputValue);
                   }}
-                  options={machineList ?  machineList.map((machine) => machine.ID_Code):[]}
+                  // options={machineList ?  machineList.map((machine) => machine.ID_Code):[]}
+                  options={machineList ? [...new Set(machineList.map((machine) => machine.ID_Code))] : []}
                   renderInput={(params) => (
                     <TextField
                       {...params}

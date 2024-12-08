@@ -35,8 +35,11 @@ const Notification = () => {
       notify();
     }
   }, [notification]);
+useEffect(()=>{
 
   requestForToken();
+},[])
+ 
 
   onMessageListener()
     .then((payload) => {
