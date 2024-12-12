@@ -98,7 +98,7 @@ const ElectricScreen = () => {
       },
       {
         icon: <Diversity3OutlinedIcon />,
-        text: "Danh sách hỗ trợ",
+        text:t('process_status.support_status'),
         path: "/electric/support",
       },
     ];

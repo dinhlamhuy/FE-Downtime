@@ -41,8 +41,8 @@ const SupportStatus = ({ listReport, user }) => {
 
   const steps = [
     {
-      label: "Cán bộ",
-      description: "Yêu cầu hỗ trợ",
+      label: t('banner.owner_mechanic'),
+      description: t('process_status.supportReq'),
       performAction: function (product) {
         setActiveModal("detailInfo");
         setOpen(true);
@@ -50,8 +50,8 @@ const SupportStatus = ({ listReport, user }) => {
       },
     },
     {
-      label: "Thợ sửa",
-      description: "Xác nhận của thợ",
+      label: t('process_status.status_2'),
+      description:  t('process_status.status_2_confirm'),
       performAction: function (product, status, lean) {
         if (status === 1 && (lean === "TD" || lean === "TM")) {
           setActiveModal("confirm");
@@ -61,8 +61,8 @@ const SupportStatus = ({ listReport, user }) => {
       },
     },
     {
-      label: "Thợ sửa",
-      description: "Hoàn thành hỗ trợ",
+      label: t('process_status.status_2'),
+      description:  t('process_status.supportFin'),
       performAction: function (product, status, lean) {
         if (status === 2 && (lean === "TD" || lean === "TM")) {
           setActiveModal("finish");

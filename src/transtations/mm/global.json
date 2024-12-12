@@ -76,6 +76,8 @@
   "process_status": {
     "process_status": "‌ဆောင်ရွက်ဆဲ အခြေအနေ",
     "history": "မှတ်တမ်း",
+    "support_status": "ပံ့ပိုးမှုအခြေအနေ",
+    "support_history": "ပံ့ပိုးမှုသမိုင်း",
     "status_1": "ထုတ်လုပ်မှု",
     "status_1_": "ကုဒ်ကို စကင်န်ဖတ်ပြီး ပြုပြင်ပေးသူထံ တောင်းဆိုချက်တစ်ခု ပေးပို့ပါ.",
     "status_1_header": "ပြုပြင်ပေးသူ၏ တောင်းဆိုချက် အချက်အလက်",
@@ -126,7 +128,10 @@
     "official": "အရာရှိ:",
     "enter_details": "ပံ့ပိုးမှုအသေးစိတ်",
     "no_response": " didn't accept of mechanic leader",
-    "reject": " didn't approve the task"
+    "reject": " didn't approve the task",
+    "supportReq":"အကူအညီတောင်းပါ။",
+    "supportFin":"အပြည့်အဝထောက်ခံမှု"
+
   },
   "personal_info": {
     "search_info": "အချက်အလက်ရှာဖွေပါ",

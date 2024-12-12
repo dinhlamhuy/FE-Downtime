@@ -77,6 +77,8 @@
   "process_status": {
     "process_status": "Processing status",
     "history": "History",
+    "support_status": "Support status",
+    "support_history": "Support history",
     "status_1": "Production",
     "status_1_": "Scan the code and send a request to the repair technician.",
     "status_1_header": "The repair technician's request information",
@@ -127,7 +129,10 @@
     "official": "Official:",
     "enter_details": "Support details",
     "no_response": " didn't accept the mechanic leader's task",
-    "reject": " didn't approve the task"
+    "reject": " didn't approve the task",
+    "supportReq":"Request support",
+    "supportFin":"Complete support"
+
   },
   "personal_info": {
     "search_info": "Look up information",

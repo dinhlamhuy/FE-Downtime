@@ -102,7 +102,7 @@ const SupportScreen = () => {
     setValue(newValue);
   };
 
-  const breadCrumbText = value === 0 ? 'Trạng thái hỗ trợ': 'Lịch sử hỗ trợ';
+  const breadCrumbText = value === 0 ? t('process_status.support_status'): t('process_status.support_history');
   return (
     <Box component="div">
       <BreadCrumb breadCrumb={breadCrumbText} />

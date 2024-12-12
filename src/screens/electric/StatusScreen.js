@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Box, Tabs, Tab } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { get_work_list_report_employee, get_history_mechanic } from "../../redux/features/electric";
+import {
+  get_work_list_report_employee,
+  get_history_mechanic,
+} from "../../redux/features/electric";
 import BreadCrumb from "../../components/BreadCrumb";
 import ProgressStatus from "../../components/ProgressStatus";
 import History from "../../components/History";
@@ -44,29 +47,29 @@ const StatusScreen = () => {
   const socketRef = useRef();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { workListReportEmployee, historyListReportMechanic } = useSelector((state) => state.electric);
+  const { workListReportEmployee, historyListReportMechanic } = useSelector(
+    (state) => state.electric
+  );
 
   const [value, setValue] = useState(0);
 
   const [t] = useTranslation("global");
 
-
   useEffect(() => {
-    
     const fetchData = async () => {
-      const { user_name, factory, lean } = user;
+      const { user_name, factory, lean, permission } = user;
       const id_user_mechanic = user_name;
 
       if (value === 1) {
-       
         await dispatch(get_history_mechanic({ id_user_mechanic, factory }));
       } else {
-        await dispatch(get_all_machine({ factory }));
+        // permission == "3" && (await dispatch(get_all_machine({ factory })));
 
-        await dispatch(get_work_list_report_employee({ id_user_mechanic, factory, lean }));
-        
+        await dispatch(
+          get_work_list_report_employee({ id_user_mechanic, factory, lean })
+        );
       }
-    }
+    };
 
     fetchData();
 
@@ -81,29 +84,27 @@ const StatusScreen = () => {
     });
 
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        console.log('Trang đã trở lại, load lại...');
+      if (document.visibilityState === "visible") {
+        console.log("Trang đã trở lại, load lại...");
         fetchData();
       }
     };
-  
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     // return () => {
     //   document.removeEventListener('visibilitychange', handleVisibilityChange);
     // };
     return () => {
       if (socketRef.current) {
-      socketRef.current.disconnect();
-    }
-    document.removeEventListener('visibilitychange', handleVisibilityChange);
-
+        socketRef.current.disconnect();
+      }
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [user, dispatch, socket, value])
+  }, [user, dispatch, socket, value]);
   // useEffect(() => {
-   
-  // }, []);
 
+  // }, []);
 
   // const fetchData = useCallback(async () => {
   //   const { user_name, factory, lean } = user;
@@ -129,7 +130,7 @@ const StatusScreen = () => {
 
   //     socketRef.current.on(user.user_name, (data) => {
   //       // setSocketData(data); // Lưu dữ liệu từ socket
-        
+
   //     });
 
   //     socketRef.current.on("disconnect", () => {
@@ -158,11 +159,14 @@ const StatusScreen = () => {
     setValue(newValue);
   };
 
-  const breadCrumbText = value === 0 ? t("process_status.process_status") : t("process_status.history");
+  const breadCrumbText =
+    value === 0
+      ? t("process_status.process_status")
+      : t("process_status.history");
   return (
     <Box component="div">
       <BreadCrumb breadCrumb={breadCrumbText} />
-      <Box sx={{ width: "100%" }}  >
+      <Box sx={{ width: "100%" }}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={value}
@@ -181,14 +185,13 @@ const StatusScreen = () => {
               {...a11yProps(1)}
               sx={{ fontSize: "14px", textTransform: "capitalize" }}
             />
-            
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
           <ProgressStatus listReport={workListReportEmployee} user={user} />
         </CustomTabPanel>
-        <CustomTabPanel value={value} index={1} >
-          <History historyListReport={historyListReportMechanic} user={user}  />
+        <CustomTabPanel value={value} index={1}>
+          <History historyListReport={historyListReportMechanic} user={user} />
         </CustomTabPanel>
       </Box>
     </Box>

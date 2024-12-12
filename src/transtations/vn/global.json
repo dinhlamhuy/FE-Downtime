@@ -77,6 +77,8 @@
   "process_status": {
     "process_status": "Trạng thái xử lý",
     "history": "Lịch sử",
+    "support_status": "Trạng thái hỗ trợ",
+    "support_history": "Lịch sử hỗ trợ",
     "status_1": "Sản xuất",
     "status_1_": "Quét mã và gửi yêu cầu cho thợ sửa.",
     "status_1_header": "Thông tin yêu cầu của thợ sửa",
@@ -127,7 +129,12 @@
     "official" : "Cán bộ:",
     "enter_details": "Chi tiết hỗ trợ",
     "no_response": " không phản hồi task cán bộ đã giao",
-    "reject": " đã từ chối task"
+    "reject": " đã từ chối task",
+    "supportReq":"Yêu cầu hỗ trợ",
+    "supportFin":"Hoàn thành hỗ trợ"
+    
+
+
 
 
   },
