@@ -32,9 +32,9 @@ export const report_damage = createAsyncThunk(
         }
     }
 );
-export const get_info_reason = createAsyncThunk("/damage_report/getInforReason", async () => {
+export const get_info_reason = createAsyncThunk("/damage_report/getInforReason", async (dept) => {
     try {
-        const data = await ProductServices.get_info_reason();
+        const data = await ProductServices.get_info_reason(dept);
         return data;
     } catch (error) {
         return error.message;

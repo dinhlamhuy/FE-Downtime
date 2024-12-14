@@ -210,8 +210,9 @@ const Form = (props) => {
     }, [product, removeTask, dispatch, setScannerResult]);
 
     useEffect(() => {
+        const { dept } = user;
         const fetchData = () => {
-          dispatch(get_info_reason());
+          dispatch(get_info_reason(dept));
         };
         fetchData();
       }, [dispatch]);

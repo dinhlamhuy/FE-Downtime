@@ -83,11 +83,11 @@ const get_history_product = (id_user_request, factory) => {
       return error.response.data;
     });
 };
-const get_info_reason = () => {
+const get_info_reason = (dept) => {
   return axios
     .post(
       BASE_URL + "/damage_report/getInforReason",
-      {},
+      {dept:dept},
       {
         headers: {
           "Content-Type": "application/json",

@@ -298,6 +298,7 @@ const ProgressStatus = ({ listReport, user }) => {
                   isCheck={idMachine === product.id_machine}
                   idMachine={idMachine}
                   open={open}
+                  userRequest={product.id_user_request}
                   setOpen={setOpen}
                   user={user}
                 />

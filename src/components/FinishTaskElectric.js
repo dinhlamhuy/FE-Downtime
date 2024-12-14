@@ -25,14 +25,15 @@ import Scanner from "./ScannerChangeMachine";
 const FinishTaskElectric = (props) => {
   const dispatch = useDispatch();
   const { infoSkill } = useSelector((state) => state.electric);
-  const { isCheck, idMachine, open, setOpen, user } = props;
+  const { isCheck, idMachine, open, setOpen, user,userRequest } = props;
   const [scannerResult, setScannerResult] = useState("");
   const [scanChangeMachine, setScanChangeMachine] = useState(false);
   const [btnScan, setBtnScan] = useState(false);
   const [t] = useTranslation("global");
   const { machineList } = useSelector((state) => state.machine);
   const languages = localStorage.getItem("languages");
-
+// console.log('test', props)
+// console.log('test user', user)
 // Validation schema
 const validationSchema = Yup.object().shape({
   skill: Yup.array()
@@ -51,7 +52,7 @@ const validationSchema = Yup.object().shape({
     t("process_status.status_4_validate_other_method"), 
     function(value) {
       const { skill } = this.parent;
-      const hasId23 = Array.isArray(skill) && skill.some(item => item.id === 23); 
+      const hasId23 = Array.isArray(skill) && skill.some(item => item.id === 999); 
       return hasId23 ? !!value : true;
     }
   ),
@@ -69,7 +70,7 @@ const validationSchema = Yup.object().shape({
 
 const handleAutocompleteChange = (event, values) => {
   const hasId4 = values.some((item) => item.id === 4);
-  const hasId23 = values.some((item) => item.id === 23);
+  const hasId23 = values.some((item) => item.id === 999);
 
 
   setScanChangeMachine(hasId4);
@@ -139,7 +140,7 @@ const formik = useFormik({
   useEffect(() => {
 
     const fetchInfoSkill = () => {
-      dispatch(get_info_skill());
+      dispatch(get_info_skill({userRequest}));
     };
 
 
@@ -286,7 +287,7 @@ const formik = useFormik({
                 )}
               </Grid>
               <Grid item xs={12} md={12}>
-              {formik.values.skill.some((item) => item.id === 23) && (
+              {formik.values.skill.some((item) => item.id === 999) && (
                 <TextField
                   name="otherIssue"
                   variant="outlined"

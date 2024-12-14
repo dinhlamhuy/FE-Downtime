@@ -466,11 +466,11 @@ const get_info_task = (date_from, date_to, user_name, factory) => {
     });
 };
 
-const get_info_skill = () => {
+const get_info_skill = ({userRequest}) => {
   return axios
     .post(
       BASE_URL + "/task/getInforSkill",
-      {},
+      {userRequest:userRequest},
       {
         headers: {
           "Content-Type": "application/json",
