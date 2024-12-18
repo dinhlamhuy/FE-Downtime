@@ -54,7 +54,7 @@ export default function TaskScreen() {
     id: "",
     id_machine: "",
     Name_vn: "",
-    id_user_request:"",
+    id_user_request: "",
     floor_user_request: "",
     Line: "",
     name_user_request: "",
@@ -185,7 +185,7 @@ export default function TaskScreen() {
       Name_vn: "",
       floor_user_request: "",
       Line: "",
-      id_user_request:"",
+      id_user_request: "",
       name_user_request: "",
       fixer: "",
       id_mechanic: "",
@@ -691,6 +691,7 @@ export default function TaskScreen() {
                       <MenuItem value="2">CONFIRMED</MenuItem>
                       <MenuItem value="3">FIXING</MenuItem>
                       <MenuItem value="4">FINISH</MenuItem>
+                      <MenuItem value="6">INCOMPLETE </MenuItem>
                     </Select>
                   </FormControl>
                 </TableCell>
@@ -819,7 +820,9 @@ export default function TaskScreen() {
                           ? "orange"
                           : row.status == "3"
                           ? "Green"
-                          : "blue", // Border cho các ô trong Body
+                          : row.status == "4"
+                          ? "blue"
+                          : "Black",
                     },
                   }}
                 >
@@ -881,7 +884,9 @@ export default function TaskScreen() {
                           ? "orange"
                           : row.status == "3"
                           ? "Green"
-                          : "blue",
+                          : row.status == "4"
+                          ? "blue"
+                          : "Black",
                     }}
                   >
                     {row.status === 1
@@ -890,7 +895,9 @@ export default function TaskScreen() {
                       ? "CONFIRMED"
                       : row.status === 3
                       ? "FIXING"
-                      : "FINISH"}
+                      : row.status === 4
+                      ? "FINISH"
+                      : "INCOMPLETE"}
                   </TableCell>
                   <TableCell className="tdStyle">
                     {row.id_owner && row.id_owner + " - " + row.name_owner}

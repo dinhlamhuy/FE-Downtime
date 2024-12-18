@@ -19,12 +19,16 @@ import {
 } from "@mui/material";
 import BreadCrumb from "../../components/BreadCrumb";
 import { useDispatch, useSelector } from "react-redux";
-import { get_list_repair_mechanic ,get_top_longest_repair_time, get_top3_broken_machines } from "../../redux/features/electric";
+import {
+  get_list_repair_mechanic,
+  get_top_longest_repair_time,
+  get_top3_broken_machines,
+} from "../../redux/features/electric";
 
 import socketIOClient from "socket.io-client";
 import { BASE_URL } from "../../utils/env";
-import ChartRepair from "../../components/ChartRepair"
-import ChartPie from "../../components/ChartPie"
+import ChartRepair from "../../components/ChartRepair";
+import ChartPie from "../../components/ChartPie";
 import { useTranslation } from "react-i18next";
 
 const PaperStyle = {
@@ -33,10 +37,10 @@ const PaperStyle = {
   padding: "10px",
 };
 const CustomDivider = {
-  backgroundColor: 'black',
-  height: '5px',
-  
-  margin: '20px 0',
+  backgroundColor: "black",
+  height: "5px",
+
+  margin: "20px 0",
   // marginTop: "10px",
 };
 
@@ -46,7 +50,11 @@ const RepairlistScreen = () => {
   const [t] = useTranslation("global");
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { getListRepairMechanic, getTop5LongestRepairTime, getTop3BrokenMachines } = useSelector((state) => state.electric);
+  const {
+    getListRepairMechanic,
+    getTop5LongestRepairTime,
+    getTop3BrokenMachines,
+  } = useSelector((state) => state.electric);
   const [selectedFloor, setSelectedFloor] = useState("0");
   const [selectedTime, setSelectedTime] = useState("MONTH");
   const [filteredRepairMechanics, setFilteredRepairMechanics] = useState([]);
@@ -55,15 +63,20 @@ const RepairlistScreen = () => {
   const socketRef = useRef();
   let oldName = "";
   const languages = localStorage.getItem("languages");
- 
+
   useEffect(() => {
     const fetchData = async () => {
       const { factory, floor, lean } = user;
       await dispatch(
-        get_list_repair_mechanic({ factory, floor, lean, time: selectedTime }),
+        get_list_repair_mechanic({ factory, floor, lean, time: selectedTime })
       );
       await dispatch(
-        get_top_longest_repair_time({ factory, floor, lean, time: selectedTime }),  
+        get_top_longest_repair_time({
+          factory,
+          floor,
+          lean,
+          time: selectedTime,
+        })
       );
       await dispatch(
         get_top3_broken_machines({ factory, floor, lean, time: selectedTime })
@@ -100,7 +113,7 @@ const RepairlistScreen = () => {
           const floors = mechanic.floor.split(",").map((floor) => floor.trim());
           return floors.includes(selectedFloor);
         });
-  
+
         setFilteredRepairMechanics(filteredMechanics);
         setRowSpan(countOccurrences(filteredMechanics, "Name_en"));
       }
@@ -108,26 +121,29 @@ const RepairlistScreen = () => {
       setFilteredRepairMechanics(getListRepairMechanic);
     }
   }, [selectedFloor, getListRepairMechanic, user.floor]);
-  
 
   const handleFloorChange = (event) => {
     const selectedFloor = event.target.value;
     setSelectedFloor(selectedFloor);
     const { factory, lean, floor: userFloor } = user;
-    dispatch(get_top_longest_repair_time({
-      factory,
-      floor: selectedFloor === "0" ? userFloor : selectedFloor,
-      lean,
-      time: selectedTime
-    }));
-    dispatch(get_top3_broken_machines({
-      factory,
-      floor: selectedFloor === "0" ? userFloor : selectedFloor, 
-      lean,
-      time: selectedTime
-    }));
+    dispatch(
+      get_top_longest_repair_time({
+        factory,
+        floor: selectedFloor === "0" ? userFloor : selectedFloor,
+        lean,
+        time: selectedTime,
+      })
+    );
+    dispatch(
+      get_top3_broken_machines({
+        factory,
+        floor: selectedFloor === "0" ? userFloor : selectedFloor,
+        lean,
+        time: selectedTime,
+      })
+    );
   };
-  
+
   const countOccurrences = (array, key) => {
     return array.reduce((acc, obj) => {
       acc[obj[key]] = (acc[obj[key]] || 0) + 1;
@@ -151,7 +167,6 @@ const RepairlistScreen = () => {
   const uniqueMachineCodesCount = countUniqueMachineCodes(
     filteredRepairMechanics
   );
-  
 
   return (
     <Box component="div" sx={{ width: "100%" }}>
@@ -341,7 +356,7 @@ const RepairlistScreen = () => {
                       whiteSpace: "nowrap",
                       backgroundColor: "#1976d2",
                       color: "#fff",
-                      width: "100px"
+                      width: "100px",
                     }}
                     align="center"
                   >
@@ -405,16 +420,29 @@ const RepairlistScreen = () => {
                       <TableRow
                         key={index}
                         sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
+                          backgroundColor: row.status == "6" ? "red" : "white",
+
+                          "&:last-child td, &:last-child th": {
+                            border: 0,
+                          },
+                          td: {
+                            color: row.status == "6" ? "white" : "black",
+                          },
                         }}
                       >
                         {ItemRowSpan > 0 && (
-                      <TableCell rowSpan={ItemRowSpan}>
-                      {row.ID_Code
-                        ? languages === "VN" ? row.Name_vn : row.Name_en // Show Vietnamese or default to English
-                        : languages === "VN" ? "Không có" : languages === "MM" ? "မသိ" : "Unknown"} {/* Handle "Unknown" in different languages */}
-                    </TableCell>
-                    
+                          <TableCell rowSpan={ItemRowSpan}>
+                            {row.ID_Code
+                              ? languages === "VN"
+                                ? row.Name_vn
+                                : row.Name_en // Show Vietnamese or default to English
+                              : languages === "VN"
+                              ? "Không có"
+                              : languages === "MM"
+                              ? "မသိ"
+                              : "Unknown"}{" "}
+                            {/* Handle "Unknown" in different languages */}
+                          </TableCell>
                         )}
                         {ItemRowSpan === 0 && (
                           <TableCell style={{ display: "none" }} />
@@ -424,11 +452,12 @@ const RepairlistScreen = () => {
                         <TableCell align="center">{row.line}</TableCell>
                         <TableCell align="center">{row.Alltimes}</TableCell>
                         <TableCell align="center">
-                            {languages === "EN" 
-                                ? row.info_reason_en 
-                                : languages === "MM" 
-                                ? row.info_reason_mm 
-                                : row.info_reason_vn} {row.other_reason && '('+row.other_reason + ')'}
+                          {languages === "EN"
+                            ? row.info_reason_en
+                            : languages === "MM"
+                            ? row.info_reason_mm
+                            : row.info_reason_vn}{" "}
+                          {row.other_reason && "(" + row.other_reason + ")"}
                         </TableCell>
                         <TableCell align="center">{row.SumMinute}</TableCell>
                         <TableCell align="center">{row.Frequency}</TableCell>
@@ -445,17 +474,17 @@ const RepairlistScreen = () => {
           </TableContainer>
         </Paper>
         <Divider sx={CustomDivider} />
-        <Paper 
-        style={{  paddingTop: '30px', paddingBottom: '30px' }}
-        >
-          <Grid container spacing={2}  >
-            <Grid item xs={12} md={7}   >
-                <ChartRepair  getTop5LongestRepairTime={getTop5LongestRepairTime}  />
+        <Paper style={{ paddingTop: "30px", paddingBottom: "30px" }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={7}>
+              <ChartRepair
+                getTop5LongestRepairTime={getTop5LongestRepairTime}
+              />
             </Grid>
-            <Grid item xs={12} md={5}   >
-                <ChartPie getTop3BrokenMachines={getTop3BrokenMachines} />
+            <Grid item xs={12} md={5}>
+              <ChartPie getTop3BrokenMachines={getTop3BrokenMachines} />
             </Grid>
-         </Grid>
+          </Grid>
         </Paper>
       </Box>
     </Box>

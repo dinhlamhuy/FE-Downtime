@@ -451,7 +451,13 @@ const OwnerWorkListScreen = () => {
 
 
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell component="th" scope="row"
+                                            
+                                            sx={{
+                                                backgroundColor: row.id_main_task? 'red':'white',
+                                                color: row.id_main_task ? 'white':'black',
+                                              }}
+                                            >
                                                 {row.id_machine}
                                             </TableCell>
                                             <TableCell>

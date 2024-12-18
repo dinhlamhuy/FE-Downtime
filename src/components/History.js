@@ -32,7 +32,7 @@ export default function History({ historyListReport, user }) {
   const [idMachine, setIdMachine] = useState("");
   const [checkDate, setCheckDate] = useState("");
   const [t] = useTranslation("global");
-  
+
   const steps = [
     {
       label: t("process_status.status_1"),
@@ -96,14 +96,14 @@ export default function History({ historyListReport, user }) {
     return null;
   }
   return (
-    <Stack    spacing={2}>
+    <Stack spacing={2}>
       {historyListReport === null
         ? []
         : historyListReport.map((item, index) => (
             <List
               sx={{
                 width: "100%",
-                bgcolor: "primary.dark",
+                bgcolor:  item['status'] === 6 ? "error.dark" : "primary.dark" ,
                 borderRadius: "5px",
               }}
               component="nav"
@@ -125,11 +125,19 @@ export default function History({ historyListReport, user }) {
                         " " +
                         item["date_user_request"]?.split("T")[0]
                       }
-                      color="primary"
+                      color={ item['status'] === 6 ? "error" : "primary"}
                     />{" "}
-                    - <Chip label={item["id_machine"]} color="primary" /> -
+                    -{" "}
+                    <Chip
+                      label={item["id_machine"] }
+                      color={ item['status'] === 6 ? "error" : "primary"}
+                      
+                    />{" "}
+                    -
                     {item["line_req"] ? (
-                      <Chip label={item["line_req"]} color="primary" />
+                      <Chip label={item["line_req"]} 
+                      color={ item['status'] === 6 ? "error" : "primary"}
+                       />
                     ) : (
                       ""
                     )}
@@ -153,7 +161,7 @@ export default function History({ historyListReport, user }) {
                       sx={{ width: "100%", padding: "0 15px" }}
                     >
                       <Stepper
-                        activeStep={item["status"] }
+                        activeStep={item["status"]}
                         orientation="vertical"
                       >
                         {steps.map((step, index) => {

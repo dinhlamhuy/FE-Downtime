@@ -16,6 +16,11 @@ import {
   Stack,
   Autocomplete,
   Paper,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 
@@ -25,125 +30,148 @@ import Scanner from "./ScannerChangeMachine";
 const FinishTaskElectric = (props) => {
   const dispatch = useDispatch();
   const { infoSkill } = useSelector((state) => state.electric);
-  const { isCheck, idMachine, open, setOpen, user,userRequest } = props;
+  const { isCheck, idMachine, open, setOpen, user, userRequest } = props;
   const [scannerResult, setScannerResult] = useState("");
   const [scanChangeMachine, setScanChangeMachine] = useState(false);
+  const [statusRadio, setStatusRadio] = useState("4");
+
   const [btnScan, setBtnScan] = useState(false);
   const [t] = useTranslation("global");
   const { machineList } = useSelector((state) => state.machine);
   const languages = localStorage.getItem("languages");
-// console.log('test', props)
-// console.log('test user', user)
-// Validation schema
-const validationSchema = Yup.object().shape({
-  skill: Yup.array()
-    .of(
-      Yup.object().shape({
-        id: Yup.number().required("Status ID is required"),
-        info_skill_en: Yup.string().required("English skill name is required"),
-        info_skill_vn: Yup.string().required("Vietnamese skill name is required"),
-        info_skill_mm: Yup.string().required("Myanmar skill name is required"), 
-      })
-    )
-    .min(1, t("process_status.status_4_validate_repair_method")),
-  
-  otherIssue: Yup.string().test(
-    "is-required-when-id-23",
-    t("process_status.status_4_validate_other_method"), 
-    function(value) {
-      const { skill } = this.parent;
-      const hasId23 = Array.isArray(skill) && skill.some(item => item.id === 999); 
-      return hasId23 ? !!value : true;
-    }
-  ),
-  
-  scannerResult: Yup.string().test(
-    "is-required-when-id-4",
-    t("process_status.status_4_validate_machine_new_code"),
-    function(value) {
-      const { skill } = this.parent;
-      const hasId4 = Array.isArray(skill) && skill.some(item => item.id === 4);
-      return hasId4 ? !!value : true; 
-    }
-  ),
-});
+  // console.log('test', props)
+  // console.log('test user', user)
+  // Validation schema
+  const validationSchema = Yup.object().shape({
+    skill: Yup.array()
+      .of(
+        Yup.object().shape({
+          id: Yup.number().required("Status ID is required"),
+          info_skill_en: Yup.string().required(
+            "English skill name is required"
+          ),
+          info_skill_vn: Yup.string().required(
+            "Vietnamese skill name is required"
+          ),
+          info_skill_mm: Yup.string().required(
+            "Myanmar skill name is required"
+          ),
+        })
+      )
+      .min(1, t("process_status.status_4_validate_repair_method")),
 
-const handleAutocompleteChange = (event, values) => {
-  const hasId4 = values.some((item) => item.id === 4);
-  const hasId23 = values.some((item) => item.id === 999);
+    otherIssue: Yup.string().test(
+      "is-required-when-id-23",
+      t("process_status.status_4_validate_other_method"),
+      function (value) {
+        const { skill } = this.parent;
+        const hasId23 =
+          Array.isArray(skill) && skill.some((item) => item.id === 999);
+        return hasId23 ? !!value : true;
+      }
+    ),
 
+    scannerResult: Yup.string().test(
+      "is-required-when-id-4",
+      t("process_status.status_4_validate_machine_new_code"),
+      function (value) {
+        const { skill } = this.parent;
+        const hasId4 =
+          Array.isArray(skill) && skill.some((item) => item.id === 4);
+        return hasId4 ? !!value : true;
+      }
+    ),
+    remark_mechanic:
+      statusRadio === "6"
+        ? Yup.string().required(t("process_status.status_4_validate_remark_repair_method"))
+        : Yup.string(),
+  });
 
-  setScanChangeMachine(hasId4);
-  setBtnScan(!hasId4);
+  const handleAutocompleteChange = (event, values) => {
+    const hasId4 = values.some((item) => item.id === 4);
+    const hasId23 = values.some((item) => item.id === 999);
 
-  formik.setFieldValue("skill", values);
-  formik.setFieldValue("otherIssue", hasId23 ? formik.values.otherIssue : "");
+    setScanChangeMachine(hasId4);
+    setBtnScan(!hasId4);
 
-  const newScannerResult = hasId4 ? scannerResult : '';
-  // console.log('Updated Scanner Result:', newScannerResult); 
-  setScannerResult(newScannerResult.trim()); 
-  formik.setFieldValue("scannerResult", newScannerResult); 
-};
+    formik.setFieldValue("skill", values);
+    formik.setFieldValue("otherIssue", hasId23 ? formik.values.otherIssue : "");
 
-  
+    const newScannerResult = hasId4 ? scannerResult : "";
+    // console.log('Updated Scanner Result:', newScannerResult);
+    setScannerResult(newScannerResult.trim());
+    formik.setFieldValue("scannerResult", newScannerResult);
+  };
+
+  const handleChangeStatus = (event) => {
+    setStatusRadio(event.target.value);
+  };
   // useFormik hook
-const formik = useFormik({
-  initialValues: {
-    skill: [],
-    remark_mechanic: "",
-    otherIssue: "",
-    scannerResult: "", 
-  },
-  
-  validationSchema,
-  onSubmit: (data) => {
-       if (data.skill.some(item => item.id === 4) && !data.scannerResult) {
-        alert(t("process_status.status_4_validate_machine_new_code")); 
+  const formik = useFormik({
+    initialValues: {
+      skill: [],
+      remark_mechanic: "",
+      otherIssue: "",
+      scannerResult: "",
+    },
+
+    validationSchema,
+    onSubmit: (data) => {
+      if (data.skill.some((item) => item.id === 4) && !data.scannerResult) {
+        alert(t("process_status.status_4_validate_machine_new_code"));
         return;
       }
-    if (!formik.isValid) {
-      alert("Vui lòng kiểm tra lại thông tin trước khi gửi!");
-      return;
-    }
-  
-    // console.log('check: ', data);
-    // console.log('Scanner Result:', data.scannerResult);
-    const skillIds = data.skill.map((item) => item.id).join(",");
+      if (!formik.isValid) {
+        alert("Vui lòng kiểm tra lại thông tin trước khi gửi!");
+        return;
+      }
 
-    const { remark_mechanic, otherIssue } = data;
-    const { lean, factory, user_name } = user;
-    const id_machine = idMachine;
-    const id_user_mechanic = user_name;
-    const new_mechanic = data.scannerResult;
-    const language = languages;
+      // console.log('check: ', data);
+      // console.log('Scanner Result:', data.scannerResult);
+      const skillIds = data.skill.map((item) => item.id).join(",");
 
-    dispatch(
-      finish_mechanic({
+      const { remark_mechanic, otherIssue } = data;
+      const { lean, factory, user_name } = user;
+      const id_machine = idMachine;
+      const id_user_mechanic = user_name;
+      const new_mechanic = data.scannerResult;
+      const language = languages;
+      console.log({
         id_user_mechanic,
         skill: skillIds,
         id_machine,
         remark_mechanic,
         lean,
+        statusRadio,
         factory,
         language,
         new_mechanic,
-        otherIssue
-      })
-    );
-    setOpen(false);
-  },
-});
-  
+        otherIssue,
+      });
+      dispatch(
+        finish_mechanic({
+          id_user_mechanic,
+          skill: skillIds,
+          id_machine,
+          remark_mechanic,
+          lean,
+          factory,statusRadio,
+          language,
+          new_mechanic,
+          otherIssue
+        })
+      );
+      setOpen(false);
+    },
+  });
+
   // const fetchAllMachines = async (factory) => {
   //   await dispatch(get_all_machine({ factory }));
   // };
   useEffect(() => {
-
     const fetchInfoSkill = () => {
-      dispatch(get_info_skill({userRequest}));
+      dispatch(get_info_skill({ userRequest }));
     };
-
-
     fetchInfoSkill();
   }, [dispatch]);
 
@@ -159,7 +187,7 @@ const formik = useFormik({
 
   const handleButtonClick = () => {
     setBtnScan(!btnScan);
-    setScannerResult('');
+    setScannerResult("");
   };
 
   return (
@@ -177,6 +205,30 @@ const formik = useFormik({
               titleText={t("process_status.status_4_alert")}
             />
           </Box>
+          <FormControl>
+            <RadioGroup
+              row
+              aria-labelledby="demo-row-radio-buttons-group-label"
+              name="row-radio-buttons-group"
+              defaultValue="4"
+              value={statusRadio}
+              onChange={handleChangeStatus}
+            >
+              <FormControlLabel
+                value="4"
+                control={<Radio color="error" />}
+                label={t('info_machine_damage.alert_finish')}
+                sx={{ color: "blue" }}
+              />
+              <FormControlLabel
+                value="6"
+                control={<Radio color="error" />}
+                label={t('info_machine_damage.alert_fail')}
+                sx={{ color: "red" }}
+              />
+            </RadioGroup>
+          </FormControl>
+
           <Grid
             container
             rowSpacing={2}
@@ -239,8 +291,8 @@ const formik = useFormik({
                         options={machineList.map((machine) => machine.ID_Code)}
                         inputValue={scannerResult}
                         onInputChange={(event, newInputValue) => {
-                          setScannerResult(newInputValue); 
-                          formik.setFieldValue("scannerResult", newInputValue); 
+                          setScannerResult(newInputValue);
+                          formik.setFieldValue("scannerResult", newInputValue);
                           setBtnScan(false);
                         }}
                         renderInput={(params) => (
@@ -254,14 +306,22 @@ const formik = useFormik({
                               ...params.InputProps,
                               readOnly: btnScan,
                             }}
-                            error={!!(formik.errors.scannerResult && formik.touched.scannerResult)} 
-                            helperText={formik.errors.scannerResult && formik.touched.scannerResult
-                              ? formik.errors.scannerResult
-                              : null}
+                            error={
+                              !!(
+                                formik.errors.scannerResult &&
+                                formik.touched.scannerResult
+                              )
+                            }
+                            helperText={
+                              formik.errors.scannerResult &&
+                              formik.touched.scannerResult
+                                ? formik.errors.scannerResult
+                                : null
+                            }
                           />
                         )}
                       />
-                      { /* <TextField
+                      {/* <TextField
                         size="small"
                         sx={{ width: "100%" }}
                         id="outlined-read-only-input"
@@ -271,11 +331,9 @@ const formik = useFormik({
                         InputProps={{
                           readOnly: true,
                         }}
-                      /> + */
-                      }
-
+                      /> + */}
                     </Paper>
-                    {btnScan && scannerResult === '' && (
+                    {btnScan && scannerResult === "" && (
                       <Scanner
                         idMachine={"new_mechanic"}
                         scanner={t("process_status.status_3_scanner")}
@@ -287,22 +345,28 @@ const formik = useFormik({
                 )}
               </Grid>
               <Grid item xs={12} md={12}>
-              {formik.values.skill.some((item) => item.id === 999) && (
-                <TextField
-                  name="otherIssue"
-                  variant="outlined"
-                  label={t("process_status.other_method")}
-                  value={formik.values.otherIssue}
-                  onChange={(e) => formik.setFieldValue('otherIssue', e.target.value)}
-                  fullWidth
-                  size="small"
-                  error={!!(formik.errors.otherIssue && formik.touched.otherIssue)}
-                  helperText={formik.errors.otherIssue && formik.touched.otherIssue
-                    ? formik.errors.otherIssue
-                    : null}
-                />
-              )}
-            </Grid>
+                {formik.values.skill.some((item) => item.id === 999) && (
+                  <TextField
+                    name="otherIssue"
+                    variant="outlined"
+                    label={t("process_status.other_method")}
+                    value={formik.values.otherIssue}
+                    onChange={(e) =>
+                      formik.setFieldValue("otherIssue", e.target.value)
+                    }
+                    fullWidth
+                    size="small"
+                    error={
+                      !!(formik.errors.otherIssue && formik.touched.otherIssue)
+                    }
+                    helperText={
+                      formik.errors.otherIssue && formik.touched.otherIssue
+                        ? formik.errors.otherIssue
+                        : null
+                    }
+                  />
+                )}
+              </Grid>
 
               <Grid item xs={12} md={12}>
                 <Autocomplete
@@ -315,7 +379,7 @@ const formik = useFormik({
                       : languages === "MM"
                       ? option.info_skill_mm
                       : option.info_skill_vn
-                  }                  
+                  }
                   disableCloseOnSelect
                   onChange={handleAutocompleteChange}
                   value={formik.values.skill}
@@ -342,13 +406,13 @@ const formik = useFormik({
                   )}
                   renderOption={(props, option, { selected }) => (
                     <MenuItem {...props} key={option.id} value={option}>
-                    {languages === "EN"
-                      ? option.info_skill_en
-                      : languages === "MM"
-                      ? option.info_skill_mm
-                      : option.info_skill_vn}
-                    {selected ? <CheckIcon color="info" /> : null}
-                  </MenuItem>                  
+                      {languages === "EN"
+                        ? option.info_skill_en
+                        : languages === "MM"
+                        ? option.info_skill_mm
+                        : option.info_skill_vn}
+                      {selected ? <CheckIcon color="info" /> : null}
+                    </MenuItem>
                   )}
                 />
               </Grid>
@@ -362,7 +426,7 @@ const formik = useFormik({
                   variant="outlined"
                   className={
                     formik.errors.remark_mechanic &&
-                      formik.touched.remark_mechanic
+                    formik.touched.remark_mechanic
                       ? "is-invalid"
                       : ""
                   }
@@ -372,7 +436,7 @@ const formik = useFormik({
                   }
                   helperText={
                     formik.errors.remark_mechanic &&
-                      formik.touched.remark_mechanic
+                    formik.touched.remark_mechanic
                       ? formik.errors.remark_mechanic
                       : null
                   }
@@ -386,7 +450,6 @@ const formik = useFormik({
               spacing={2}
               sx={{ marginTop: "10px", justifyContent: "center" }}
             >
-    
               <Button
                 type="submit"
                 variant="contained"

@@ -61,12 +61,16 @@ const TaskEmployee = ({ arrResult }) => {
           </TableHead>
           <TableBody>
           {arrResult?.map((row, index) => {
+         
                 return (
                   <TableRow key={index}>
                     <TableCell>
-                      {row?.date_user_request?.split("T")[0]}
+                      {row?.date_user_request?.split("T")[0]} 
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{
+                      backgroundColor: row.status =='6'  ? 'red':'white',
+                      color: row.status =='6'  ? 'white':'black',
+                    }}>
                       {row.id_machine}
                     </TableCell>
                     {/* <TableCell sx={{ whiteSpace: "nowrap" }}>

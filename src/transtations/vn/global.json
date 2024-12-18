@@ -67,6 +67,8 @@
     "validate_no_spaces": "Vui lòng không nhập khoảng trắng!",
     "validate_other_issue": "Vui lòng nhập vấn đề khác!",
     "alert_success": "Hoàn thành",
+    "alert_finish": "Hoàn thành",
+    "alert_fail": "Không hoàn thành",
     "alert_error": "Lỗi dữ liệu",
     "back": "Trở về",
     "choose_machine": "Nhập mã tài sản",

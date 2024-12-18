@@ -67,6 +67,8 @@
     "validate_no_spaces": "‌ကျေးဇူးပြု၍ နေရာလွတ်များ မထည့်ပါနှင့်!",
     "validate_other_issue": "ကျေးဇူးပြု၍ အခြားပြproblemနှင့် ရိုက်ထည့်ပါ!",
     "alert_success": "‌အောင်မြင်သည်",
+    "alert_finish": "‌အောင်မြင်သည်",
+    "alert_fail": "မပြီးသေးပါ။",
     "alert_error": "အမှား",
     "back": "အနောက်သို့",
     "choose_machine": "စက်၏ကုဒ်ကို ရိုက်ထည့်ပါ",

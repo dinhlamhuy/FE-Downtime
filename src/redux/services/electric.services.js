@@ -360,6 +360,7 @@ const finish_mechanic = (
   remark_mechanic,
   lean,
   factory,
+  statusRadio,
   language,
   new_mechanic,
   otherIssue
@@ -374,6 +375,7 @@ const finish_mechanic = (
         remark_mechanic,
         lean,
         factory,
+        statusRadio,
         language,
         new_mechanic,
         otherIssue,
@@ -466,11 +468,11 @@ const get_info_task = (date_from, date_to, user_name, factory) => {
     });
 };
 
-const get_info_skill = ({userRequest}) => {
+const get_info_skill = ({ userRequest }) => {
   return axios
     .post(
       BASE_URL + "/task/getInforSkill",
-      {userRequest:userRequest},
+      { userRequest: userRequest },
       {
         headers: {
           "Content-Type": "application/json",

@@ -67,6 +67,8 @@
     "validate_no_spaces": "Please do not enter spaces!",
     "validate_other_issue": "Please enter other issues!",
     "alert_success": "Success",
+    "alert_finish": "Finished",
+    "alert_fail": "Incomplete",
     "alert_error": "Error",
     "back": "Back",
     "choose_machine": "Enter asset code",

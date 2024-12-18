@@ -209,7 +209,7 @@ export const finish_mechanic = createAsyncThunk(
     id_machine,
     remark_mechanic,
     lean,
-    factory,
+    factory,statusRadio,
     language,
     new_mechanic,
     otherIssue,
@@ -221,7 +221,7 @@ export const finish_mechanic = createAsyncThunk(
         id_machine,
         remark_mechanic,
         lean,
-        factory,
+        factory,statusRadio,
         language,
         new_mechanic,
         otherIssue

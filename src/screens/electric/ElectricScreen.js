@@ -12,7 +12,7 @@ import SettingsTwoToneIcon from "@mui/icons-material/SettingsTwoTone";
 import { useTranslation } from "react-i18next";
 // import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
 // import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
-import Diversity3OutlinedIcon from "@mui/icons-material/Diversity3Outlined";
+// import Diversity3OutlinedIcon from "@mui/icons-material/Diversity3Outlined";
 const ElectricScreen = () => {
   const auth = useSelector((state) => state.auth);
   const [t] = useTranslation("global");
@@ -41,6 +41,11 @@ const ElectricScreen = () => {
         icon: <RecentActorsOutlinedIcon />,
         text: "User list",
         path: "/electric/list-user",
+      },
+      {
+        icon: <RecentActorsOutlinedIcon />,
+        text: "Devices Downtime",
+        path: "/electric/device-downtime",
       },
     ];
   } else if (auth.user?.permission === 1) {
@@ -96,11 +101,11 @@ const ElectricScreen = () => {
         text: t("sidebar.info_user"),
         path: "/electric/user",
       },
-      {
-        icon: <Diversity3OutlinedIcon />,
-        text:t('process_status.support_status'),
-        path: "/electric/support",
-      },
+      // {
+      //   icon: <Diversity3OutlinedIcon />,
+      //   text:t('process_status.support_status'),
+      //   path: "/electric/support",
+      // },
     ];
   }
 

@@ -10,9 +10,10 @@ import RepairScreen from "../screens/electric/RepairListScreen";
 
 import OwnerUserListScreen from "../screens/electric/OwnerUserListScreen";
 import OwnerWorkListScreen from "../screens/electric/OwnerWorkListScreen";
-import SupportScreen from "../screens/electric/SupportScreen";
+// import SupportScreen from "../screens/electric/SupportScreen";
 import TaskScreen from "../screens/admin/TaskScreen";
 import TokenUserScreen from "../screens/admin/TokenUserScreen";
+import DowntimeScreen from "../screens/admin/DowntimeScreen";
 
 function RoutesElectric() {
   const auth = useSelector((state) => state.auth);
@@ -27,11 +28,13 @@ function RoutesElectric() {
               <Route path="/list-user" element={<OwnerUserListScreen />} />
               <Route path="/list-user/:user_name" element={<InfoUser />} />
               <Route path="/list-repair" element={<RepairScreen />} />
+              
             </>
           ) : (
             <>
               <Route path="/" element={<TaskScreen />} />
               <Route path="/list-user" element={<TokenUserScreen />} />
+              <Route path="/device-downtime" element={<DowntimeScreen />} />
             </>
           )}
         </>
@@ -48,7 +51,7 @@ function RoutesElectric() {
         <>
           <Route path="/user" element={<InfoUserScreen />} />
           <Route path="/status" element={<StatusScreen />} />
-          <Route path="/support" element={<SupportScreen />} />
+          {/* <Route path="/support" element={<SupportScreen />} /> */}
         </>
       )}
     </Routes>
