@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { get_all_machine } from "../redux/features/machine";
 import { Autocomplete } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { setErrorCode } from "../redux/features/electric";
 
 const FormScanner = (props) => {
   const { scanner, setScannerResult } = props;
@@ -11,14 +12,19 @@ const FormScanner = (props) => {
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
   const { machineList, loading } = useSelector((state) => state.machine);
-  
-  const { t } = useTranslation("global"); 
 
+  const { t } = useTranslation("global");
+  useEffect(() => {
+   
+    dispatch(setErrorCode(null, ""));
+  }, []);
   useEffect(() => {
     const fetchData = async (factory) => {
       await dispatch(get_all_machine({ factory }));
     };
-    const userFactory = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).factory : '';
+    const userFactory = localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user")).factory
+      : "";
     fetchData(userFactory);
   }, [dispatch]);
 
@@ -42,10 +48,10 @@ const FormScanner = (props) => {
       <Box
         component="div"
         sx={{
-          border: '1px solid silver',
-          padding: '16px',
-          width: '100%',
-          height: '281px'
+          border: "1px solid silver",
+          padding: "16px",
+          width: "100%",
+          height: "281px",
         }}
         id={`render-2`}
       >
@@ -70,7 +76,15 @@ const FormScanner = (props) => {
                     setSelectedMachineId(newInputValue);
                   }}
                   // options={machineList ?  machineList.map((machine) => machine.ID_Code):[]}
-                  options={machineList ? [...new Set(machineList.map((machine) => machine.ID_Code))] : []}
+                  options={
+                    machineList
+                      ? [
+                          ...new Set(
+                            machineList.map((machine) => machine.ID_Code)
+                          ),
+                        ]
+                      : []
+                  }
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -83,9 +97,9 @@ const FormScanner = (props) => {
                 />
                 <Box
                   sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    marginTop: '20px'
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "20px",
                   }}
                 >
                   <Button type="submit" variant="contained" color="primary">

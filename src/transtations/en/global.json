@@ -55,6 +55,7 @@
     "remark": "Remark",
     "confirm": "Confirm",
     "cancel": "Cancel",
+    "cancelReq": "Cancel request",
     "validate_fullname": "Please enter full name!",
     "validate_factory": "Please choose factory!",
     "validate_id_user_request": "Please enter id number!",
