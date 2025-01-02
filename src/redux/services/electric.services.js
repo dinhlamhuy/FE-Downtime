@@ -676,6 +676,27 @@ const change_floor = (floor, factory, user_name, lang) => {
       return error.response.data;
     });
 };
+const get_All_task = (factory, fromDate, toDate, floor, fixer) => {
+  return axios
+    .get(
+      BASE_URL + "/task/getAllTask",
+      {
+        params: { factory, fromDate, toDate, floor, fixer },
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...authHeader(),
+        },
+      }
+    )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      return error.response.data;
+    });
+};
 
 const ElectricServices = {
   get_work_list_report_employee,
@@ -702,7 +723,7 @@ const ElectricServices = {
   accept_support,
   get_all_floor,
   change_floor,
-  getMachineUnderRepair,
+  getMachineUnderRepair,get_All_task
 };
 
 export default ElectricServices;

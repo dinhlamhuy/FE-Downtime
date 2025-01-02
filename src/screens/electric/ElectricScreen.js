@@ -70,6 +70,11 @@ const ElectricScreen = () => {
         text: t("sidebar.process_status"),
         path: "/electric/status",
       },
+      {
+        icon: <WorkOutlineOutlinedIcon />,
+        text: 'Danh sách công việc',
+        path: "/electric/task-list",
+      },
     ];
   } else if (auth.user?.permission === 0) {
     sideBarMenu = [

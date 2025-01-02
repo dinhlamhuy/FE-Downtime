@@ -67,7 +67,7 @@ const DowntimeScreen = () => {
     Factory: "",
     IP: "",
     status: "",
-    deg: "",
+    seg: "",
     UpdateTime: "",
   });
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
@@ -167,7 +167,7 @@ const DowntimeScreen = () => {
       )}
       <Grid container spacing={1}>
         <Grid item xs={12} md={6}>
-          <BreadCrumb breadCrumb={t("employee_list.employee_list")} />
+          <BreadCrumb breadCrumb='Devices Downtime' />
         </Grid>
         <Grid
           container
@@ -312,7 +312,7 @@ const DowntimeScreen = () => {
                     <TextField
                       size="small"
                       variant="standard"
-                      placeholder="UserID"
+                      placeholder="IP"
                       sx={{ background: "white" }}
                       value={searchTerms.IP}
                       onChange={(e) =>
@@ -376,6 +376,7 @@ const DowntimeScreen = () => {
                       <Select
                         sx={{ background: "white", height: "2rem" }}
                         value={searchTerms.seg}
+                        placeholder="SEG"
                         onChange={(e) =>
                           setSearchTerms({
                             ...searchTerms,

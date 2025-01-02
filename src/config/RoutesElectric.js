@@ -14,6 +14,7 @@ import OwnerWorkListScreen from "../screens/electric/OwnerWorkListScreen";
 import TaskScreen from "../screens/admin/TaskScreen";
 import TokenUserScreen from "../screens/admin/TokenUserScreen";
 import DowntimeScreen from "../screens/admin/DowntimeScreen";
+import TaskListScreen from "../screens/electric/TaskListScreen";
 
 function RoutesElectric() {
   const auth = useSelector((state) => state.auth);
@@ -46,6 +47,7 @@ function RoutesElectric() {
           {/* copy lại code cũ */}
           <Route path="/user" element={<InfoUserScreen />} />
           <Route path="/status" element={<StatusScreen />} />
+          <Route path="/task-list" element={<TaskListScreen />} />
         </>
       ) : (
         <>

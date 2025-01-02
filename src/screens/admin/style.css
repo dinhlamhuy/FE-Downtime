@@ -17,3 +17,11 @@
     padding-top: 4.5px !important;
     padding-bottom: 4.5px !important;
 }
+
+.small-font {
+    font-size: 0.98em; 
+  }
+.time {
+    font-size: 1.1em;
+    font-weight: 700;
+  }

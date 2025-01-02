@@ -466,6 +466,20 @@ export const change_floor = createAsyncThunk(
   }
 );
 
+export const get_All_Task = createAsyncThunk(
+  "/task/getAllTask",
+  async ({ factory, fromDate, toDate, floor, fixer }) => {
+    try {
+      const data = await ElectricServices.get_All_task(
+        factory, fromDate, toDate, floor, fixer
+      );
+      return data;
+    } catch (error) {
+      return error.message;
+    }
+  }
+);
+
 export const electricSlice = createSlice({
   name: "electric",
   initialState: {
@@ -493,6 +507,7 @@ export const electricSlice = createSlice({
     acceptSupport: [],
     getAllFloor: [],
     changeFloor: [],
+    getAllTaskByCB: [],
   },
   reducers: {
     setErrorCode: (state, action) => {
@@ -568,6 +583,9 @@ export const electricSlice = createSlice({
     });
     builder.addCase(get_all_lean.fulfilled, (state, action) => {
       state.getAllLean = action.payload.data;
+    });
+    builder.addCase(get_All_Task.fulfilled, (state, action) => {
+      state.getAllTaskByCB = action.payload.data;
     });
     builder.addCase(call_support.fulfilled, (state, action) => {
       state.errorCode = action.payload.error_code;
