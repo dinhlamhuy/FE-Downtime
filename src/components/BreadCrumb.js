@@ -11,13 +11,24 @@ const styleBreadCrumb = {
 const BreadCrumb = (props) => {
   const [t] = useTranslation("global");
   const breadCrumb = props.breadCrumb;
+  const back = props.back;
 
+  const handleOnClick = () => {
+    if (back) {
+      window.history.back();
+    }
+  };
   return (
     <Breadcrumbs separator="›" aria-label="breadcrumb">
-      <Typography underline="hover" color="inherit" sx={styleBreadCrumb}>
+      <Typography
+        underline="hover"
+        color="inherit"
+        sx={styleBreadCrumb}
+        onClick={handleOnClick}
+      >
         {t("breadcrumb.system")}
       </Typography>
-      
+
       <Typography variant="div" color="text.primary" sx={styleBreadCrumb}>
         {breadCrumb}
       </Typography>

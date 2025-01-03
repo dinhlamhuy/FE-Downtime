@@ -14,6 +14,7 @@
   "sidebar": {
     "system": "Hệ thống",
     "info_machine_damage": "Thông báo máy hư",
+    "relocate_the_machine": "Chuyển máy",
     "process_status": "Trạng thái xử lý",
     "info_user": "Thông tin cá nhân",
     "work_list": "Danh sách công việc",

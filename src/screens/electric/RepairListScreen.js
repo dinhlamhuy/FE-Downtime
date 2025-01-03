@@ -144,13 +144,20 @@ const RepairlistScreen = () => {
     );
   };
 
+  // const countOccurrences = (array, key) => {
+  //   return array.reduce((acc, obj) => {
+      
+  //     acc[obj[key]] = (acc[obj[key]] || 0) + 1;
+  //     return acc;
+  //   }, {});
+  // };
   const countOccurrences = (array, key) => {
     return array.reduce((acc, obj) => {
-      acc[obj[key]] = (acc[obj[key]] || 0) + 1;
+      const keyValue = obj[key];
+      acc[keyValue] = (acc[keyValue] || 0) + 1;
       return acc;
     }, {});
   };
-
   const handleTimeChange = (event, newTime) => {
     if (newTime !== null) {
       setSelectedTime(newTime);

@@ -446,8 +446,8 @@ const DowntimeScreen = () => {
                     <TableCell align="center">{row.seg}</TableCell>
                     <TableCell align="center" sx={{ wordBreak: "break-all" }}>
                       {/* {row.UpdateTime.replace('T',' ').replace('Z',' ')} */}
-                      {row.UpdateTime.substring(11, 19) + "  "}
-                      {row.UpdateTime.substring(0, 10)}
+                      {row.UpdateTime &&  row.UpdateTime.substring(11, 19) + "  "}
+                      {row.UpdateTime && row.UpdateTime.substring(0, 10)}
                     </TableCell>
                   </TableRow>
                 ))}

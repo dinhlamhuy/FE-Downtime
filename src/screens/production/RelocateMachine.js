@@ -7,9 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { get_info_machine } from "../../redux/features/machine";
 import { Radio, RadioGroup, FormControlLabel } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import FormScanner from "../../components/FormScanner";
+
 import { setErrorCode } from "../../redux/features/electric";
 import BreadCrumb2 from "../../components/BreadCrumb2";
+import FormRelocateScanner from "../../components/FormRelocateScanner";
 
 const PaperStyle = {
   position: "relative",
@@ -17,39 +18,38 @@ const PaperStyle = {
   padding: "10px",
 };
 
-const InfoMachineScreen = () => {
-  const auth = useSelector((state) => state.auth);
-  const [scanOption, setScanOption] = useState("barcode");
-  const [scannerResult, setScannerResult] = useState("");
-  const [t] = useTranslation("global");
-
-  const dispatch = useDispatch();
-  useEffect(() => {
-    setScannerResult('')
-    dispatch(setErrorCode(null, ""));
-  }, []);
-  useEffect(() => {
-    const fetchInfoMachine = async () => {
-      const { factory } = auth.user;
-      const id_machine = scannerResult;
-
-      await dispatch(get_info_machine(factory, id_machine));
-    };
-
-    if (scannerResult) {
-      fetchInfoMachine();
-    }
-  }, [dispatch, scannerResult, auth.user]);
-
-  return (
-    <Box component="div">
+const RelocateMachine=()=>{
+    const auth = useSelector((state) => state.auth);
+      const [scanOption, setScanOption] = useState("barcode");
+      const [scannerLineResult, setScannerLineResult] = useState("");
+      const [t] = useTranslation("global");
+    
+      const dispatch = useDispatch();
+      useEffect(() => {
+        setScannerLineResult('')
+        dispatch(setErrorCode(null, ""));
+      }, []);
+      useEffect(() => {
+        const fetchInfoMachine = async () => {
+          const { factory } = auth.user;
+          const id_machine = scannerLineResult;
+    
+          await dispatch(get_info_machine(factory, id_machine));
+        };
+    
+        if (scannerLineResult) {
+          fetchInfoMachine();
+        }
+      }, [dispatch, scannerLineResult, auth.user]);
+    return(
+        <Box component="div">
       {/* <BreadCrumb breadCrumb={'Báo lỗi'}  /> */}
-      <BreadCrumb2  breadCrumbs={[ t("info_machine_damage.info_machine_damage")]} back={'true'} />
+      <BreadCrumb2  breadCrumbs={[ t("sidebar.relocate_the_machine")]} back={'true'} />
       <Box
         component="div"
         sx={{ display: "block", margin: "0 auto", maxWidth: "500px" }}
       >
-        {scannerResult === "" && (
+        {scannerLineResult === "" && (
           <RadioGroup
             aria-label="scan-option"
             name="scan-option"
@@ -71,30 +71,29 @@ const InfoMachineScreen = () => {
         )}
 
         <Paper sx={PaperStyle} elevation={5}>
-          {scannerResult !== "" ? (
+          {scannerLineResult !== "" ? (
             <Form
               formText={t("info_machine_damage.form_request")}
-              scannerResult={scannerResult}
-              setScannerResult={setScannerResult}
+              scannerResult={scannerLineResult}
+              setScannerResult={setScannerLineResult}
               user={auth.user}
             />
           ) : scanOption === "barcode" ? (
             <Scanner
               scanner={t("info_machine_damage.scan_qr_bar_code")}
-              scannerResult={scannerResult}
-              setScannerResult={setScannerResult}
+              scannerResult={scannerLineResult}
+              setScannerResult={setScannerLineResult}
               idMachine={"scanner-product"}
             />
           ) : (
-            <FormScanner
-              setScannerResult={setScannerResult}
+            <FormRelocateScanner
+              setScannerResult={setScannerLineResult}
               scanner={t("info_machine_damage.form_scan")}
             />
           )}
         </Paper>
       </Box>
     </Box>
-  );
-};
-
-export default InfoMachineScreen;
+    )
+}
+export default RelocateMachine;

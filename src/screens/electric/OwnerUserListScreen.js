@@ -346,7 +346,7 @@ const OwnerUserListScreen = () => {
                   >
                     {t("employee_list.task_name")}
                   </TableCell>
-                  <TableCell
+                  {/* <TableCell
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
@@ -356,7 +356,7 @@ const OwnerUserListScreen = () => {
                     align="center"
                   >
                     Token
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell
                     style={{
                       fontWeight: "bold",
@@ -430,7 +430,7 @@ const OwnerUserListScreen = () => {
                       {statusCurrent(row.STS)}
                     </TableCell>
                     <TableCell align="center">{row.TaskName}</TableCell>
-                    <TableCell align="center">
+                    {/* <TableCell align="center">
                       {row.token_devices ? (
                         <CheckIcon
                           style={{ color: green[500], fontSize: 30 }}
@@ -438,7 +438,7 @@ const OwnerUserListScreen = () => {
                       ) : (
                         <CloseIcon style={{ color: red[500], fontSize: 30 }} />
                       )}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell align="center">{row.CountTime}</TableCell>
                     <TableCell align="center">
                       <Button

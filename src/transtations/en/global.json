@@ -14,6 +14,7 @@
   "sidebar": {
     "system": "System",
     "info_machine_damage": "Report of a broken machine",
+    "relocate_the_machine": "Relocate the machine",
     "process_status": "Processing status",
     "info_user": "Personal information",
     "work_list": "Work List",
