@@ -7,10 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { get_info_machine } from "../../redux/features/machine";
 import { Radio, RadioGroup, FormControlLabel } from "@mui/material";
 import { useTranslation } from "react-i18next";
-
 import { setErrorCode } from "../../redux/features/electric";
 import BreadCrumb2 from "../../components/BreadCrumb2";
 import FormRelocateScanner from "../../components/FormRelocateScanner";
+import FormRelocate from "../../components/FormRelocate";
 
 const PaperStyle = {
   position: "relative",
@@ -72,8 +72,8 @@ const RelocateMachine=()=>{
 
         <Paper sx={PaperStyle} elevation={5}>
           {scannerLineResult !== "" ? (
-            <Form
-              formText={t("info_machine_damage.form_request")}
+            <FormRelocate 
+              formText={t("info_machine_damage.form_relocation")}
               scannerResult={scannerLineResult}
               setScannerResult={setScannerLineResult}
               user={auth.user}

@@ -1,5 +1,5 @@
 .tdStyle {
-    word-break: break-all !important;
+    word-break: normal !important;
     overflow: auto !important;
     padding: 5px !important;
     text-align: center !important;

@@ -146,7 +146,7 @@ const RepairlistScreen = () => {
 
   // const countOccurrences = (array, key) => {
   //   return array.reduce((acc, obj) => {
-      
+
   //     acc[obj[key]] = (acc[obj[key]] || 0) + 1;
   //     return acc;
   //   }, {});
@@ -155,6 +155,7 @@ const RepairlistScreen = () => {
     return array.reduce((acc, obj) => {
       const keyValue = obj[key];
       acc[keyValue] = (acc[keyValue] || 0) + 1;
+
       return acc;
     }, {});
   };
@@ -226,7 +227,20 @@ const RepairlistScreen = () => {
             </FormControl>
           </Box>
         </Grid>
-
+        <Grid item xs={12} md={12} sx={{}}>
+          <Paper style={{ paddingTop: "30px", paddingBottom: "30px" }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={7}>
+                <ChartRepair
+                  getTop5LongestRepairTime={getTop5LongestRepairTime}
+                />
+              </Grid>
+              <Grid item xs={12} md={5}>
+                <ChartPie getTop3BrokenMachines={getTop3BrokenMachines} />
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
         <Grid
           item
           xs={12}
@@ -418,59 +432,65 @@ const RepairlistScreen = () => {
               <TableBody>
                 {filteredRepairMechanics &&
                 filteredRepairMechanics.length > 0 ? (
-                  filteredRepairMechanics.map((row, index) => {
-                    let currentName = row.ID_Code ? row.Name_en : "Unknown";
-                    let ItemRowSpan =
-                      currentName === oldName ? 0 : rowSpan[row.Name_en];
-                    oldName = currentName;
-                    return (
-                      <TableRow
-                        key={index}
-                        sx={{
-                          backgroundColor: row.status == "6" ? "red" : "white",
+                  [...filteredRepairMechanics] // Create a shallow copy
+                    .sort((a, b) => a?.Name_en?.localeCompare(b.Name_en))
+                    .map((row, index) => {
+                      let currentName = row.ID_Code
+                        ? row.Name_en || "No Name"
+                        : "Unknown";
+                      let ItemRowSpan =
+                        currentName === oldName ? 0 : rowSpan[currentName];
+                      oldName = currentName;
+                      return (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            backgroundColor:
+                              row.status == "6" ? "red" : "white",
 
-                          "&:last-child td, &:last-child th": {
-                            border: 0,
-                          },
-                          td: {
-                            color: row.status == "6" ? "white" : "black",
-                          },
-                        }}
-                      >
-                        {ItemRowSpan > 0 && (
-                          <TableCell rowSpan={ItemRowSpan}>
-                            {row.ID_Code
-                              ? languages === "VN"
-                                ? row.Name_vn
-                                : row.Name_en // Show Vietnamese or default to English
-                              : languages === "VN"
-                              ? "Không có"
+                            "&:last-child td, &:last-child th": {
+                              border: 0,
+                            },
+                            td: {
+                              color: row.status == "6" ? "white" : "black",
+                            },
+                          }}
+                        >
+                          {ItemRowSpan > 0 && (
+                            <TableCell rowSpan={ItemRowSpan}>
+                              {row.ID_Code
+                                ? languages === "VN"
+                                  ? row.Name_vn
+                                  : row.Name_en // Show Vietnamese or default to English
+                                : languages === "VN"
+                                ? "Không có"
+                                : languages === "MM"
+                                ? "မသိ"
+                                : "Unknown"}{" "}
+                              {/* Handle "Unknown" in different languages */}
+                            </TableCell>
+                          )}
+                          {ItemRowSpan === 0 && (
+                            <TableCell style={{ display: "none" }} />
+                          )}
+                          {!row.Name_en && <TableCell> </TableCell>}
+                          <TableCell>{row.id_machine}</TableCell>
+                          <TableCell align="center">{row.floor}</TableCell>
+                          <TableCell align="center">{row.line}</TableCell>
+                          <TableCell align="center">{row.Alltimes}</TableCell>
+                          <TableCell align="center">
+                            {languages === "EN"
+                              ? row.info_reason_en
                               : languages === "MM"
-                              ? "မသိ"
-                              : "Unknown"}{" "}
-                            {/* Handle "Unknown" in different languages */}
+                              ? row.info_reason_mm
+                              : row.info_reason_vn}{" "}
+                            {row.other_reason && "(" + row.other_reason + ")"}
                           </TableCell>
-                        )}
-                        {ItemRowSpan === 0 && (
-                          <TableCell style={{ display: "none" }} />
-                        )}
-                        <TableCell>{row.id_machine}</TableCell>
-                        <TableCell align="center">{row.floor}</TableCell>
-                        <TableCell align="center">{row.line}</TableCell>
-                        <TableCell align="center">{row.Alltimes}</TableCell>
-                        <TableCell align="center">
-                          {languages === "EN"
-                            ? row.info_reason_en
-                            : languages === "MM"
-                            ? row.info_reason_mm
-                            : row.info_reason_vn}{" "}
-                          {row.other_reason && "(" + row.other_reason + ")"}
-                        </TableCell>
-                        <TableCell align="center">{row.SumMinute}</TableCell>
-                        <TableCell align="center">{row.Frequency}</TableCell>
-                      </TableRow>
-                    );
-                  })
+                          <TableCell align="center">{row.SumMinute}</TableCell>
+                          <TableCell align="center">{row.Frequency}</TableCell>
+                        </TableRow>
+                      );
+                    })
                 ) : (
                   <TableRow>
                     <TableCell colSpan={7} align="center"></TableCell>
@@ -479,19 +499,6 @@ const RepairlistScreen = () => {
               </TableBody>
             </Table>
           </TableContainer>
-        </Paper>
-        <Divider sx={CustomDivider} />
-        <Paper style={{ paddingTop: "30px", paddingBottom: "30px" }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={7}>
-              <ChartRepair
-                getTop5LongestRepairTime={getTop5LongestRepairTime}
-              />
-            </Grid>
-            <Grid item xs={12} md={5}>
-              <ChartPie getTop3BrokenMachines={getTop3BrokenMachines} />
-            </Grid>
-          </Grid>
         </Paper>
       </Box>
     </Box>

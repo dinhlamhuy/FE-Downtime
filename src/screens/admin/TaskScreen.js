@@ -72,13 +72,14 @@ export default function TaskScreen() {
   });
   const formatTime = (hours, minutes, seconds) => {
     let formattedTime = "";
+    const formatTwoDigits = (num) => String(num || 0).padStart(2, '0');
     if (hours > 0) {
-      formattedTime += `<span class="time">${hours}</span><span class="small-font">h</span> `;
+      formattedTime += `<span class="time">${hours}</span><span class="small-font">:</span>`;
     }
     if (minutes > 0 || hours > 0) {
-      formattedTime += `<span class="time">${minutes}</span><span class="small-font">m</span> `;
+      formattedTime += `<span class="time">${formatTwoDigits(minutes || 0)}</span><span class="small-font">:</span>`;
     }
-    formattedTime += `<span class="time">${seconds}</span><span class="small-font">s</span>`;
+    formattedTime += `<span class="time">${formatTwoDigits(seconds || 0 )}</span><span class="small-font">s</span>`;
     // return formattedTime;
     return { __html: formattedTime };
   };
@@ -966,7 +967,12 @@ export default function TaskScreen() {
                     >
                       {row.id}
                     </TableCell>
-                    <TableCell className="tdStyle">{row.id_machine}</TableCell>
+                    <TableCell className="tdStyle2"    sx={{
+                        wordBreak: "break-all",
+                        overflow: "auto",
+                        textAlign: "center",
+                        padding: 0,
+                      }} >{row.id_machine}</TableCell>
                     <TableCell
                       sx={{
                         wordBreak: "break-all",

@@ -7,12 +7,7 @@ import {
   Grid,
   Stack,
   Button,
-  Autocomplete,
-  MenuItem,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
+
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
@@ -25,26 +20,18 @@ import Popup from "./Popup";
 
 import { Toast } from "../utils/toast";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  report_damage,
-  setErrorCode,
-  cancel_report_damage,
-  get_info_reason,
-} from "../redux/features/product";
+import { setErrorCode, get_info_reason } from "../redux/features/product";
 
 import { useTranslation } from "react-i18next";
-import axios from "axios";
-import { BASE_URL } from "../utils/env";
-import authHeader from "../redux/services/auth_header";
-import { set } from "date-fns";
 
-const Form = (props) => {
+
+const FormRelocate = (props) => {
   const [t] = useTranslation("global");
   const languages = localStorage.getItem("languages");
-  const location = useLocation();  
+  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { infoReason } = useSelector((state) => state.product);
+
   const product = useSelector((state) => state.product);
   const { formText, scannerResult, setScannerResult, user } = props;
   const [statusForm, setStatusForm] = useState(false);
@@ -53,23 +40,15 @@ const Form = (props) => {
   const [infoMachine, setInfoMachine] = useState(null);
   const [otherIssue, setAdditionalInput] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogMessage, setDialogMessage] = useState("");
-
-
-// console.log(statusForm)
+  // console.log(statusForm);
   const onBack = () => {
     setScannerResult("");
     dispatch(setErrorCode(null, ""));
     setStatusForm(false);
   };
   useEffect(() => {
-
- 
     setStatusForm(false);
     dispatch(setErrorCode(null, ""));
-    
   }, [location]);
   const onNextPage = async () => {
     setScannerResult("");
@@ -77,27 +56,6 @@ const Form = (props) => {
     setStatusForm(false);
     await dispatch(setErrorCode(null, ""));
     navigate("/product/status");
-  };
-  const handleAutocompleteChange = (event, values) => {
-    formik.setFieldValue("remark", values);
-
-    const hasId999 = values.some((item) => item.id === 999);
-
-    if (!hasId999) {
-      setAdditionalInput("");
-      formik.setFieldValue("otherIssue", "");
-    }
-  };
-
-  const onCancel = async () => {
-    const id_machine = scannerResult.trim();
-    const { user_name, factory } = user;
-    const language = languages;
-
-    await dispatch(
-      cancel_report_damage({ user_name, id_machine, factory, language })
-    );
-    setRemoveTask(true);
   };
 
   const validationSchema = Yup.object().shape({
@@ -110,9 +68,7 @@ const Form = (props) => {
     DateReport: Yup.string().required(
       t("info_machine_damage.validate_date_report")
     ),
-    id_machine: Yup.string().required(
-      t("info_machine_damage.validate_id_machine")
-    ),
+    ID_Lean: Yup.string().required(t("info_machine_damage.validate_ID_Lean")),
     fixer: Yup.string().required(t("info_machine_damage.validate_fixer")),
 
     // Validation for remark
@@ -152,10 +108,10 @@ const Form = (props) => {
       FullName: user.name,
       factory: user.factory,
       id_user_request: user.user_name,
-      Lean: user.lean,
+      line: user.line,
       Floor: user.floor,
       DateReport: dayjs(new Date()),
-      id_machine: scannerResult.trim(),
+      ID_Lean: scannerResult.trim(),
       name_machine: "",
       fixer: "",
       remark: [],
@@ -165,67 +121,53 @@ const Form = (props) => {
     onSubmit: async (data) => {
       setLoading(true);
       // console.log("Form data:", data);
-      const arrayRemark = data.remark;
-      const idArray = arrayRemark.map((item) => item.id);
-      let remark = idArray.join(",");
 
-      const { id_machine, id_user_request, factory, fixer, otherIssue } = data;
+      const { ID_Lean, id_user_request, factory, fixer, otherIssue } = data;
       const language = languages;
-      await dispatch(
-        report_damage({
-          id_machine: id_machine.trim(),
-          id_user_request,
-          remark,
-          factory,
-          fixer,
-          otherIssue: otherIssue.trim(),
-          language,
-        })
-      );
+      // await dispatch(
+      //   report_damage({
+      //     ID_Lean: ID_Lean.trim(),
+      //     id_user_request,
+      //     remark,
+      //     factory,
+      //     fixer,
+      //     otherIssue: otherIssue.trim(),
+      //     language,
+      //   })
+      // );
     },
   });
 
-  useEffect(() => {
-    const id_machine = scannerResult.trim();
-    const { factory } = user;
-    const getInfoMachine = (factory, id_machine) => {
-      return axios
-        .post(
-          BASE_URL + "/damage_report/getMachine",
-          {
-            factory,
-            id_machine,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              ...authHeader(),
-            },
-          }
-        )
-        .then((response) => {
-          setInfoMachine(response.data.data);
-          console.log(response.data.data)
-          if(response.data.data === null){
-            setScannerResult('')
-          }
-          return response.data.data;
-        })
-        .catch((error) => {
-          setDialogMessage(`Error: Không tìm thấy mã máy ${id_machine}`);
-          setDialogOpen(true);
-          return error.response.data;
-        });
-    };
+  // useEffect(() => {
+  //   const ID_Lean = scannerResult.trim();
+  //   const { factory } = user;
+  //   const getInfoMachine = (factory, ID_Lean) => {
+  //     return axios
+  //       .post(
+  //         BASE_URL + "/damage_report/getMachine",
+  //         {
+  //           factory,
+  //           ID_Lean,
+  //         },
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             ...authHeader(),
+  //           },
+  //         }
+  //       )
+  //       .then((response) => {
+  //         setInfoMachine(response.data.data);
+  //         return response.data.data;
+  //       })
+  //       .catch((error) => {
+  //         return error.response.data;
+  //       });
+  //   };
 
-    getInfoMachine(factory, id_machine);
-  }, [scannerResult, user]);
+  //   getInfoMachine(factory, ID_Lean);
+  // }, [scannerResult, user]);
 
-
-  const handleCloseDialog = () => {
-    setScannerResult("");
-    setDialogOpen(false);
-  };
   useEffect(() => {
     if (infoMachine) {
       formik.setFieldValue(
@@ -235,34 +177,6 @@ const Form = (props) => {
     }
   }, [infoMachine, languages]);
 
-  // useEffect(() => {
-    
-  //   if (product.errorCode === 0) {
-  //     setStatusForm(true);
-  //     setstatusPopup(true);
-  //   }
-  //   if (
-  //     product.errorCode === 1001 ||
-  //     product.errorCode === 1002 ||
-  //     product.errorCode === 1003 ||
-  //     product.errorCode === 1004 ||
-  //     product.errorCode === 1005
-  //   ) {
-  //     setStatusForm(true);
-  //   }
-
-  //   if (product.errorCode === 0 && removeTask === true) {
-  //     setScannerResult("");
-  //     setStatusForm(false);
-
-  //     Toast.fire({
-  //       icon: "success",
-  //       title: product.errorMessage,
-  //     });
-
-  //     dispatch(setErrorCode(null));
-  //   }
-  // }, [product, removeTask, dispatch, setScannerResult]);
   useEffect(() => {
     // Khi mới vào form, kiểm tra trạng thái ban đầu
     if (product.errorCode === null || product.errorCode === undefined) {
@@ -270,26 +184,26 @@ const Form = (props) => {
       setstatusPopup(false);
       return; // Dừng tại đây nếu chưa có errorCode
     }
-  
+
     // Xử lý khi errorCode === 0
     if (product.errorCode === 0) {
       setStatusForm(true);
       setstatusPopup(true);
-  
+
       if (removeTask) {
         setScannerResult("");
         setStatusForm(false);
-  
+
         Toast.fire({
           icon: "success",
           title: product.errorMessage,
         });
-  
+
         dispatch(setErrorCode(null));
       }
       return;
     }
-  
+
     // Xử lý các trường hợp errorCode từ 1001 đến 1005
     if (
       product.errorCode === 1001 ||
@@ -302,7 +216,7 @@ const Form = (props) => {
       return;
     }
   }, [product, removeTask, dispatch, setScannerResult]);
-  
+
   useEffect(() => {
     const { dept } = user;
     const fetchData = () => {
@@ -357,7 +271,7 @@ const Form = (props) => {
                 variant="contained"
                 color="error"
                 size="small"
-                onClick={onCancel}
+                // onClick={onCancel}
               >
                 {t("info_machine_damage.cancel")}
               </Button>
@@ -450,21 +364,21 @@ const Form = (props) => {
             <Grid item xs={6} md={6}>
               <TextField
                 label={t("info_machine_damage.lean")}
-                name="Lean"
+                name="line"
                 variant="outlined"
                 size="small"
                 fullWidth
                 className={
-                  formik.errors.Lean && formik.touched.Lean ? "is-invalid" : ""
+                  formik.errors.line && formik.touched.line ? "is-invalid" : ""
                 }
-                error={formik.errors.Lean && formik.touched.Lean === true}
+                error={formik.errors.line && formik.touched.line === true}
                 helperText={
-                  formik.errors.Lean && formik.touched.Lean
-                    ? formik.errors.Lean
+                  formik.errors.line && formik.touched.line
+                    ? formik.errors.line
                     : null
                 }
                 onChange={formik.handleChange}
-                value={formik.values.Lean}
+                value={formik.values.line}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
@@ -517,42 +431,29 @@ const Form = (props) => {
             </Grid>
             <Grid item xs={6} md={6}>
               <TextField
-                label={t("info_machine_damage.id_machine")}
-                name="id_machine"
+                label={"ID_Lean"}
+                name="ID_Lean"
                 variant="outlined"
                 size="small"
                 fullWidth
                 className={
-                  formik.errors.id_machine && formik.touched.id_machine
+                  formik.errors.ID_Lean && formik.touched.ID_Lean
                     ? "is-invalid"
                     : ""
                 }
-                error={
-                  formik.errors.id_machine && formik.touched.id_machine === true
-                }
+                error={formik.errors.ID_Lean && formik.touched.ID_Lean === true}
                 helperText={
-                  formik.errors.id_machine && formik.touched.id_machine
-                    ? formik.errors.id_machine
+                  formik.errors.ID_Lean && formik.touched.ID_Lean
+                    ? formik.errors.ID_Lean
                     : null
                 }
                 onChange={formik.handleChange}
-                value={formik.values.id_machine}
+                value={formik.values.ID_Lean}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
-            <Grid item xs={6} md={6}>
-              <TextField
-                label={t("info_machine_damage.name_machine")}
-                name="name_machine"
-                variant="outlined"
-                size="small"
-                fullWidth
-                onChange={formik.handleChange}
-                value={formik.values.name_machine}
-                inputProps={{ readOnly: true }}
-              />
-            </Grid>
-            <Grid item xs={6} md={6}>
+
+            {/* <Grid item xs={6} md={6}>
               <TextField
                 select
                 name="fixer"
@@ -580,95 +481,26 @@ const Form = (props) => {
                   {t("info_machine_damage.mechanic")}
                 </MenuItem>
               </TextField>
-            </Grid>
-            <Grid item xs={6} md={6}>
-              {formik.values.remark.some((item) => item.id === 999) && (
-                <TextField
-                  name="otherIssue"
-                  variant="outlined"
-                  label={t("info_machine_damage.other_issue")}
-                  value={formik.values.otherIssue}
-                  onChange={(e) =>
-                    formik.setFieldValue("otherIssue", e.target.value)
-                  }
-                  fullWidth
-                  size="small"
-                  error={
-                    !!(formik.errors.otherIssue && formik.touched.otherIssue)
-                  }
-                  helperText={
-                    formik.errors.otherIssue && formik.touched.otherIssue
-                      ? formik.errors.otherIssue
-                      : null
-                  }
-                />
-              )}
-            </Grid>
-
+            </Grid> */}
             <Grid item xs={12} md={12}>
-              {/* lý do hư máy phiên bản nhập tay */}
-              {/* <TextField
-                                name="remark"
-                                label={t("info_machine_damage.remark")}
-                                multiline
-                                rows={4}
-                                fullWidth
-                                className={
-                                    formik.errors.remark && formik.touched.remark
-                                        ? "is-invalid"
-                                        : ""
-                                }
-                                error={formik.errors.remark && formik.touched.remark === true}
-                                helperText={
-                                    formik.errors.remark && formik.touched.remark
-                                        ? formik.errors.remark
-                                        : null
-                                }
-                                onChange={formik.handleChange}
-                                value={formik.values.remark}
-                            /> */}
-
-              <Autocomplete
-                name="skill"
-                multiple
-                options={infoReason}
-                getOptionLabel={(option) =>
-                  languages === "EN"
-                    ? option.info_reason_en
-                    : languages === "MM"
-                    ? option.info_reason_mm
-                    : option.info_reason_vn
+              <TextField
+                name="otherIssue"
+                variant="outlined"
+                label={t("work_list.remark")}
+                value={formik.values.otherIssue}
+                onChange={(e) =>
+                  formik.setFieldValue("otherIssue", e.target.value)
                 }
-                disableCloseOnSelect
-                onChange={handleAutocompleteChange}
-                value={formik.values.remark}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    label={t("info_machine_damage.remark")}
-                    fullWidth
-                    sx={{ fontSize: "14px" }}
-                    size="small"
-                    error={!!(formik.errors.remark && formik.touched.remark)}
-                    className={
-                      formik.errors.remark && formik.touched.remark
-                        ? "is-invalid"
-                        : ""
-                    }
-                    helperText={
-                      formik.errors.remark && formik.touched.remark
-                        ? formik.errors.remark
-                        : null
-                    }
-                  />
-                )}
-                renderOption={(props, option, { selected }) => (
-                  <MenuItem {...props} key={option.id} value={option}>
-                    {option[`info_reason_${languages.toLowerCase()}`]}
-                    {selected && <CheckIcon color="info" />}
-                  </MenuItem>
-                )}
+                fullWidth
+                size="small"
+                error={
+                  !!(formik.errors.otherIssue && formik.touched.otherIssue)
+                }
+                helperText={
+                  formik.errors.otherIssue && formik.touched.otherIssue
+                    ? formik.errors.otherIssue
+                    : null
+                }
               />
             </Grid>
           </Grid>
@@ -698,24 +530,8 @@ const Form = (props) => {
           </Stack>
         </Box>
       )}
-
-<div>
-      {/* Your existing form components */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Error</DialogTitle>
-        <DialogContent>{dialogMessage}</DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Thử lại
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
     </Box>
   );
 };
 
-export default Form;
-
-
-
+export default FormRelocate;

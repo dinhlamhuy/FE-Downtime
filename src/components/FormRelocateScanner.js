@@ -125,13 +125,13 @@ const FormRelocateScanner = (props) => {
                   displayEmpty
                   renderValue={(selected) => {
                     if (selected.length === 0) {
-                      return <em>{t("info_machine_damage.choose_machine")}</em>;
+                      return <em>{t("employee_list.choose_floor")}</em>;
                     }
                     return selected;
                   }}
                 >
                   <MenuItem disabled value="">
-                    <em>{t("info_machine_damage.choose_machine")}</em>
+                    <em>{t("employee_list.choose_floor")}</em>
                   </MenuItem>
                   {getAllFloor
                     ? [...new Set(getAllFloor.map((AllFloor) => AllFloor.floor))].map(
@@ -154,13 +154,13 @@ const FormRelocateScanner = (props) => {
                   displayEmpty
                   renderValue={(selected) => {
                     if (selected.length === 0) {
-                      return <em>{t("info_machine_damage.choose_machine")}</em>;
+                      return <em>{t("work_list.select_line")}</em>;
                     }
                     return selected;
                   }}
                 >
                   <MenuItem disabled value="">
-                    <em>{t("info_machine_damage.choose_machine")}</em>
+                    <em>{t("work_list.select_line")}</em>
                   </MenuItem>
                   {getAllLean
                     ? [...new Set(getAllLean.map((Lean) => Lean.lean))].map(

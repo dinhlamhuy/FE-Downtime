@@ -40,6 +40,7 @@
     "scan_qr_bar_code": "Scan Bar/QR Code:",
     "form_scan": "Enter information:",
     "form_request": "Request for reporting a broken machine",
+    "form_relocation": "Request for relocating the machine",
     "name": "Full Name",
     "factory": "Factory",
     "id_number": "ID Number",
