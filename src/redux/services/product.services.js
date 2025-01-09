@@ -60,6 +60,29 @@ const report_damage = (
       return error.response.data;
     });
 };
+const relocation_report = (
+  ID_lean, id_user_request,remark,factory,languages
+) => {
+  return axios
+    .post(
+      BASE_URL + "/damage_report/callRelocateMachine",
+      {
+        ID_lean, id_user_request,remark,factory,languages
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...authHeader(),
+        },
+      }
+    )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      return error.response.data;
+    });
+};
 
 const get_history_product = (id_user_request, factory) => {
   return axios
@@ -152,7 +175,7 @@ const ProductServices = {
   get_history_product,
   cancel_report_damage,
   get_info_reason,
-  get_task_receiving_process,
+  get_task_receiving_process,relocation_report
 };
 
 export default ProductServices;

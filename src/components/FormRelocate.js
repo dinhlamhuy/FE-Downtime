@@ -1,14 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Grid,
-  Stack,
-  Button,
-
-} from "@mui/material";
+import { Box, Typography, TextField, Grid, Stack, Button } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -20,10 +12,9 @@ import Popup from "./Popup";
 
 import { Toast } from "../utils/toast";
 import { useDispatch, useSelector } from "react-redux";
-import { setErrorCode, get_info_reason } from "../redux/features/product";
+import { setErrorCode, relocation_report } from "../redux/features/product";
 
 import { useTranslation } from "react-i18next";
-
 
 const FormRelocate = (props) => {
   const [t] = useTranslation("global");
@@ -37,8 +28,7 @@ const FormRelocate = (props) => {
   const [statusForm, setStatusForm] = useState(false);
   const [statusPopup, setstatusPopup] = useState(false);
   const [removeTask, setRemoveTask] = useState(false);
-  const [infoMachine, setInfoMachine] = useState(null);
-  const [otherIssue, setAdditionalInput] = useState("");
+
   const [loading, setLoading] = useState(false);
   // console.log(statusForm);
   const onBack = () => {
@@ -64,42 +54,9 @@ const FormRelocate = (props) => {
     id_user_request: Yup.string().required(
       t("info_machine_damage.validate_id_user_request")
     ),
-    Lean: Yup.string().required(t("info_machine_damage.validate_lean")),
+  
     DateReport: Yup.string().required(
       t("info_machine_damage.validate_date_report")
-    ),
-    ID_Lean: Yup.string().required(t("info_machine_damage.validate_ID_Lean")),
-    fixer: Yup.string().required(t("info_machine_damage.validate_fixer")),
-
-    // Validation for remark
-    remark: Yup.array()
-      .of(
-        Yup.object().shape({
-          id: Yup.number().required("Status ID is required"),
-          info_reason_en: Yup.string().required(
-            "English skill name is required"
-          ),
-          info_reason_vn: Yup.string().required(
-            "Vietnamese skill name is required"
-          ),
-          info_reason_mm: Yup.string().required(
-            "Myanmar skill name is required"
-          ),
-        })
-      )
-      .min(1, t("info_machine_damage.validate_remark")),
-    otherIssue: Yup.string().test(
-      "is-required-when-id-999",
-      t("info_machine_damage.validate_other_issue"),
-      function (value) {
-        const { remark } = this.parent;
-        const hasId999 =
-          Array.isArray(remark) && remark.some((item) => item.id === 999);
-        if (hasId999) {
-          return !!value;
-        }
-        return true;
-      }
     ),
   });
 
@@ -112,71 +69,26 @@ const FormRelocate = (props) => {
       Floor: user.floor,
       DateReport: dayjs(new Date()),
       ID_Lean: scannerResult.trim(),
-      name_machine: "",
-      fixer: "",
-      remark: [],
-      otherIssue: "",
+      remark: "",
     },
     validationSchema,
     onSubmit: async (data) => {
+      console.log("Form data:", data);
       setLoading(true);
-      // console.log("Form data:", data);
 
-      const { ID_Lean, id_user_request, factory, fixer, otherIssue } = data;
-      const language = languages;
-      // await dispatch(
-      //   report_damage({
-      //     ID_Lean: ID_Lean.trim(),
-      //     id_user_request,
-      //     remark,
-      //     factory,
-      //     fixer,
-      //     otherIssue: otherIssue.trim(),
-      //     language,
-      //   })
-      // );
+      const { id_user_request, factory, remark, ID_Lean } = data;
+      await dispatch(
+        relocation_report({
+          ID_lean:ID_Lean,
+          id_user_request,
+          remark,
+          factory,languages
+        })
+      );
     },
   });
-
-  // useEffect(() => {
-  //   const ID_Lean = scannerResult.trim();
-  //   const { factory } = user;
-  //   const getInfoMachine = (factory, ID_Lean) => {
-  //     return axios
-  //       .post(
-  //         BASE_URL + "/damage_report/getMachine",
-  //         {
-  //           factory,
-  //           ID_Lean,
-  //         },
-  //         {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             ...authHeader(),
-  //           },
-  //         }
-  //       )
-  //       .then((response) => {
-  //         setInfoMachine(response.data.data);
-  //         return response.data.data;
-  //       })
-  //       .catch((error) => {
-  //         return error.response.data;
-  //       });
-  //   };
-
-  //   getInfoMachine(factory, ID_Lean);
-  // }, [scannerResult, user]);
-
-  useEffect(() => {
-    if (infoMachine) {
-      formik.setFieldValue(
-        "name_machine",
-        languages === "EN" ? infoMachine.Name_en : infoMachine.Name_vn
-      );
-    }
-  }, [infoMachine, languages]);
-
+  console.log("Errors:", formik.errors);
+  console.log("Touched fields:", formik.touched);
   useEffect(() => {
     // Khi mới vào form, kiểm tra trạng thái ban đầu
     if (product.errorCode === null || product.errorCode === undefined) {
@@ -215,15 +127,7 @@ const FormRelocate = (props) => {
       setStatusForm(true);
       return;
     }
-  }, [product, removeTask, dispatch, setScannerResult]);
-
-  useEffect(() => {
-    const { dept } = user;
-    const fetchData = () => {
-      dispatch(get_info_reason(dept));
-    };
-    fetchData();
-  }, [dispatch]);
+  }, [product, dispatch, setScannerResult]);
 
   return (
     <Box component="div">
@@ -389,17 +293,18 @@ const FormRelocate = (props) => {
                 variant="outlined"
                 size="small"
                 fullWidth
-                // className={
-                //     formik.errors.Floor && formik.touched.Floor ? "is-invalid" : ""
-                // }
-                // error={formik.errors.Floor && formik.touched.Floor === true}
-                // helperText={
-                //     formik.errors.Floor && formik.touched.Floor
-                //         ? formik.errors.Floor
-                //         : null
-                // }
-                onChange={formik.handleChange}
-                value={formik.values.Floor}
+                className={
+                    formik.errors.Floor && formik.touched.Floor ? "is-invalid" : ""
+                }
+                error={formik.errors.Floor && formik.touched.Floor === true}
+                helperText={
+                    formik.errors.Floor && formik.touched.Floor
+                        ? formik.errors.Floor
+                        : null
+                }
+                // onChange={formik.handleChange}
+                value={''}
+                // value={formik.values.Floor}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
@@ -447,7 +352,13 @@ const FormRelocate = (props) => {
                     ? formik.errors.ID_Lean
                     : null
                 }
-                 value={formik.values.ID_Lean && formik.values.ID_Lean.substring(0, formik.values.ID_Lean.indexOf("/"))}
+                value={
+                  formik.values.ID_Lean &&
+                  formik.values.ID_Lean.substring(
+                    0,
+                    formik.values.ID_Lean.indexOf("/")
+                  )
+                }
                 inputProps={{ readOnly: true }}
               />
             </Grid>
@@ -469,56 +380,30 @@ const FormRelocate = (props) => {
                     ? formik.errors.ID_Lean
                     : null
                 }
-                value={formik.values.ID_Lean && formik.values.ID_Lean.substring(formik.values.ID_Lean.indexOf("/")+1, formik.values.ID_Lean.length)}
+                value={
+                  formik.values.ID_Lean &&
+                  formik.values.ID_Lean.substring(
+                    formik.values.ID_Lean.indexOf("/") + 1,
+                    formik.values.ID_Lean.length
+                  )
+                }
                 inputProps={{ readOnly: true }}
               />
             </Grid>
-            {/* <Grid item xs={6} md={6}>
-              <TextField
-                select
-                name="fixer"
-                fullWidth
-                label={t("info_machine_damage.fixer")}
-                size="small"
-                className={
-                  formik.errors.fixer && formik.touched.fixer
-                    ? "is-invalid"
-                    : ""
-                }
-                error={formik.errors.fixer && formik.touched.fixer === true}
-                helperText={
-                  formik.errors.fixer && formik.touched.fixer
-                    ? formik.errors.fixer
-                    : null
-                }
-                onChange={formik.handleChange}
-                value={formik.values.fixer}
-              >
-                <MenuItem value="TD">
-                  {t("info_machine_damage.electrician")}
-                </MenuItem>
-                <MenuItem value="TM">
-                  {t("info_machine_damage.mechanic")}
-                </MenuItem>
-              </TextField>
-            </Grid> */}
+          
             <Grid item xs={12} md={12}>
               <TextField
-                name="otherIssue"
+                name="remark"
                 variant="outlined"
                 label={t("work_list.remark")}
-                value={formik.values.otherIssue}
-                onChange={(e) =>
-                  formik.setFieldValue("otherIssue", e.target.value)
-                }
+                value={formik.values.remark}
+                onChange={(e) => {console.log(e.target.value);formik.setFieldValue("remark", e.target.value)}}
                 fullWidth
                 size="small"
-                error={
-                  !!(formik.errors.otherIssue && formik.touched.otherIssue)
-                }
+                error={!!(formik.errors.remark && formik.touched.remark)}
                 helperText={
-                  formik.errors.otherIssue && formik.touched.otherIssue
-                    ? formik.errors.otherIssue
+                  formik.errors.remark && formik.touched.remark
+                    ? formik.errors.remark
                     : null
                 }
               />
@@ -534,6 +419,7 @@ const FormRelocate = (props) => {
               variant="contained"
               color="primary"
               size="small"
+
               disabled={loading}
             >
               {t("info_machine_damage.confirm")}

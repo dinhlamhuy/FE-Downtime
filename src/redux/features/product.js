@@ -32,6 +32,17 @@ export const report_damage = createAsyncThunk(
         }
     }
 );
+export const relocation_report = createAsyncThunk(
+    "/damage_report/callRelocateMachine",
+    async ({ ID_lean, id_user_request,remark,factory,languages }) => {
+        try {
+            const data = await ProductServices.relocation_report(ID_lean, id_user_request,remark,factory,languages );
+            return data;
+        } catch (error) {
+            return error.message;
+        }
+    }
+);
 export const get_info_reason = createAsyncThunk("/damage_report/getInforReason", async (dept) => {
     try {
         const data = await ProductServices.get_info_reason(dept);
@@ -97,6 +108,14 @@ export const productSlice = createSlice({
             state.errorMessage = action.payload.error_message;
         });
         builder.addCase(report_damage.fulfilled, (state, action) => {
+            state.errorCode = action.payload.error_code;
+            state.errorMessage = action.payload.error_message;
+        });
+        builder.addCase(relocation_report.rejected, (state, action) => {
+            state.errorCode = action.payload.error_code;
+            state.errorMessage = action.payload.error_message;
+        });
+        builder.addCase(relocation_report.fulfilled, (state, action) => {
             state.errorCode = action.payload.error_code;
             state.errorMessage = action.payload.error_message;
         });
