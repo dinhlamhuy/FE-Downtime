@@ -164,7 +164,6 @@ const Form = (props) => {
     validationSchema,
     onSubmit: async (data) => {
       setLoading(true);
-      // console.log("Form data:", data);
       const arrayRemark = data.remark;
       const idArray = arrayRemark.map((item) => item.id);
       let remark = idArray.join(",");
@@ -189,6 +188,8 @@ const Form = (props) => {
     const id_machine = scannerResult.trim();
     const { factory } = user;
     const getInfoMachine = (factory, id_machine) => {
+      setLoading(true);
+
       return axios
         .post(
           BASE_URL + "/damage_report/getMachine",
@@ -204,18 +205,24 @@ const Form = (props) => {
           }
         )
         .then((response) => {
+    
           setInfoMachine(response.data.data);
           console.log(response.data.data)
           if(response.data.data === null){
             setScannerResult('')
           }
+          setLoading(false);
+
           return response.data.data;
         })
         .catch((error) => {
+          setLoading(true);
           setDialogMessage(`Error: Không tìm thấy mã máy ${id_machine}`);
           setDialogOpen(true);
           return error.response.data;
         });
+   
+
     };
 
     getInfoMachine(factory, id_machine);
@@ -706,7 +713,7 @@ const Form = (props) => {
         <DialogContent>{dialogMessage}</DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
-            Thử lại
+            Quét lại
           </Button>
         </DialogActions>
       </Dialog>

@@ -34,20 +34,17 @@ const FormRelocateScanner = (props) => {
   useEffect(() => {
     const fetchData = async (factory) => {
       await dispatch(get_all_floor({ factory }));
-     
+      await  dispatch(get_all_lean({ factory:userFactory , floor: '' }));
     };
-    // const userFactory = localStorage.getItem("user")
-    //   ? JSON.parse(localStorage.getItem("user")).factory
-    //   : "";
 
     fetchData(userFactory);
   }, [dispatch]);
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (selectedFloorId) {
-      dispatch(get_all_lean({ factory:userFactory, floor: selectedFloorId }));
-    }
-  }, [selectedFloorId, dispatch]);
+  //   if (selectedFloorId) {
+  //     dispatch(get_all_lean({ factory:userFactory , floor: '' }));
+  //   }
+  // }, [selectedFloorId, dispatch]);
 
 
   const handleSubmit = (event) => {
@@ -56,7 +53,7 @@ const FormRelocateScanner = (props) => {
       setError(true);
       return;
     }
-    setScannerResult(selectedFloorId+'-'+selectedLeanId);
+    setScannerResult(selectedFloorId+'/'+selectedLeanId);
     setError(false);
   };
 
@@ -163,7 +160,7 @@ const FormRelocateScanner = (props) => {
                     <em>{t("work_list.select_line")}</em>
                   </MenuItem>
                   {getAllLean
-                    ? [...new Set(getAllLean.map((Lean) => Lean.lean))].map(
+                    ? [...new Set(getAllLean.filter((Lean) => Lean.floor === selectedFloorId).map((Lean) => Lean.lean ))].map(
                         (lean) => (
                           <MenuItem key={lean} value={lean}>
                             {lean}

@@ -431,7 +431,7 @@ const FormRelocate = (props) => {
             </Grid>
             <Grid item xs={6} md={6}>
               <TextField
-                label={"ID_Lean"}
+                label={t("work_list.floor")}
                 name="ID_Lean"
                 variant="outlined"
                 size="small"
@@ -447,12 +447,32 @@ const FormRelocate = (props) => {
                     ? formik.errors.ID_Lean
                     : null
                 }
-                onChange={formik.handleChange}
-                value={formik.values.ID_Lean}
+                 value={formik.values.ID_Lean && formik.values.ID_Lean.substring(0, formik.values.ID_Lean.indexOf("/"))}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
-
+            <Grid item xs={6} md={6}>
+              <TextField
+                label={"Lean"}
+                name="ID_Lean"
+                variant="outlined"
+                size="small"
+                fullWidth
+                className={
+                  formik.errors.ID_Lean && formik.touched.ID_Lean
+                    ? "is-invalid"
+                    : ""
+                }
+                error={formik.errors.ID_Lean && formik.touched.ID_Lean === true}
+                helperText={
+                  formik.errors.ID_Lean && formik.touched.ID_Lean
+                    ? formik.errors.ID_Lean
+                    : null
+                }
+                value={formik.values.ID_Lean && formik.values.ID_Lean.substring(formik.values.ID_Lean.indexOf("/")+1, formik.values.ID_Lean.length)}
+                inputProps={{ readOnly: true }}
+              />
+            </Grid>
             {/* <Grid item xs={6} md={6}>
               <TextField
                 select
