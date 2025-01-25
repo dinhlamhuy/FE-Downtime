@@ -18,6 +18,8 @@ import {
   InputLabel,
   FormHelperText,
   Autocomplete,
+  Typography,
+  Chip,
 } from "@mui/material";
 import BreadCrumb from "../../components/BreadCrumb";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
@@ -32,6 +34,9 @@ import {
   get_all_lean,
   call_support,
   get_Machine_Under_Repair,
+  get_task_relocate_machine,
+  get_list_status_mechanic,
+  asign_Task_Relocate_Machine,
 } from "../../redux/features/electric";
 import AlertDialog from "../../components/AlertDialog";
 
@@ -39,8 +44,8 @@ import socketIOClient from "socket.io-client";
 import { BASE_URL } from "../../utils/env";
 
 import { useTranslation } from "react-i18next";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+// import { useFormik } from "formik";
+// import * as Yup from "yup";
 import ProgressHistoryDetailTask from "../../components/ProgressHistoryDetailTask";
 const PaperStyle = {
   position: "relative",
@@ -71,15 +76,6 @@ const TableEmployeeList = ({
   const languages = localStorage.getItem("languages");
 
   const electric = useSelector((state) => state.electric);
-
-  // const handleChangePage = (event, newPage) => {
-  //     setPage(newPage);
-  // };
-
-  // const handleChangeRowsPerPage = (event) => {
-  //     setRowsPerPage(+event.target.value);
-  //     setPage(0);
-  // };
 
   const handleRowClick = (rowData) => {
     setSelectedRow(rowData);
@@ -331,6 +327,275 @@ const TableEmployeeList = ({
           color="primary"
           size="small"
           onClick={onAsignTask}
+        >
+          {t("work_list.assign")}
+        </Button>
+        <Button
+          type="button"
+          variant="contained"
+          color="error"
+          size="small"
+          onClick={onClose}
+        >
+          {t("work_list.close")}
+        </Button>
+      </Stack>
+    </AlertDialog>
+  );
+};
+const TableEmployeeList2 = ({
+  open,
+  setOpen,
+  headerModal,
+  getListAsignMechanic,
+  task,
+}) => {
+  const { factory, floor, user_name, lean } = useSelector(
+    (state) => state.auth.user
+  );
+  const CurrentOnwer = useSelector(
+    (state) => state.auth?.user?.user_name || ""
+  );
+
+  const [t] = useTranslation("global");
+  const dispatch = useDispatch();
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  const languages = localStorage.getItem("languages");
+  const electric = useSelector((state) => state.electric);
+
+  const handleRowClick = (rowData) => {
+    setSelectedRows(
+      (prev) =>
+        prev.includes(rowData)
+          ? prev.filter((row) => row !== rowData) // Remove if already selected
+          : [...prev, rowData] // Add if not selected
+    );
+  };
+
+  const onClose = () => {
+    setSelectedRows([]);
+    setOpen(false);
+  };
+
+  const fetchData2 = async () => {
+    await dispatch(
+      get_task_relocate_machine({ fixer: lean, id_owner: user_name, factory })
+    );
+  };
+  const onAsignTask2 = async () => {
+    if (task && selectedRows.length > 0) {
+      const { id, req_floor } = task;
+      const language = languages;
+
+      const arrMechanic = selectedRows.map((row) => row.user_name);
+      const arrStringRepairmen =
+        selectedRows.map((row) => row.user_name).join(",") || "";
+      const infoSend = {
+        id_owner: user_name,
+        id_task: id,
+        fixer: lean,
+        factory,
+        repairman: arrStringRepairmen,
+        arrRepairman: arrMechanic,
+        req_floor,
+      };
+
+      dispatch(await asign_Task_Relocate_Machine(infoSend));
+
+      fetchData2();
+      setSelectedRows([]);
+      setOpen(false);
+    } else {
+      Toast.fire({
+        icon: "error",
+        title: t("work_list.alert_table"),
+      });
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (electric.errorCode !== null) {
+        let icon = "error";
+        if (electric.errorCode === 0) {
+          icon = "success";
+        }
+        Toast.fire({
+          icon: icon,
+          title: electric.errorMessage,
+        });
+        await dispatch(setErrorCode(null, ""));
+      }
+    };
+    fetchData();
+  }, [electric, dispatch]);
+
+  function statusCurrent(status) {
+    switch (status) {
+      case 1:
+        return (
+          <Chip
+            label={t("employee_list.available")}
+            color="success"
+            sx={{ backgroundColor: "#11a52c" }}
+          />
+        );
+      case 2:
+        return <Chip label={t("employee_list.task")} color="warning"  sx={{ backgroundColor: "orange" }} />;
+      case 3:
+        return <Chip label={t("employee_list.fixing")} color="error"    sx={{ backgroundColor: "red" }} />;
+      default:
+        return "";
+    }
+  }
+  return (
+    <AlertDialog open={open} setOpen={setOpen} headerModal={headerModal}>
+      <TableContainer>
+        <Table
+          stickyHeader
+          aria-label="sticky table table-fixed"
+          style={{ tableLayout: "fixed" }}
+        >
+          <TableHead>
+            <TableRow>
+              <TableCell
+                style={{
+                  fontWeight: "bold",
+                  whiteSpace: "nowrap",
+                  width: "200px",
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                }}
+              >
+                {t("work_list.name")}
+              </TableCell>
+              <TableCell
+                style={{
+                  fontWeight: "bold",
+                  whiteSpace: "nowrap",
+                  width: "100px",
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                }}
+              >
+                {t("work_list.lean")}
+              </TableCell>
+              <TableCell
+                style={{
+                  fontWeight: "bold",
+                  whiteSpace: "nowrap",
+                  width: "150px",
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                }}
+              >
+                {t("work_list.floor")}
+              </TableCell>
+
+              <TableCell
+                sx={{
+                  fontWeight: "bold",
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                  width: "120px",
+                  textAlign: "center",
+                }}
+              >
+                {t("employee_list.active_status")}
+              </TableCell>
+              <TableCell
+                sx={{
+                  fontWeight: "bold",
+                  backgroundColor: "#1976d2",
+                  color: "#fff",
+                  width: "120px",
+                  textAlign: "center",
+                }}
+              >
+                {t("employee_list.task_name")}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {getListAsignMechanic?.map((row, index) => {
+              const isSelected = selectedRows.includes(row);
+              return (
+                <TableRow
+                  key={index}
+                  onClick={() => handleRowClick(row)}
+                  style={{
+                    backgroundColor: isSelected ? "#83ace7" : "transparent",
+                  }}
+                >
+                  <TableCell
+                    style={{
+                      color: isSelected ? "#fff" : "#000",
+                    }}
+                  >
+                    {row.user_name} - {row.name}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      color: isSelected ? "#fff" : "#000",
+                    }}
+                  >
+                    {row.lean}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      color: isSelected ? "#fff" : "#000",
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {row.floor}
+                    {row.floors ? ` (${row.floors})` : ""}
+                  </TableCell>
+
+                  <TableCell
+                    style={{
+                      color: isSelected ? "#fff" : "#000",
+                      textAlign: "center",
+                      display: "flex",
+                      alignItems: "center",
+                      height:'100%'
+                    }}
+                  >
+                    <Typography style={{width:'100%', height:'100%'}}>{statusCurrent(row.STS)}</Typography>
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      color: isSelected ? "#fff" : "#000",
+                      textAlign: "center",
+                      // display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    {row.TaskName}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          marginTop: "10px",
+          justifyContent: "center",
+        }}
+      >
+        <Button
+          type="button"
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={onAsignTask2}
         >
           {t("work_list.assign")}
         </Button>
@@ -638,6 +903,8 @@ const WorkListScreen = () => {
   const dispatch = useDispatch();
 
   const [openEmployeeList, setOpenEmployeeList] = useState(false);
+  const [openEmployeeListRelocate, setOpenEmployeeListRelocate] =
+    useState(false);
   const [openEmployeeListline, setOpenEmployeeListline] = useState(false);
   const [task, setTask] = useState({});
   const languages = localStorage.getItem("languages");
@@ -651,27 +918,34 @@ const WorkListScreen = () => {
     setActiveModal(true);
     // console.log('hehe', id_task)
   };
-  // const [page, setPage] = useState(0);
-  // const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  // const handleChangePage = (event, newPage) => {
-  //     setPage(newPage);
-  // };
-
-  // const handleChangeRowsPerPage = (event) => {
-  //     setRowsPerPage(+event.target.value);
-  //     setPage(0);
-  // };
-
-  const { factory, floor, user_name, lean, position } = useSelector(
+  const { factory, floor, user_name, lean, position, permission } = useSelector(
     (state) => state.auth.user
   );
+  const handleClickOpenRelocate = async (row) => {
+    const { id_machine } = row;
+    await dispatch(
+      get_list_status_mechanic({
+        user_name,
+        position,
+        factory,
+        floor,
+        lean,
+        permission,
+      })
+    );
+
+    // get_list_asign_mechanic({ id_machine, floor, factory, position, lean })
+    setTask(row);
+    setOpenEmployeeListRelocate(true);
+  };
 
   const {
     dataTaskReportDamageList,
     getListAsignMechanic,
     getAllLean,
     infoMachineUnderRepair,
+    getListStatusMechanic,
+    getTaskRelocate,
   } = useSelector((state) => state.electric);
 
   const [socket, setSocket] = useState("");
@@ -680,6 +954,9 @@ const WorkListScreen = () => {
   useEffect(() => {
     const fetchData = async () => {
       await dispatch(get_task_damage({ factory, floor, user_name, lean }));
+      await dispatch(
+        get_task_relocate_machine({ fixer: lean, id_owner: user_name, factory })
+      );
     };
     fetchData();
 
@@ -729,7 +1006,123 @@ const WorkListScreen = () => {
     <Box component="div">
       <BreadCrumb breadCrumb={t("work_list.work_list")} />
       <Box component="div" sx={{ display: "block", margin: "0 auto" }}>
+        {getTaskRelocate &&
+          Array.isArray(getTaskRelocate) &&
+          getTaskRelocate.length > 0 && (
+            <Paper sx={PaperStyle} elevation={5}>
+              <Typography>{t("work_list.Machine_Relocation_List")}</Typography>
+              <TableContainer>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          minWidth: "110px",
+                          backgroundColor: "green",
+                          color: "#fff",
+                        }}
+                      >
+                        {t("work_list.date")}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          minWidth: "120px",
+                          backgroundColor: "green",
+                          color: "#fff",
+                        }}
+                      >
+                        {t("work_list.id_machine")}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          minWidth: "150px",
+                          backgroundColor: "green",
+                          color: "#fff",
+                        }}
+                      >
+                        Vị trí chuyển đến
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          minWidth: "120px",
+                          backgroundColor: "green",
+                          color: "#fff",
+                        }}
+                      >
+                        {t("work_list.remark")}
+                      </TableCell>
+
+                      <TableCell
+                        style={{
+                          fontWeight: "bold",
+                          minWidth: "120px",
+                          backgroundColor: "green",
+                          color: "#fff",
+                        }}
+                      ></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {getTaskRelocate?.map((relocate, index) => (
+                      <TableRow
+                        key={"relocate" + index}
+                        sx={{
+                          "&:last-child td, &:last-child th": {
+                            border: 0,
+                          },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {relocate?.request_time?.split("T")[1].slice(0, -8)}
+                          &ensp;
+                          {relocate?.request_time?.split("T")[0]}
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          {relocate.req_user_name}{" "}
+                          {"(" + relocate?.req_line + ")"}
+                        </TableCell>
+                        <TableCell>
+                          {relocate.ID_Floor}
+                          {"(" + relocate?.ID_lean + ")"}
+                        </TableCell>
+                        <TableCell>{relocate.remark}</TableCell>
+
+                        <TableCell>
+                          <Button
+                            variant="contained"
+                            color="success"
+                            sx={{ whiteSpace: "nowrap" }}
+                            disabled={
+                              !(
+                                (lean === "TD" &&
+                                  !relocate.id_owner_electrician) ||
+                                (lean === "TM" && !relocate.id_owner_mechanic)
+                              )
+                            }
+                            onClick={() => handleClickOpenRelocate(relocate)}
+                          >
+                            {(lean === "TD" &&
+                              !relocate.id_owner_electrician) ||
+                            (lean === "TM" && !relocate.id_owner_mechanic)
+                              ? t("work_list.assign")
+                              : t("work_list.assigned")}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Paper>
+          )}
+
         <Paper sx={PaperStyle} elevation={5}>
+          <Typography>{t("work_list.Pending_Assignment_List")}</Typography>
+
           <TableContainer>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
@@ -737,7 +1130,7 @@ const WorkListScreen = () => {
                   <TableCell
                     style={{
                       fontWeight: "bold",
-                      minWidth: "120px",
+                      minWidth: "110px",
                       backgroundColor: "#1976d2",
                       color: "#fff",
                     }}
@@ -823,11 +1216,13 @@ const WorkListScreen = () => {
                       sx={{
                         ...(row?.id_main_task && {
                           backgroundColor: "red",
-                          color: "white", fontWeight:'bold'
+                          color: "white",
+                          fontWeight: "bold",
                         }),
                       }}
                     >
-                      {row.id_machine} {row?.id_main_task && '('+row?.id_main_task +')' }
+                      {row.id_machine}{" "}
+                      {row?.id_main_task && "(" + row?.id_main_task + ")"}
                     </TableCell>
                     <TableCell>
                       {languages === "EN"
@@ -900,6 +1295,13 @@ const WorkListScreen = () => {
         setOpen={setOpenEmployeeList}
         headerModal={t("work_list.employee_list")}
         getListAsignMechanic={getListAsignMechanic}
+        task={task}
+      />
+      <TableEmployeeList2
+        open={openEmployeeListRelocate}
+        setOpen={setOpenEmployeeListRelocate}
+        headerModal={t("work_list.employee_list")}
+        getListAsignMechanic={getListStatusMechanic}
         task={task}
       />
 

@@ -96,7 +96,9 @@ const SideBar = ({ sideBarMenu, user, children, open, onToggle, onClose }) => {
 
                         <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
                             {user?.factory} - DownTime
+                       
                         </Typography>
+                       
                     </Toolbar>
 
                     {/* SideBar */}
@@ -113,6 +115,9 @@ const SideBar = ({ sideBarMenu, user, children, open, onToggle, onClose }) => {
                                 }}
                             >
                                 <Typography variant="h5">{user?.factory} - DownTime</Typography>
+                                <Typography  noWrap component="div" sx={{ fontSize:'10px', color:'#5F9EA0', position:'absolute', bottom:0, left:'20px' }}>
+                           Version:20250124
+                        </Typography>
                             </Box>
                             <Box
                                 sx={{

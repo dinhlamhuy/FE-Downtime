@@ -26,6 +26,25 @@ const ColorlibStepIconRoot = styled("div")(({ theme, ownerState }) => ({
     backgroundColor: "#1565c0",
   }),
 }));
+const ColorlibStepIconRoot3 = styled("div")(({ theme, ownerState }) => ({
+  backgroundColor:
+    theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
+  zIndex: 1,
+  color: "#fff",
+  width: 40,
+  height: 40,
+  display: "flex",
+  borderRadius: "50%",
+  justifyContent: "center",
+  alignItems: "center",
+  ...(ownerState.active && {
+    backgroundColor: "green",
+    boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
+  }),
+  ...(ownerState.completed && {
+    backgroundColor: "green",
+  }),
+}));
 const ColorlibStepIconRoot2 = styled("div")(({ theme, ownerState }) => ({
   backgroundColor:
     theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
@@ -72,4 +91,29 @@ const ColorlibStepIcon = (props) => {
   );
 };
 
-export default ColorlibStepIcon;
+
+const ColorlibStepIcon2= (props) => {
+  const { active, completed, className, icon } = props;
+
+
+  const icons = {
+    1: <ArticleIcon />,
+    // 2: <ManageHistoryIcon />,
+    // 3: <SystemSecurityUpdateGoodIcon />,
+    // 4: <QrCodeIcon />,
+    2: <NoteAltIcon />,
+    //4: <AssignmentTurnedInIcon />,
+  };
+  const IconRootComponent =  ColorlibStepIconRoot3 ;
+  return (
+
+    <IconRootComponent
+      ownerState={{ completed, active }}
+      className={className}
+    >
+      {icons[String(props.icon)]}
+    </IconRootComponent>
+  );
+};
+
+export { ColorlibStepIcon2, ColorlibStepIcon };

@@ -19,6 +19,8 @@
     "info_user": "Personal information",
     "work_list": "Work List",
     "employee_list": "Employee List",
+    "transfer_list": "Transfer and details",
+
     "support": "Support",
     "language": "Languages",
     "en": "English",
@@ -132,11 +134,24 @@
     "seconds": "seconds",
     "other_method": "Other method",
     "official": "Official:",
+    "Lead_Mechanical": "Lead Mechanical",
+    "Lead_Electromechanical": "Lead Electromechanical",
     "enter_details": "Support details",
     "no_response": " didn't accept the mechanic leader's task",
     "reject": " didn't approve the task",
-    "supportReq":"Request support",
-    "supportFin":"Complete support"
+    "supportReq": "Request support",
+    "supportFin": "Complete support",
+    "Unconfirmed": "Not Confirmed",
+    "Assigned_Mechanic": "Assigned Mechanic",
+    "Assigned_Electromechanical": "Assigned Electromechanical",
+    "Floor_to_transfer": "Floor to transfer",
+    "Line_to_transfer": "Line to transfer",
+    "Send_Machine_Relocation_Request": "Send Machine Relocation Request",
+    "Submit_Request_for_Machine_Relocation": "Submit Request for Machine Relocation",
+    "Cfm_Request_for_Machine_Relocation": "Confirmation of machine relocation acceptance",
+     "btn_transfer": "Transfer",
+    "label_choose_repair":"Choose replacement mechanic"
+
 
   },
   "personal_info": {
@@ -170,6 +185,8 @@
   },
   "work_list": {
     "work_list": "Work list",
+    "Pending_Assignment_List": "Pending Assignment List",
+    "Machine_Relocation_List": "Machine Relocation List",
     "date": "Date",
     "id_machine": "ID Machine",
     "id_machine_support": "Machine ID Support",
@@ -177,6 +194,7 @@
     "requester": "Requester",
     "floor": "Floor",
     "assign": "Assign",
+    "assigned": "Assigned",
     "call": "Call",
     "employee_list": "Employee List",
     "name": "Full Name",

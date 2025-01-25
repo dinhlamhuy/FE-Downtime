@@ -209,10 +209,11 @@ export const finish_mechanic = createAsyncThunk(
     id_machine,
     remark_mechanic,
     lean,
-    factory,statusRadio,
+    factory,
+    statusRadio,
     language,
     new_mechanic,
-    otherIssue,
+    otherIssue,new_id_user_mechanic
   }) => {
     try {
       const data = await ElectricServices.finish_mechanic(
@@ -221,10 +222,11 @@ export const finish_mechanic = createAsyncThunk(
         id_machine,
         remark_mechanic,
         lean,
-        factory,statusRadio,
+        factory,
+        statusRadio,
         language,
         new_mechanic,
-        otherIssue
+        otherIssue,new_id_user_mechanic
       );
       return data;
     } catch (error) {
@@ -471,7 +473,44 @@ export const get_All_Task = createAsyncThunk(
   async ({ factory, fromDate, toDate, floor, fixer }) => {
     try {
       const data = await ElectricServices.get_All_task(
-        factory, fromDate, toDate, floor, fixer
+        factory,
+        fromDate,
+        toDate,
+        floor,
+        fixer
+      );
+      return data;
+    } catch (error) {
+      return error.message;
+    }
+  }
+);
+export const get_task_relocate_machine = createAsyncThunk(
+  "/task/get_task_relocate_machine",
+  async ({ fixer, id_owner, factory }) => {
+    try {
+      const data = await ElectricServices.get_task_relocate_machine(
+        fixer,
+        id_owner,
+        factory
+      );
+      return data;
+    } catch (error) {
+      return error.message;
+    }
+  }
+);
+export const asign_Task_Relocate_Machine = createAsyncThunk(
+  "/task/asignTaskRelocateMachine",
+  async ({ fixer, id_owner, factory, repairman, arrRepairman, id_task,req_floor }) => {
+    try {
+      const data = await ElectricServices.asignTaskRelocateMachine(
+        fixer,
+        id_owner,
+        factory,
+        repairman,
+        arrRepairman,
+        id_task,req_floor
       );
       return data;
     } catch (error) {
@@ -508,6 +547,7 @@ export const electricSlice = createSlice({
     getAllFloor: [],
     changeFloor: [],
     getAllTaskByCB: [],
+    getTaskRelocate: [],
   },
   reducers: {
     setErrorCode: (state, action) => {
@@ -524,6 +564,9 @@ export const electricSlice = createSlice({
     });
     builder.addCase(get_list_status_mechanic.fulfilled, (state, action) => {
       state.getListStatusMechanic = action.payload.data;
+    });
+    builder.addCase(get_task_relocate_machine.fulfilled, (state, action) => {
+      state.getTaskRelocate = action.payload.data;
     });
     builder.addCase(get_list_repair_mechanic.fulfilled, (state, action) => {
       state.getListRepairMechanic = action.payload.data;
@@ -608,6 +651,10 @@ export const electricSlice = createSlice({
       state.infoMachineUnderRepair = action.payload.data;
     });
     builder.addCase(change_floor.fulfilled, (state, action) => {
+      state.errorCode = action.payload.error_code;
+      state.errorMessage = action.payload.error_message;
+    });
+    builder.addCase(asign_Task_Relocate_Machine.fulfilled, (state, action) => {
       state.errorCode = action.payload.error_code;
       state.errorMessage = action.payload.error_message;
     });

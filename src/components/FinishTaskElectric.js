@@ -136,18 +136,18 @@ const FinishTaskElectric = (props) => {
       const id_user_mechanic = user_name;
       const new_mechanic = data.scannerResult;
       const language = languages;
-      console.log({
-        id_user_mechanic,
-        skill: skillIds,
-        id_machine,
-        remark_mechanic,
-        lean,
-        statusRadio,
-        factory,
-        language,
-        new_mechanic,
-        otherIssue,
-      });
+      // console.log({
+      //   id_user_mechanic,
+      //   skill: skillIds,
+      //   id_machine,
+      //   remark_mechanic,
+      //   lean,
+      //   statusRadio,
+      //   factory,
+      //   language,
+      //   new_mechanic,
+      //   otherIssue,
+      // });
       dispatch(
         finish_mechanic({
           id_user_mechanic,
@@ -169,8 +169,8 @@ const FinishTaskElectric = (props) => {
   //   await dispatch(get_all_machine({ factory }));
   // };
   useEffect(() => {
-    const fetchInfoSkill = () => {
-      dispatch(get_info_skill({ userRequest }));
+    const fetchInfoSkill = async() => {
+      await dispatch(get_info_skill({ userRequest }));
     };
     fetchInfoSkill();
   }, [dispatch]);

@@ -12,7 +12,11 @@ import Popup from "./Popup";
 
 import { Toast } from "../utils/toast";
 import { useDispatch, useSelector } from "react-redux";
-import { setErrorCode, relocation_report } from "../redux/features/product";
+import {
+  setErrorCode,
+  relocation_report,
+  cancel_Task_RelocateMachine,
+} from "../redux/features/product";
 
 import { useTranslation } from "react-i18next";
 
@@ -36,13 +40,25 @@ const FormRelocate = (props) => {
     dispatch(setErrorCode(null, ""));
     setStatusForm(false);
   };
+
+  const onCancel = async () => {
+    const ID_Floor = scannerResult && scannerResult.trim().substring(0, scannerResult.indexOf("/"));
+    const ID_Lean = scannerResult && scannerResult.trim().substring(scannerResult.indexOf("/") + 1, scannerResult.length);
+    const { user_name, factory, floor } = user;
+    const language = languages;
+    await dispatch(cancel_Task_RelocateMachine({user_name,floor,ID_Floor,ID_Lean,factory,language}));
+    setRemoveTask(true);
+    // setScannerResult("");
+    // setStatusForm(false);
+
+  };
+
   useEffect(() => {
     setStatusForm(false);
     dispatch(setErrorCode(null, ""));
   }, [location]);
   const onNextPage = async () => {
     setScannerResult("");
-
     setStatusForm(false);
     await dispatch(setErrorCode(null, ""));
     navigate("/product/status");
@@ -54,7 +70,9 @@ const FormRelocate = (props) => {
     id_user_request: Yup.string().required(
       t("info_machine_damage.validate_id_user_request")
     ),
-  
+    ID_Lean: Yup.string().required(t("info_machine_damage.validate_lean")),
+    ID_Floor: Yup.string().required(t("info_machine_damage.validate_floor")),
+
     DateReport: Yup.string().required(
       t("info_machine_damage.validate_date_report")
     ),
@@ -68,28 +86,40 @@ const FormRelocate = (props) => {
       line: user.line,
       Floor: user.floor,
       DateReport: dayjs(new Date()),
-      ID_Lean: scannerResult.trim(),
+      ID_Floor:
+        scannerResult &&
+        scannerResult.trim().substring(0, scannerResult.indexOf("/")),
+      ID_Lean:
+        scannerResult &&
+        scannerResult
+          .trim()
+          .substring(scannerResult.indexOf("/") + 1, scannerResult.length),
       remark: "",
     },
     validationSchema,
     onSubmit: async (data) => {
-      console.log("Form data:", data);
+      // console.log("Form data:", data);
       setLoading(true);
 
-      const { id_user_request, factory, remark, ID_Lean } = data;
+      const { id_user_request, factory, remark, ID_Lean, ID_Floor, Floor } =
+        data;
       await dispatch(
         relocation_report({
-          ID_lean:ID_Lean,
+          ID_lean: ID_Lean,
+          ID_Floor,
           id_user_request,
+          req_floor: Floor,
           remark,
-          factory,languages
+          factory,
+          languages,
         })
       );
     },
   });
-  console.log("Errors:", formik.errors);
-  console.log("Touched fields:", formik.touched);
+  // console.log("Errors:", formik.errors);
+  // console.log("Touched fields:", formik.touched);
   useEffect(() => {
+    console.log("After dispatch:", product.errorCode);
     // Khi mới vào form, kiểm tra trạng thái ban đầu
     if (product.errorCode === null || product.errorCode === undefined) {
       setStatusForm(false);
@@ -127,7 +157,7 @@ const FormRelocate = (props) => {
       setStatusForm(true);
       return;
     }
-  }, [product, dispatch, setScannerResult]);
+  }, [product,removeTask, dispatch, setScannerResult]);
 
   return (
     <Box component="div">
@@ -175,11 +205,11 @@ const FormRelocate = (props) => {
                 variant="contained"
                 color="error"
                 size="small"
-                // onClick={onCancel}
+                onClick={onCancel}
               >
                 {t("info_machine_damage.cancel")}
               </Button>
-            )}
+             )}
           </Stack>
         </Box>
       ) : (
@@ -294,17 +324,19 @@ const FormRelocate = (props) => {
                 size="small"
                 fullWidth
                 className={
-                    formik.errors.Floor && formik.touched.Floor ? "is-invalid" : ""
+                  formik.errors.Floor && formik.touched.Floor
+                    ? "is-invalid"
+                    : ""
                 }
                 error={formik.errors.Floor && formik.touched.Floor === true}
                 helperText={
-                    formik.errors.Floor && formik.touched.Floor
-                        ? formik.errors.Floor
-                        : null
+                  formik.errors.Floor && formik.touched.Floor
+                    ? formik.errors.Floor
+                    : null
                 }
                 // onChange={formik.handleChange}
-                value={''}
-                // value={formik.values.Floor}
+                // value={""}
+                value={formik.values.Floor}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
@@ -337,28 +369,24 @@ const FormRelocate = (props) => {
             <Grid item xs={6} md={6}>
               <TextField
                 label={t("work_list.floor")}
-                name="ID_Lean"
+                name="ID_Floor"
                 variant="outlined"
                 size="small"
                 fullWidth
                 className={
-                  formik.errors.ID_Lean && formik.touched.ID_Lean
+                  formik.errors.ID_Floor && formik.touched.ID_Floor
                     ? "is-invalid"
                     : ""
                 }
-                error={formik.errors.ID_Lean && formik.touched.ID_Lean === true}
+                error={
+                  formik.errors.ID_Floor && formik.touched.ID_Floor === true
+                }
                 helperText={
-                  formik.errors.ID_Lean && formik.touched.ID_Lean
-                    ? formik.errors.ID_Lean
+                  formik.errors.ID_Floor && formik.touched.ID_Floor
+                    ? formik.errors.ID_Floor
                     : null
                 }
-                value={
-                  formik.values.ID_Lean &&
-                  formik.values.ID_Lean.substring(
-                    0,
-                    formik.values.ID_Lean.indexOf("/")
-                  )
-                }
+                value={formik.values.ID_Floor}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
@@ -380,24 +408,21 @@ const FormRelocate = (props) => {
                     ? formik.errors.ID_Lean
                     : null
                 }
-                value={
-                  formik.values.ID_Lean &&
-                  formik.values.ID_Lean.substring(
-                    formik.values.ID_Lean.indexOf("/") + 1,
-                    formik.values.ID_Lean.length
-                  )
-                }
+                value={formik.values.ID_Lean}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
-          
+
             <Grid item xs={12} md={12}>
               <TextField
                 name="remark"
                 variant="outlined"
                 label={t("work_list.remark")}
                 value={formik.values.remark}
-                onChange={(e) => {console.log(e.target.value);formik.setFieldValue("remark", e.target.value)}}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  formik.setFieldValue("remark", e.target.value);
+                }}
                 fullWidth
                 size="small"
                 error={!!(formik.errors.remark && formik.touched.remark)}
@@ -419,7 +444,6 @@ const FormRelocate = (props) => {
               variant="contained"
               color="primary"
               size="small"
-
               disabled={loading}
             >
               {t("info_machine_damage.confirm")}

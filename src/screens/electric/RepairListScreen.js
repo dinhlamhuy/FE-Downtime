@@ -167,7 +167,8 @@ const RepairlistScreen = () => {
 
   // Hàm đếm số lượng mã máy không trùng
   const countUniqueMachineCodes = (array) => {
-    const uniqueCodes = new Set(array.map((item) => item.id_machine));
+    const uniqueCodes = array ? new Set(array.map((item) => item.id_machine)) : [];
+    
     return uniqueCodes.size;
   };
 
@@ -430,7 +431,7 @@ const RepairlistScreen = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredRepairMechanics &&
+                {filteredRepairMechanics && Array.isArray(filteredRepairMechanics) && 
                 filteredRepairMechanics.length > 0 ? (
                   [...filteredRepairMechanics] // Create a shallow copy
                     .sort((a, b) => a?.Name_en?.localeCompare(b.Name_en))

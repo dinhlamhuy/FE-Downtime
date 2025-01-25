@@ -413,7 +413,7 @@ const OwnerWorkListScreen = () => {
             centered
           >
             <Tab
-              label={t("work_list.work_list")}
+              label={t('work_list.Pending_Assignment_List')}
               {...a11yProps(0)}
               sx={{ fontSize: "14px", textTransform: "capitalize" }}
             />

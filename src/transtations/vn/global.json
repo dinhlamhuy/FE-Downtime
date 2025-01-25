@@ -19,11 +19,12 @@
     "info_user": "Thông tin cá nhân",
     "work_list": "Danh sách công việc",
     "employee_list": "Danh sách nhân viên",
+    "transfer_list": "Chuyển giao và chi tiết",
     "support": "Hỗ trợ",
     "language": "Ngôn ngữ",
-    "en": "Tiếng Anh",
-    "vn": "Tiếng Việt",
-    "mm": "Tiếng Myanmar",
+    "en": "English",
+    "vn": "Vietnamese",
+    "mm": "Myanmar",
     "logout": "Đăng xuất",
     "machinery_maintenance": "Máy móc-bảo trì"
   },
@@ -77,7 +78,6 @@
     "choose_machine": "Nhập mã tài sản",
     "process_status": "Trạng thái xử lý",
     "other_issue": "Vấn đề khác"
-
   },
   "process_status": {
     "process_status": "Trạng thái xử lý",
@@ -122,26 +122,36 @@
     "status_4_validate_repair_method": "Vui lòng chọn phương pháp!",
     "status_4_validate_remark_repair_method": "Vui lòng nhập phương pháp sửa chữa!",
     "status_4_validate_space": "Vui lòng không nhập khoảng trắng!",
-    "status_4_validate_machine_new_code" : "Vui lòng nhập mã máy mới",
+    "status_4_validate_machine_new_code": "Vui lòng nhập mã máy mới",
     "status_4_validate_other_method": "Vui lòng nhập phương pháp khác!",
-    "new_code_machine":"Máy mã mới",
+    "new_code_machine": "Máy mã mới",
     "owner_mechanic": "Chủ quản:",
     "time_fix": "Thời gian sửa:",
     "hours": "giờ",
     "minutes": "phút",
     "seconds": "giây",
     "other_method": "Phương pháp khác",
-    "official" : "Cán bộ:",
+    "official": "Cán bộ:",
+    "Lead_Mechanical": "Cán bộ Thợ máy",
+    "Lead_Electromechanical": "Cán bộ cơ điện",
     "enter_details": "Chi tiết hỗ trợ",
     "no_response": " không phản hồi task cán bộ đã giao",
     "reject": " đã từ chối task",
-    "supportReq":"Yêu cầu hỗ trợ",
-    "supportFin":"Hoàn thành hỗ trợ"
+    "supportReq": "Yêu cầu hỗ trợ",
+    "Unconfirmed": "Chưa xác nhận",
+    "supportFin": "Hoàn thành hỗ trợ",
+    "Assigned_Mechanic": "Thợ máy được phân công",
+    "Assigned_Electromechanical": "Cơ điện được phân công",
+    "Floor_to_transfer": "Floor cần chuyển",
+    "Line_to_transfer": "Line cần chuyển",
+    "Send_Machine_Relocation_Request": "Gửi yêu cầu di dời máy",
+    "Submit_Request_for_Machine_Relocation": "Gửi yêu cầu di dời máy",
+    "Cfm_Request_for_Machine_Relocation": "Xác nhận nghiệm thu yêu cầu dời máy",
+    "btn_transfer": "Chuyển giao",
+    "label_choose_repair":"Chọn thợ thay thế"
+
     
-
-
-
-
+    
   },
   "personal_info": {
     "search_info": "Tra cứu thông tin",
@@ -161,8 +171,8 @@
     "time_fix": "Thời gian sửa",
     "service_repair_machine": "Loại máy sửa chữa",
     "repair_method": "Phương pháp sửa chữa",
-    "top_machine" : "Top máy sửa chữa tốn thời gian", 
-    "top_breakdown" : "Top máy hỏng",
+    "top_machine": "Top máy sửa chữa tốn thời gian",
+    "top_breakdown": "Top máy hỏng",
     "minutes": "Số Phút",
     "frequency": "Số Lần"
   },
@@ -174,6 +184,8 @@
   },
   "work_list": {
     "work_list": "Danh sách công việc",
+    "Pending_Assignment_List": "Danh sách chưa giao phó",
+    "Machine_Relocation_List": "Danh sách dời máy",
     "date": "Ngày",
     "id_machine": "Mã Máy",
     "id_machine_support": "Mã Máy Hỗ Trợ",
@@ -181,6 +193,7 @@
     "requester": "Người gửi yêu cầu",
     "floor": "Mặt lầu",
     "assign": "Giao phó",
+    "assigned": "Đã giao phó",
     "call": "Gọi",
     "employee_list": "Danh sách nhân viên",
     "name": "Họ và tên",
@@ -190,13 +203,13 @@
     "alert_table": "Vui lòng chọn dòng dữ liệu trong bảng!",
     "total_skills": "Tổng kỹ năng",
     "total_fix": "Tổng lần sửa máy",
-    "hide" : "Ẩn",
-    "see_more" : "Xem thêm",
+    "hide": "Ẩn",
+    "see_more": "Xem thêm",
     "select_line": "Chọn Line",
     "error_select_line": "Vui lòng chọn line",
     "error_enter_remark": "Vui lòng nhập ghi chú",
     "error_select_mechanic": "Vui lòng chọn thợ",
-    "no_select":"Không tìm thấy"
+    "no_select": "Không tìm thấy"
   },
   "employee_list": {
     "employee_list": "Danh sách nhân viên",
@@ -212,13 +225,12 @@
     "available": "Sẵn sàng",
     "fixing": "Đang sửa chữa",
     "task": "Công việc",
-    "choose_floor" : "Chọn lầu",
-    "confirm":"Xác nhận",
+    "choose_floor": "Chọn lầu",
+    "confirm": "Xác nhận",
     "cancel": "Hủy",
     "change_floor": "Đổi Lầu",
     "error_choose_floor": "Vui lòng chọn ít nhất một tầng!"
   },
-
   "repair_status": {
     "repair_status": "Trạng thái sửa chữa",
     "conveyor": "Chuyền",
@@ -231,14 +243,12 @@
     "waiting": "Đang chờ",
     "fixing": "Đang sửa"
   },
-
   "repair_list": {
     "repair_list": "Máy móc-bảo trì",
     "name_machine": "Tên máy",
     "machine_code": "Mã máy",
     "workshop": "Xưởng",
     "reason": "Lý do hư máy",
-
     "conveyor": "Chuyền",
     "number_of_breakdowns": "Số lần hư",
     "total_time": "Tổng thời gian",
@@ -246,7 +256,6 @@
     "day": "Ngày",
     "week": "Tuần",
     "month": "Tháng",
-    
     "daily": "Hàng ngày",
     "weekly": "Hàng tuần",
     "monthly": "Hàng tháng"

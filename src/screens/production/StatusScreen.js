@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Box, Tabs, Tab } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { get_report_damage, get_history_product } from "../../redux/features/product";
+import { get_report_damage, get_history_product, get_Relocate_Machine } from "../../redux/features/product";
 import BreadCrumb from "../../components/BreadCrumb";
 import ProgressStatus from "../../components/ProgressStatus";
 import History from "../../components/History";
@@ -43,7 +43,7 @@ const StatusScreen = () => {
     const socketRef = useRef();
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
-    const { requestListReportProduct, historyListReportProduct } = useSelector((state) => state.product);
+    const { requestListRelocateMachineProduct,requestListReportProduct, historyListReportProduct } = useSelector((state) => state.product);
     const [value, setValue] = useState(0);
 
     const [t] = useTranslation("global");
@@ -58,6 +58,7 @@ const StatusScreen = () => {
             } else {
                 
                 await dispatch(get_report_damage({ id_user_request, factory }));
+                await dispatch(get_Relocate_Machine({ id_user_request, factory }));
             }
         };
         fetchData();
@@ -103,7 +104,7 @@ const StatusScreen = () => {
                     </Tabs>
                 </Box>
                 <CustomTabPanel value={value} index={0}>
-                    <ProgressStatus listReport={requestListReportProduct} user={user} />
+                    <ProgressStatus listReport={requestListReportProduct} listRelocate={requestListRelocateMachineProduct} user={user} />
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={1}>
                     <History historyListReport={historyListReportProduct} user={user} />

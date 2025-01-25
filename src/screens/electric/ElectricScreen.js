@@ -72,7 +72,7 @@ const ElectricScreen = () => {
       },
       {
         icon: <WorkOutlineOutlinedIcon />,
-        text: 'Danh sách công việc',
+        text: t("sidebar.transfer_list"),
         path: "/electric/task-list",
       },
     ];

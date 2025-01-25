@@ -214,6 +214,9 @@ const DowntimeScreen = () => {
                   <MenuItem key="LYV" value="LYV">
                     LYV
                   </MenuItem>
+                  <MenuItem key="LYM" value="LYM">
+                    LYM
+                  </MenuItem>
                 </Select>
               </FormControl>
 

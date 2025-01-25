@@ -17,7 +17,7 @@ import {
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-import ColorlibStepIcon from "./ColorlibStepIcon";
+import {ColorlibStepIcon} from "./ColorlibStepIcon";
 
 import DetailInfo from "./DetailInfo";
 import DetailFinish from "./DetailFinish";

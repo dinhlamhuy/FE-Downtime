@@ -290,12 +290,26 @@ const OwnerUserListScreen = () => {
             >
               <TableHead>
                 <TableRow>
+                <TableCell
+                    style={{
+                      fontWeight: "bold",
+                      whiteSpace: "nowrap",
+                      backgroundColor: "#1976d2",
+                      color: "#fff",
+                      width: "120px",
+                    }}
+                    align="center"
+                  >
+                    {t("employee_list.detail")}
+                  </TableCell>
                   <TableCell
                     style={{
                       fontWeight: "bold",
                       whiteSpace: "nowrap",
                       backgroundColor: "#1976d2",
                       color: "#fff",
+                      width: "270px",
+
                     }}
                     align="center"
                   >
@@ -346,17 +360,7 @@ const OwnerUserListScreen = () => {
                   >
                     {t("employee_list.task_name")}
                   </TableCell>
-                  {/* <TableCell
-                    style={{
-                      fontWeight: "bold",
-                      whiteSpace: "nowrap",
-                      backgroundColor: "#1976d2",
-                      color: "#fff",
-                    }}
-                    align="center"
-                  >
-                    Token
-                  </TableCell> */}
+                
                   <TableCell
                     style={{
                       fontWeight: "bold",
@@ -368,21 +372,8 @@ const OwnerUserListScreen = () => {
                   >
                     {t("employee_list.count_time")}
                   </TableCell>
-                  <TableCell
-                    style={{
-                      fontWeight: "bold",
-                      whiteSpace: "nowrap",
-                      backgroundColor: "#1976d2",
-                      color: "#fff",
-                      width: "120px",
-                    }}
-                    align="center"
-                  >
-                    {t("employee_list.detail")}
-                  </TableCell>
-                  {/* <TableCell style={{ fontWeight: "bold", whiteSpace: "nowrap", backgroundColor: "#1976d2", color: "#fff" }} align="center">
-                    {t("employee_list.change_floor")}
-                  </TableCell> */}
+                 
+               
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -391,6 +382,17 @@ const OwnerUserListScreen = () => {
                     key={index}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
+                     <TableCell align="center">
+                      <Button
+                        variant="contained"
+                        onClick={() =>
+                          handleDetailClick(row.user_name, row.factory)
+                        }
+                        style={{ fontSize: "12px", marginRight: "8px" }}
+                      >
+                        {t("employee_list.detail")}
+                      </Button>
+                    </TableCell>
                     {/* style={{ width: "600px" }} */}
                     <TableCell align="center">
                       {row.user_name} - {row.name}
@@ -440,17 +442,7 @@ const OwnerUserListScreen = () => {
                       )}
                     </TableCell> */}
                     <TableCell align="center">{row.CountTime}</TableCell>
-                    <TableCell align="center">
-                      <Button
-                        variant="contained"
-                        onClick={() =>
-                          handleDetailClick(row.user_name, row.factory)
-                        }
-                        style={{ fontSize: "12px", marginRight: "8px" }}
-                      >
-                        {t("employee_list.detail")}
-                      </Button>
-                    </TableCell>
+                   
                     {/*  <TableCell align="center">
                    <Button
                         variant="outlined"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   TextField,
   Button,
@@ -31,10 +31,20 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-
-import { get_All_Task } from "../../redux/features/electric";
+import socketIOClient from "socket.io-client";
+import {
+  get_All_Task,
+  get_list_asign_mechanic,
+  setErrorCode,
+} from "../../redux/features/electric";
+import TaskDetailInfo from "../../components/TaskDetailInfo";
+import { Toast } from "../../utils/toast";
 export default function TaskListScreen() {
-    const {getAllTaskByCB} = useSelector((state) => state.electric);
+  const { getAllTaskByCB, getListAsignMechanic } = useSelector(
+    (state) => state.electric
+  );
+    const electric = useSelector((state) => state.electric);
+  const host = BASE_URL;
   const [data, setData] = useState([]);
   const today = new Date().toISOString().split("T")[0];
   const [fromDate, setFromDate] = useState(today);
@@ -45,16 +55,20 @@ export default function TaskListScreen() {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [idMachine, setIdMachine] = useState("");
   const [activeRow, setActiveRow] = useState(null);
-  // const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [selectTask, setSelectTask] = useState({});
   const isSmallScreen = useMediaQuery("(max-width: 700px)");
   const [openModal, setOpenModal] = useState(false);
-  const { user_name, factory, floor, lean } = useSelector(
+  
+  const [openModalDetail, setOpenModalDetail] = useState(false);
+  const { user_name, factory, floor, lean, position } = useSelector(
     (state) => state.auth.user
   );
   useEffect(() => {
     setData(Array.isArray(getAllTaskByCB) ? getAllTaskByCB : []);
   }, [getAllTaskByCB]);
   const [t] = useTranslation("global");
+  const [socket, setSocket] = useState("");
+    const socketRef = useRef();
   const dispatch = useDispatch();
   const languages = localStorage.getItem("languages");
   const [searchTerms, setSearchTerms] = useState({
@@ -71,58 +85,102 @@ export default function TaskListScreen() {
     accept: "",
     fixing: "",
     finish: "",
-    status: "",
+    status: " ",
     id_owner: "",
     info_reason_vn: "",
     info_skill_vn: "",
     remark_mechanic: "",
   });
 
-//   const filteredData = data.filter((row) => {
-//     return Object.keys(searchTerms).every((key) => {
-//       const searchTerm = searchTerms[key].toLowerCase();
-//       const cellValue = String(row[key] || "").toLowerCase();
-//       return cellValue.includes(searchTerm);
-//     });
-//   });
-
-  const HandleViewHistory = (id_task) => {
-    setOpen(true);
-    setIdMachine(id_task);
-    setActiveModal(true);
-  };
-
-  const formatDate = (datetime) => {
-    const date = datetime;
-    const result = date.split("T")[1].slice(0, -8) + " " + date?.split("T")[0];
-    return `${result}`;
-  };
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
   const fetchData = async () => {
     try {
       await dispatch(
         get_All_Task({ factory, fromDate, toDate, floor, fixer: lean })
       );
       setActiveRow(null);
+      setOpenModal(false);
 
-    //   setData(response.data.data || []);
+      //   setData(response.data.data || []);
     } catch (error) {
       console.error("Lỗi khi gọi API:", error);
     }
   };
-  const handleSort = (key) => {
-    let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    }
-    setSortConfig({ key, direction });
+  useEffect(() => {
+ 
+    fetchData();
 
-    const sortedData = [...data].sort((a, b) => {
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-      return 0;
+    socketRef.current = socketIOClient.connect(host);
+    socketRef.current.on("message", (data) => {
+      console.log(data);
     });
-    setData(sortedData);
+    socketRef.current.on(`${user_name}`, (data) => {
+      setSocket(data);
+    });
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        console.log("Trang đã trở lại, load lại...");
+        fetchData();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      // socketRef.current.disconnect();
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [factory, floor, user_name, position, lean, dispatch, socket]);
+  const HandleViewDetail = async (task) => {
+    const { id_machine } = task;
+    await dispatch(
+      get_list_asign_mechanic({ id_machine, floor, factory, position, lean })
+    );
+    setOpenModalDetail(true);
+    setSelectTask(task);
+    // setIdMachine(id_task);
+    // setActiveModal(true);
+  };
+
+  const [sortConfig, setSortConfig] = useState({
+    key: "status",
+    direction: "asc",
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (electric.errorCode !== null) {
+        let icon = "error";
+        if (electric.errorCode === 0) {
+          icon = "success";
+        }
+        Toast.fire({
+          icon: icon,
+          title: electric.errorMessage,
+        });
+        await dispatch(setErrorCode(null, ""));
+      }
+    };
+    fetchData();
+  }, [electric, dispatch]);
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const handleSort = (key) => {
+    // let direction = "asc";
+    // if (sortConfig.key === key && sortConfig.direction === "asc") {
+    //   direction = "desc";
+    // }
+    // setSortConfig({ key, direction });
+    // const sortedData = [...data].sort((a, b) => {
+    //   if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+    //   if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
+    //   return 0;
+    // });
+    // setData(sortedData);
   };
 
   const HandleResetFiltered = () => {
@@ -140,12 +198,13 @@ export default function TaskListScreen() {
       accept: "",
       fixing: "",
       finish: "",
-      status: "",
+      status: " ",
       id_owner: "",
       info_reason_vn: "",
       info_skill_vn: "",
       remark_mechanic: "",
     });
+    setOpenModal(false);
   };
 
   const handleOpenConfirm = (index) => setActiveRowForConfirm(index);
@@ -334,86 +393,62 @@ export default function TaskListScreen() {
               <TableRow
                 sx={{
                   "& th": {
-                    border: "1px solid gray",
                     fontSize: "0.8rem",
                     "& .MuiTypography-root": { fontSize: "0.8rem" },
                   },
                 }}
               >
                 <TableCell
-                  onClick={() => handleSort("id")}
-                  className="thStyle"
                   sx={{
                     width: "70px",
+                    background: "blue",
+                    color: "#fff",
+                    textAlign: "center",
                   }}
                 >
-                  ID {t("employee_list.task")}
-                  {sortConfig.key === "id" &&
-                    (sortConfig.direction === "asc" ? "▲" : "▼")}
+                  {t("process_status.history")}
                 </TableCell>
                 <TableCell
                   className="thStyle"
                   sx={{
-                    width: "100px",
+                    width: "190px",
                   }}
                 >
-                  <Typography onClick={() => handleSort("id_machine")}>
-                    {" "}
-                    {t("info_machine_damage.id_machine")}
-                    {sortConfig.key === "id_machine" &&
+                  <Typography onClick={() => handleSort("id_mechanic")}>
+                    {t("process_status.status_3")}
+                    {sortConfig.key === "id_mechanic" &&
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
                   </Typography>
                   <TextField
                     size="small"
                     variant="standard"
-                    placeholder="Machine"
+                    placeholder={t("process_status.status_3")}
                     sx={{ background: "white" }}
-                    value={searchTerms.id_machine}
+                    value={searchTerms.id_mechanic}
                     onChange={(e) =>
                       setSearchTerms({
                         ...searchTerms,
-                        id_machine: e.target.value,
+                        id_mechanic: e.target.value,
                       })
                     }
                   />
                 </TableCell>
                 <TableCell
-                  onClick={() => handleSort("Name_vn")}
-                  className="thStyle"
+                  onClick={() => handleSort("remark_mechanic")}
                   sx={{
-                    width: "220px",
+                    width: "110px",
+                    textAlign: "center",
+                    resize: "horizontal",
+                    overflow: "auto",
+                    background: "blue",
+                    color: "#fff",
                   }}
                 >
-                  {t("info_machine_damage.name_machine")}
-                  {sortConfig.key === "Name_vn" &&
+                  Downtime
+                  {sortConfig.key === "remark_mechanic" &&
                     (sortConfig.direction === "asc" ? "▲" : "▼")}
                 </TableCell>
-                <TableCell
-                  className="thStyle"
-                  sx={{
-                    width: "120px",
-                  }}
-                >
-                  <Typography onClick={() => handleSort("floor_user_request")}>
-                    {t("info_machine_damage.floor")}
 
-                    {sortConfig.key === "floor_user_request" &&
-                      (sortConfig.direction === "asc" ? "▲" : "▼")}
-                  </Typography>
-                  <TextField
-                    size="small"
-                    variant="standard"
-                    placeholder="Floor"
-                    sx={{ background: "white" }}
-                    value={searchTerms.floor_user_request}
-                    onChange={(e) =>
-                      setSearchTerms({
-                        ...searchTerms,
-                        floor_user_request: e.target.value,
-                      })
-                    }
-                  />
-                </TableCell>
                 <TableCell
                   className="thStyle"
                   sx={{
@@ -436,133 +471,34 @@ export default function TaskListScreen() {
                     }
                   />
                 </TableCell>
+
                 <TableCell
                   className="thStyle"
                   sx={{
-                    width: "100px",
+                    width: "120px",
                   }}
                 >
                   <Typography onClick={() => handleSort("id_user_request")}>
                     {t("process_status.status_1_user_request")}
-
                     {sortConfig.key === "id_user_request" &&
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
                   </Typography>
                   <TextField
                     size="small"
                     variant="standard"
-                    placeholder="CBSX"
+                    placeholder={t("process_status.status_1_user_request")}
                     sx={{ background: "white" }}
                     value={searchTerms.id_user_request}
                     onChange={(e) =>
                       setSearchTerms({
                         ...searchTerms,
                         id_user_request: e.target.value,
-                      })
-                    }
-                  />
-                </TableCell>
-                <TableCell
-                  className="thStyle"
-                  sx={{
-                    width: "100px",
-                  }}
-                >
-                  <Typography onClick={() => handleSort("fixer")}>
-                    Fixer{" "}
-                    {sortConfig.key === "fixer" &&
-                      (sortConfig.direction === "asc" ? "▲" : "▼")}
-                  </Typography>
-                  <FormControl size="small" fullWidth>
-                    <Select
-                      size="small"
-                      sx={{ background: "white", height: "2rem" }}
-                      value={searchTerms.fixer}
-                      onChange={(e) =>
-                        setSearchTerms({
-                          ...searchTerms,
-                          fixer: e.target.value,
-                        })
-                      }
-                    >
-                      <MenuItem value="">ALL</MenuItem>
-                      <MenuItem value="TM">TM</MenuItem>
-                      <MenuItem value="TD">TD</MenuItem>
-                    </Select>
-                  </FormControl>
-                </TableCell>
-                <TableCell
-                  className="thStyle"
-                  sx={{
-                    width: "200px",
-                  }}
-                >
-                  <Typography onClick={() => handleSort("id_mechanic")}>
-                    {t("process_status.status_3")}
-                    {sortConfig.key === "id_mechanic" &&
-                      (sortConfig.direction === "asc" ? "▲" : "▼")}
-                  </Typography>
-                  <TextField
-                    size="small"
-                    variant="standard"
-                    placeholder="Thợ sửa"
-                    sx={{ background: "white" }}
-                    value={searchTerms.id_mechanic}
-                    onChange={(e) =>
-                      setSearchTerms({
-                        ...searchTerms,
-                        id_mechanic: e.target.value,
                         // name_mechanic: e.target.value,
                       })
                     }
                   />
                 </TableCell>
-                <TableCell
-                  onClick={() => handleSort("date_user_request")}
-                  className="thStyle"
-                  sx={{
-                    width: "145px",
-                  }}
-                >
-                  {t("process_status.status_1_date")}
-                  {sortConfig.key === "date_user_request" &&
-                    (sortConfig.direction === "asc" ? "▲" : "▼")}
-                </TableCell>
-                <TableCell
-                  onClick={() => handleSort("accept")}
-                  className="thStyle"
-                  sx={{
-                    width: "145px",
-                  }}
-                >
-                  {" "}
-                  {t("process_status.status_4_confirm")}
-                  {sortConfig.key === "accept" &&
-                    (sortConfig.direction === "asc" ? "▲" : "▼")}
-                </TableCell>
-                <TableCell
-                  onClick={() => handleSort("fixing")}
-                  className="thStyle"
-                  sx={{
-                    width: "145px",
-                  }}
-                >
-                  {t("process_status.status_3_")}
-                  {sortConfig.key === "fixing" &&
-                    (sortConfig.direction === "asc" ? "▲" : "▼")}
-                </TableCell>
-                <TableCell
-                  onClick={() => handleSort("finish")}
-                  className="thStyle"
-                  sx={{
-                    width: "145px",
-                  }}
-                >
-                  {t("info_machine_damage.alert_success")}
 
-                  {sortConfig.key === "finish" &&
-                    (sortConfig.direction === "asc" ? "▲" : "▼")}
-                </TableCell>
                 <TableCell
                   className="thStyle"
                   sx={{
@@ -586,7 +522,7 @@ export default function TaskListScreen() {
                         })
                       }
                     >
-                      <MenuItem value="">ALL</MenuItem>
+                      <MenuItem value=" ">ALL</MenuItem>
                       <MenuItem value="1">REQUESTED</MenuItem>
                       <MenuItem value="2">CONFIRMED</MenuItem>
                       <MenuItem value="3">FIXING</MenuItem>
@@ -595,108 +531,11 @@ export default function TaskListScreen() {
                     </Select>
                   </FormControl>
                 </TableCell>
-                <TableCell
-                  className="thStyle"
-                  sx={{
-                    width: "140px",
-                  }}
-                >
-                  <Typography onClick={() => handleSort("date_asign_task")}>
-                    Asign Task
-                    {sortConfig.key === "date_asign_task" &&
-                      (sortConfig.direction === "asc" ? "▲" : "▼")}
-                  </Typography>
-                </TableCell>
-                <TableCell
-                  className="thStyle"
-                  sx={{
-                    width: "200px",
-                  }}
-                >
-                  <Typography onClick={() => handleSort("id_owner")}>
-                    {t("process_status.official")}
-                    {sortConfig.key === "id_owner" &&
-                      (sortConfig.direction === "asc" ? "▲" : "▼")}
-                  </Typography>
-                  <TextField
-                    size="small"
-                    variant="standard"
-                    placeholder="Owner"
-                    sx={{ background: "white" }}
-                    value={searchTerms.id_owner}
-                    onChange={(e) =>
-                      setSearchTerms({
-                        ...searchTerms,
-                        id_owner: e.target.value,
-                        // name_owner: e.target.value,
-                      })
-                    }
-                  />
-                </TableCell>
-
-                <TableCell
-                  onClick={() => handleSort("info_reason_vn")}
-                  sx={{
-                    width: "150px",
-                    textAlign: "center",
-                    resize: "horizontal",
-                    overflow: "auto",
-                    background: "blue",
-                    color: "#fff",
-                  }}
-                >
-                  {t("repair_list.reason")}
-                  {sortConfig.key === "info_reason_vn" &&
-                    (sortConfig.direction === "asc" ? "▲" : "▼")}
-                </TableCell>
-                <TableCell
-                  onClick={() => handleSort("info_skill_vn")}
-                  sx={{
-                    width: "110px",
-                    textAlign: "center",
-                    resize: "horizontal",
-                    overflow: "auto",
-                    background: "blue",
-                    color: "#fff",
-                  }}
-                >
-                  {t("personal_info.method_machine")}
-                  {sortConfig.key === "info_skill_vn" &&
-                    (sortConfig.direction === "asc" ? "▲" : "▼")}
-                </TableCell>
-                <TableCell
-                  onClick={() => handleSort("remark_mechanic")}
-                  sx={{
-                    width: "110px",
-                    textAlign: "center",
-                    resize: "horizontal",
-                    overflow: "auto",
-                    background: "blue",
-                    color: "#fff",
-                  }}
-                >
-                  {t("work_list.remark")}
-
-                  {sortConfig.key === "remark_mechanic" &&
-                    (sortConfig.direction === "asc" ? "▲" : "▼")}
-                </TableCell>
-
-                <TableCell
-                  sx={{
-                    width: "70px",
-                    background: "blue",
-                    color: "#fff",
-                    textAlign: "center",
-                  }}
-                >
-                  {t("process_status.history")}
-                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody
               sx={{
                 "& td": {
-                  border: "1px solid gray",
                   fontSize: "0.8rem",
                   "& .MuiTypography-root": { fontSize: "0.8rem" },
                 },
@@ -728,51 +567,42 @@ export default function TaskListScreen() {
                     },
                   }}
                 >
+                  <TableCell sx={{ padding: "0", fontSize: "0.8rem" }}>
+                    <Button
+                      sx={{ width: "100%", fontSize: "0.8rem" }}
+                      onClick={() => HandleViewDetail(row)}
+                    >
+                      <RemoveRedEyeOutlinedIcon />
+                    </Button>
+                    {activeModal && (
+                      <ProgressHistoryDetailTask
+                        isCheck={idMachine === row.id}
+                        machine={row}
+                        open={open}
+                        setOpen={setOpen}
+                        user={""}
+                      />
+                    )}
+                  </TableCell>
                   <TableCell
-                    sx={{
-                      wordBreak: "break-all",
-                      overflow: "auto",
-                      textAlign: "center",
-                      padding: 0,
-                    }}
+                    className="tdStyle"
+                    sx={{ textAlign: "left !important" }}
                   >
-                    {index + 1}
-                  </TableCell>
-                  <TableCell className="tdStyle">{row.id_machine}</TableCell>
-                  <TableCell
-                    sx={{
-                      wordBreak: "break-all",
-                      overflow: "auto",
-                      padding: "3px",
-                    }}
-                  >
-                    {row.Name_vn}
-                  </TableCell>
-                  <TableCell className="tdStyle">
-                    {row.floor_user_request}
-                  </TableCell>
-                  <TableCell className="tdStyle">{row.Line}</TableCell>
-                  <TableCell className="tdStyle">
-                    {row.id_user_request}
-                  </TableCell>
-                  <TableCell className="tdStyle">{row.fixer}</TableCell>
-
-                  <TableCell className="tdStyle">
                     {row.id_mechanic &&
                       row.id_mechanic + " - " + row.name_mechanic}
                   </TableCell>
                   <TableCell className="tdStyle">
-                    {row.date_user_request && formatDate(row.date_user_request)}
+                    {row.total_downtime_detail}
                   </TableCell>
                   <TableCell className="tdStyle">
-                    {row.accept && formatDate(row.accept)}
+                    {row.Line}
+                    {row.floor_user_request != row.Line &&
+                      "(" + row.floor_user_request + ")"}
                   </TableCell>
                   <TableCell className="tdStyle">
-                    {row.fixing && formatDate(row.fixing)}
+                    {row.id_user_request}
                   </TableCell>
-                  <TableCell className="tdStyle">
-                    {row.finish && formatDate(row.finish)}
-                  </TableCell>
+
                   <TableCell
                     className="tdStyle"
                     style={{
@@ -801,87 +631,19 @@ export default function TaskListScreen() {
                       ? "FINISH"
                       : "INCOMPLETE"}
                   </TableCell>
-                  <TableCell className="tdStyle">
-                    {row.date_asign_task &&
-                      row.id_owner &&
-                      formatDate(row.date_asign_task)}
-                  </TableCell>
-                  <TableCell className="tdStyle">
-                    {row.id_owner && row.id_owner + " - " + row.name_owner}
-                  </TableCell>
-                  <TableCell className="tdStyle">
-                    {/* {row.info_reason_vn}{" "} */}
-                    {languages === "VN"
-                      ? row.info_reason_vn
-                      : row.info_reason_en}
-                    {row.other_reason && "(" + row.other_reason + ")"}
-                  </TableCell>
-
-                  <TableCell className="tdStyle">
-                    {languages === "VN" ? row.info_skill_vn : row.info_skill_en}
-                    {row.other_skill && "(" + row.other_skill + ")"}
-                  </TableCell>
-                  <TableCell className="tdStyle">
-                    {row.remark_mechanic}
-                  </TableCell>
-
-                  <TableCell sx={{ padding: "0", fontSize: "0.8rem" }}>
-                    <Button
-                      sx={{ width: "100%", fontSize: "0.8rem" }}
-                      onClick={() => HandleViewHistory(row.id)}
-                    >
-                      <RemoveRedEyeOutlinedIcon />
-                    </Button>
-                    {activeModal && (
-                      <ProgressHistoryDetailTask
-                        isCheck={idMachine === row.id}
-                        machine={row}
-                        open={open}
-                        setOpen={setOpen}
-                        user={""}
-                      />
-                    )}
-                  </TableCell>
-                  {/* <TableCell className="tdStyle">
-                    {row.status == "1" && (
-                      <>
-                        <Button
-                          onClick={() => handleOpenConfirm(index)}
-                          sx={{ fontSize: "0.65rem" }}
-                        >
-                          Hủy phiếu
-                        </Button>
-                        <Dialog
-                          open={activeRowForConfirm === index}
-                          onClose={handleCloseConfirm}
-                        >
-                          <DialogTitle>Xác nhận hủy</DialogTitle>
-                          <DialogContent>
-                            <DialogContentText>
-                              Bạn có chắc chắn muốn hủy phiếu của máy{" "}
-                              <b>{row.id_machine}</b> không?
-                            </DialogContentText>
-                          </DialogContent>
-                          <DialogActions>
-                            <Button
-                              onClick={handleCloseConfirm}
-                              color="secondary"
-                            >
-                              Hủy
-                            </Button>
-                            <Button color="primary" autoFocus>
-                              Xác nhận
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
-                      </>
-                    )}
-                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+        <TaskDetailInfo
+          task={selectTask}
+          open={openModalDetail}
+          setOpen={() => setOpenModalDetail(false)}
+          t={t}
+          getListAsignMechanic={getListAsignMechanic}
+          languages={languages}
+        />
       </div>
     </div>
   );

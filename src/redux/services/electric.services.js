@@ -1,7 +1,20 @@
 import axios from "axios";
 import { BASE_URL } from "../../utils/env";
 import authHeader from "./auth_header";
+const calculateTimeDifference = (start, end) => {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
 
+  const diffInMs = endDate - startDate;
+  const diffInSeconds = Math.floor(diffInMs / 1000);
+  
+  const hours = Math.floor(diffInSeconds / 3600);
+  const minutes = Math.floor((diffInSeconds % 3600) / 60);
+  const seconds = (diffInSeconds % 3600) % 60;
+  const formatTwoDigits = (num) => String(num || 0).padStart(2, '0');
+  // return { hours, minutes, seconds };
+  return `${hours ? formatTwoDigits(hours)+':' : ''}${minutes ?  formatTwoDigits(minutes)+':' : ''}${formatTwoDigits(seconds)}s`;
+};
 //List Task => Manager
 const get_task_damage = (factory, floor, user_name, lean, fromdate, todate) => {
   return axios
@@ -363,7 +376,7 @@ const finish_mechanic = (
   statusRadio,
   language,
   new_mechanic,
-  otherIssue
+  otherIssue,new_id_user_mechanic
 ) => {
   return axios
     .post(
@@ -378,7 +391,7 @@ const finish_mechanic = (
         statusRadio,
         language,
         new_mechanic,
-        otherIssue,
+        otherIssue,new_id_user_mechanic
       },
       {
         headers: {
@@ -677,12 +690,99 @@ const change_floor = (floor, factory, user_name, lang) => {
     });
 };
 const get_All_task = (factory, fromDate, toDate, floor, fixer) => {
+  const date = new Date();
   return axios
     .get(
       BASE_URL + "/task/getAllTask",
       {
         params: { factory, fromDate, toDate, floor, fixer },
       },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...authHeader(),
+        },
+      }
+    )
+    .then((response) => {
+      const dataWithMinute = response?.data?.data.map((item) => {
+        const requestTime = item.date_user_request ? new Date(item.date_user_request) : null;
+
+        const acceptTime = item.accept
+        ? new Date(item.accept)
+        : new Date(date.getTime() + 7 * 60 * 60 * 1000); 
+
+        const fixingTime = item.fixing && new Date(item.fixing);
+        const finishTime = item.finish ? new Date(item.finish): new Date(date.getTime() + 7 * 60 * 60 * 1000); 
+        const minute_request =
+          Math.max(((acceptTime - requestTime) / (1000 * 60)).toFixed(2), 0) ||
+          0;
+        const minute_accept =
+          Math.max(((fixingTime - acceptTime) / (1000 * 60)).toFixed(2), 0) ||
+          0;
+        const minute_finish =
+          Math.max(((finishTime - fixingTime) / (1000 * 60)).toFixed(2), 0) ||
+          0;
+        const total_downtime =
+          Math.max(((finishTime - requestTime) / (1000 * 60)).toFixed(2), 0) ||
+          0;
+        return {
+          ...item,
+          minute_request,
+          minute_request_detail: calculateTimeDifference(
+            requestTime,
+            acceptTime
+          ),
+          minute_accept,
+          minute_accept_detail: calculateTimeDifference(acceptTime, fixingTime),
+          minute_finish,
+          minute_finish_detail: calculateTimeDifference(fixingTime, finishTime),
+          total_downtime,
+          total_downtime_detail: calculateTimeDifference(
+            requestTime,
+            finishTime
+          ),
+        };
+      });
+      const datas= { data:dataWithMinute || [] };
+      return datas || [];
+    })
+    .catch((error) => {
+      return error.response.data;
+    });
+};
+const get_task_relocate_machine = (fixer, id_owner, factory) => {
+  return axios
+    .post(
+      BASE_URL + "/task/getTaskOnwerRelocateMachine",
+      { fixer, id_owner, factory },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...authHeader(),
+        },
+      }
+    )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      return error.response.data;
+    });
+};
+const asignTaskRelocateMachine = (
+  fixer,
+  id_owner,
+  factory,
+  repairman,
+  arrRepairman,
+  id_task,
+  req_floor
+) => {
+  return axios
+    .post(
+      BASE_URL + "/task/asignTaskRelocateMachine",
+      { fixer, id_owner, factory, repairman, arrRepairman, id_task, req_floor },
       {
         headers: {
           "Content-Type": "application/json",
@@ -723,7 +823,10 @@ const ElectricServices = {
   accept_support,
   get_all_floor,
   change_floor,
-  getMachineUnderRepair,get_All_task
+  getMachineUnderRepair,
+  get_All_task,
+  get_task_relocate_machine,
+  asignTaskRelocateMachine,
 };
 
 export default ElectricServices;

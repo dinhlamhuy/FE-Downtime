@@ -58,6 +58,7 @@ const Banner = (props) => {
                 }}
             />
             <Box sx={{ position: "relative", height: 90, margin: "0 10px" }}>
+                
                 <Box
                     sx={{
                         position: "absolute",
@@ -87,7 +88,9 @@ const Banner = (props) => {
 
                         {nameLean}
                     </Typography>
+                  
                 </Box>
+            
             </Box>
         </React.Fragment>
     );
