@@ -1033,9 +1033,9 @@ const WorkListScreen = () => {
                           color: "#fff",
                         }}
                       >
-                        {t("work_list.id_machine")}
+                        {t("process_status.status_1_user_request")}
                       </TableCell>
-                      <TableCell
+                      {/* <TableCell
                         style={{
                           fontWeight: "bold",
                           minWidth: "150px",
@@ -1043,8 +1043,9 @@ const WorkListScreen = () => {
                           color: "#fff",
                         }}
                       >
-                        Vị trí chuyển đến
-                      </TableCell>
+                                               {t("work_list.floor")}
+
+                      </TableCell> */}
                       <TableCell
                         style={{
                           fontWeight: "bold",
@@ -1085,10 +1086,10 @@ const WorkListScreen = () => {
                           {relocate.req_user_name}{" "}
                           {"(" + relocate?.req_line + ")"}
                         </TableCell>
-                        <TableCell>
+                        {/* <TableCell>
                           {relocate.ID_Floor}
                           {"(" + relocate?.ID_lean + ")"}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>{relocate.remark}</TableCell>
 
                         <TableCell>

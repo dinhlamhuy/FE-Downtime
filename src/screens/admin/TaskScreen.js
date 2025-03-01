@@ -72,14 +72,18 @@ export default function TaskScreen() {
   });
   const formatTime = (hours, minutes, seconds) => {
     let formattedTime = "";
-    const formatTwoDigits = (num) => String(num || 0).padStart(2, '0');
+    const formatTwoDigits = (num) => String(num || 0).padStart(2, "0");
     if (hours > 0) {
       formattedTime += `<span class="time">${hours}</span><span class="small-font">:</span>`;
     }
     if (minutes > 0 || hours > 0) {
-      formattedTime += `<span class="time">${formatTwoDigits(minutes || 0)}</span><span class="small-font">:</span>`;
+      formattedTime += `<span class="time">${formatTwoDigits(
+        minutes || 0
+      )}</span><span class="small-font">:</span>`;
     }
-    formattedTime += `<span class="time">${formatTwoDigits(seconds || 0 )}</span><span class="small-font">s</span>`;
+    formattedTime += `<span class="time">${formatTwoDigits(
+      seconds || 0
+    )}</span><span class="small-font">s</span>`;
     // return formattedTime;
     return { __html: formattedTime };
   };
@@ -122,27 +126,40 @@ export default function TaskScreen() {
   const fetchData = async () => {
     try {
       const date = new Date();
-   
+
       const response = await axios.get(BASE_URL + `/task/getAllTask`, {
         params: {
           factory,
           fromDate,
-           toDate,
+          toDate,
         },
       });
       setActiveRow(null);
       const dataWithMinute = response?.data?.data.map((item) => {
         const requestTime =
           item.date_user_request && new Date(item.date_user_request);
-        const acceptTime = item.accept ? new Date(item.accept) : new Date(date.getTime() + 7 * 60 * 60 * 1000);
-        
+        const acceptTime = item.accept
+          ? new Date(item.accept)
+          : new Date(date.getTime() + 7 * 60 * 60 * 1000);
+
         const fixingTime = item.fixing && new Date(item.fixing);
+        const fixingTime3 = item.fixing ? new Date(item.fixing) : new Date(date.getTime() + 7 * 60 * 60 * 1000);
         const finishTime = item.finish && new Date(item.finish);
-        const minute_request = Math.max(((acceptTime - requestTime) / (1000 * 60)).toFixed(2), 0) || 0;
-        const minute_accept = Math.max(((fixingTime - acceptTime) / (1000 * 60)).toFixed(2), 0) || 0;
-        const minute_finish = Math.max(((finishTime - fixingTime) / (1000 * 60)).toFixed(2), 0) || 0;
+        const minute_request =
+          Math.max(((acceptTime - requestTime) / (1000 * 60)).toFixed(2), 0) ||
+          0;
+        // const minute_waiting = Math.max(((fixingTime - requestTime) / (1000 * 60)).toFixed(2), 0) || 0;
+        const minute_accept =
+          Math.max(((fixingTime - acceptTime) / (1000 * 60)).toFixed(2), 0) ||
+          0;
+        const minute_finish =
+          Math.max(((finishTime - fixingTime) / (1000 * 60)).toFixed(2), 0) ||
+          0;
         const total_downtime =
           Math.max(((finishTime - requestTime) / (1000 * 60)).toFixed(2), 0) ||
+          0;
+        const total_waiting =
+          Math.max(((fixingTime3 - requestTime) / (1000 * 60)).toFixed(2), 0) ||
           0;
         return {
           ...item,
@@ -155,10 +172,16 @@ export default function TaskScreen() {
           minute_accept_detail: calculateTimeDifference(acceptTime, fixingTime),
           minute_finish,
           minute_finish_detail: calculateTimeDifference(fixingTime, finishTime),
+          minute_waiting: calculateTimeDifference(requestTime,  item.fixing
+            ? fixingTime
+            : new Date(date.getTime() + 7 * 60 * 60 * 1000)),
           total_downtime,
+          total_waiting,
           total_downtime_detail: calculateTimeDifference(
             requestTime,
-            finishTime
+            item.finish
+              ? finishTime
+              : new Date(date.getTime() + 7 * 60 * 60 * 1000)
           ),
         };
       });
@@ -754,6 +777,17 @@ export default function TaskScreen() {
                     (sortConfig.direction === "asc" ? "▲" : "▼")}
                 </TableCell>
                 <TableCell
+                  onClick={() => handleSort("total_waiting")}
+                  className="thStyle"
+                  sx={{
+                    width: "90px",
+                  }}
+                >
+                  Waiting Time
+                  {sortConfig.key === "total_waiting" &&
+                    (sortConfig.direction === "asc" ? "▲" : "▼")}
+                </TableCell>
+                <TableCell
                   onClick={() => handleSort("total_downtime")}
                   className="thStyle"
                   sx={{
@@ -804,11 +838,10 @@ export default function TaskScreen() {
                   }}
                 >
                   <Typography onClick={() => handleSort("date_asign_task")}>
-                  Asign Task
+                    Asign Task
                     {sortConfig.key === "date_asign_task" &&
                       (sortConfig.direction === "asc" ? "▲" : "▼")}
                   </Typography>
-               
                 </TableCell>
                 <TableCell
                   className="thStyle"
@@ -967,12 +1000,17 @@ export default function TaskScreen() {
                     >
                       {row.id}
                     </TableCell>
-                    <TableCell className="tdStyle2"    sx={{
+                    <TableCell
+                      className="tdStyle2"
+                      sx={{
                         wordBreak: "break-all",
                         overflow: "auto",
                         textAlign: "center",
                         padding: 0,
-                      }} >{row.id_machine}</TableCell>
+                      }}
+                    >
+                      {row.id_machine}
+                    </TableCell>
                     <TableCell
                       sx={{
                         wordBreak: "break-all",
@@ -1045,16 +1083,25 @@ export default function TaskScreen() {
                       )}
                     </TableCell>
                     <TableCell className="tdStyle">
+                      <span
+                        dangerouslySetInnerHTML={formatTime(
+                          row.minute_waiting.hours,
+                          row.minute_waiting.minutes,
+                          row.minute_waiting.seconds
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell className="tdStyle">
                       {/* {row.total_downtime !=0 ? row.total_downtime : ""} */}
-                      {row.total_downtime_detail && row.total_downtime != 0 && (
-                        <span
-                          dangerouslySetInnerHTML={formatTime(
-                            row.total_downtime_detail.hours,
-                            row.total_downtime_detail.minutes,
-                            row.total_downtime_detail.seconds
-                          )}
-                        />
-                      )}
+                      {/* {row.total_downtime_detail && row.total_downtime != 0 && ( */}
+                      <span
+                        dangerouslySetInnerHTML={formatTime(
+                          row.total_downtime_detail.hours,
+                          row.total_downtime_detail.minutes,
+                          row.total_downtime_detail.seconds
+                        )}
+                      />
+                      {/* )} */}
                     </TableCell>
                     <TableCell
                       className="tdStyle"
@@ -1085,8 +1132,9 @@ export default function TaskScreen() {
                         : "INCOMPLETE"}
                     </TableCell>
                     <TableCell className="tdStyle">
-                   
-                      {row.date_asign_task && row.id_owner && formatDate(row.date_asign_task)}
+                      {row.date_asign_task &&
+                        row.id_owner &&
+                        formatDate(row.date_asign_task)}
                     </TableCell>
                     <TableCell className="tdStyle">
                       {row.id_owner && row.id_owner + " - " + row.name_owner}

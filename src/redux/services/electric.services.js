@@ -331,6 +331,29 @@ const get_work_list_report_employee = (id_user_mechanic, factory, lean) => {
       return error.response.data;
     });
 };
+const get_work_list_change_over = (id_user_mechanic, factory, lean) => {
+  return axios
+    .post(
+      BASE_URL + "/task/getTaskChangeOver",
+      {
+        id_user_mechanic,
+        factory,
+        lean,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...authHeader(),
+        },
+      }
+    )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      return error.response.data;
+    });
+};
 
 const scanner_fix_mechanic = (
   id_user_mechanic,
@@ -376,7 +399,7 @@ const finish_mechanic = (
   statusRadio,
   language,
   new_mechanic,
-  otherIssue,new_id_user_mechanic
+  otherIssue,new_id_user_mechanic,reason, otherMethod
 ) => {
   return axios
     .post(
@@ -391,7 +414,7 @@ const finish_mechanic = (
         statusRadio,
         language,
         new_mechanic,
-        otherIssue,new_id_user_mechanic
+        otherIssue,new_id_user_mechanic, reason, otherMethod
       },
       {
         headers: {
@@ -827,6 +850,7 @@ const ElectricServices = {
   get_All_task,
   get_task_relocate_machine,
   asignTaskRelocateMachine,
+  get_work_list_change_over
 };
 
 export default ElectricServices;

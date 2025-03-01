@@ -92,6 +92,17 @@ export default function TaskListScreen() {
     remark_mechanic: "",
   });
 
+  const convertLanguage = (name, langues) => {
+    const mapping = {
+      REQUESTED: { VN: "Yêu Cầu", EN: "REQUESTED" },
+      CONFIRMED: { VN: "Đã Xác Nhận", EN: "CONFIRMED" },
+      FIXING: { VN: "Đang Sửa", EN: "FIXING" },
+      FINISH: { VN: "Hoàn Thành", EN: "FINISH" },
+      INCOMPLETE: { VN: "Chưa Hoàn Thành", EN: "INCOMPLETE" }
+    };
+  
+    return mapping[name] ? mapping[name][langues] || name : name;
+  };
   const fetchData = async () => {
     try {
       await dispatch(
@@ -434,6 +445,38 @@ export default function TaskListScreen() {
                   />
                 </TableCell>
                 <TableCell
+                  className="thStyle"
+                  sx={{
+                    width: "140px",
+                  }}
+                >
+                  <Typography onClick={() => handleSort("status")}>
+                    {t("employee_list.active_status")}
+
+                    {sortConfig.key === "status" &&
+                      (sortConfig.direction === "asc" ? "▲" : "▼")}
+                  </Typography>
+                  <FormControl size="small" fullWidth>
+                    <Select
+                      sx={{ background: "white", height: "2rem" }}
+                      value={searchTerms.status}
+                      onChange={(e) =>
+                        setSearchTerms({
+                          ...searchTerms,
+                          status: e.target.value,
+                        })
+                      }
+                    >
+                      <MenuItem value=" ">ALL</MenuItem>
+                      <MenuItem value="1">{convertLanguage("REQUESTED",languages)}</MenuItem>
+                      <MenuItem value="2">{convertLanguage("CONFIRMED",languages)}</MenuItem>
+                      <MenuItem value="3">{convertLanguage("FIXING",languages)}</MenuItem>
+                      <MenuItem value="4">{convertLanguage("FINISH",languages)}</MenuItem>
+                      <MenuItem value="6">{convertLanguage("INCOMPLETE",languages)}</MenuItem>
+                    </Select>
+                  </FormControl>
+                </TableCell>
+                <TableCell
                   onClick={() => handleSort("remark_mechanic")}
                   sx={{
                     width: "110px",
@@ -499,38 +542,7 @@ export default function TaskListScreen() {
                   />
                 </TableCell>
 
-                <TableCell
-                  className="thStyle"
-                  sx={{
-                    width: "140px",
-                  }}
-                >
-                  <Typography onClick={() => handleSort("status")}>
-                    {t("employee_list.active_status")}
-
-                    {sortConfig.key === "status" &&
-                      (sortConfig.direction === "asc" ? "▲" : "▼")}
-                  </Typography>
-                  <FormControl size="small" fullWidth>
-                    <Select
-                      sx={{ background: "white", height: "2rem" }}
-                      value={searchTerms.status}
-                      onChange={(e) =>
-                        setSearchTerms({
-                          ...searchTerms,
-                          status: e.target.value,
-                        })
-                      }
-                    >
-                      <MenuItem value=" ">ALL</MenuItem>
-                      <MenuItem value="1">REQUESTED</MenuItem>
-                      <MenuItem value="2">CONFIRMED</MenuItem>
-                      <MenuItem value="3">FIXING</MenuItem>
-                      <MenuItem value="4">FINISH</MenuItem>
-                      <MenuItem value="6">INCOMPLETE</MenuItem>
-                    </Select>
-                  </FormControl>
-                </TableCell>
+              
               </TableRow>
             </TableHead>
             <TableBody
@@ -591,18 +603,6 @@ export default function TaskListScreen() {
                     {row.id_mechanic &&
                       row.id_mechanic + " - " + row.name_mechanic}
                   </TableCell>
-                  <TableCell className="tdStyle">
-                    {row.total_downtime_detail}
-                  </TableCell>
-                  <TableCell className="tdStyle">
-                    {row.Line}
-                    {row.floor_user_request != row.Line &&
-                      "(" + row.floor_user_request + ")"}
-                  </TableCell>
-                  <TableCell className="tdStyle">
-                    {row.id_user_request}
-                  </TableCell>
-
                   <TableCell
                     className="tdStyle"
                     style={{
@@ -622,15 +622,28 @@ export default function TaskListScreen() {
                     }}
                   >
                     {row.status === 1
-                      ? "REQUESTED"
+                      ? convertLanguage("REQUESTED", languages)
                       : row.status === 2
-                      ? "CONFIRMED"
+                      ?  convertLanguage("CONFIRMED", languages)
                       : row.status === 3
-                      ? "FIXING"
+                      ?  convertLanguage("FIXING", languages)
                       : row.status === 4
-                      ? "FINISH"
-                      : "INCOMPLETE"}
+                      ?  convertLanguage("FINISH", languages)
+                      :  convertLanguage("INCOMPLETE", languages)}
                   </TableCell>
+                  <TableCell className="tdStyle">
+                    {row.total_downtime_detail}
+                  </TableCell>
+                  <TableCell className="tdStyle">
+                    {row.Line}
+                    {row.floor_user_request != row.Line &&
+                      "(" + row.floor_user_request + ")"}
+                  </TableCell>
+                  <TableCell className="tdStyle">
+                    {row.id_user_request}
+                  </TableCell>
+
+             
                 </TableRow>
               ))}
             </TableBody>

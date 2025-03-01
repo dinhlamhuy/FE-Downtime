@@ -29,14 +29,14 @@ import {
   report_damage,
   setErrorCode,
   cancel_report_damage,
-  get_info_reason,
+
 } from "../redux/features/product";
 
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { BASE_URL } from "../utils/env";
 import authHeader from "../redux/services/auth_header";
-import { set } from "date-fns";
+// import { set } from "date-fns";
 
 const Form = (props) => {
   const [t] = useTranslation("global");
@@ -44,14 +44,14 @@ const Form = (props) => {
   const location = useLocation();  
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { infoReason } = useSelector((state) => state.product);
+  // const { infoReason } = useSelector((state) => state.product);
   const product = useSelector((state) => state.product);
   const { formText, scannerResult, setScannerResult, user } = props;
   const [statusForm, setStatusForm] = useState(false);
   const [statusPopup, setstatusPopup] = useState(false);
   const [removeTask, setRemoveTask] = useState(false);
   const [infoMachine, setInfoMachine] = useState(null);
-  const [otherIssue, setAdditionalInput] = useState("");
+  // const [otherIssue, setAdditionalInput] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -78,16 +78,16 @@ const Form = (props) => {
     await dispatch(setErrorCode(null, ""));
     navigate("/product/status");
   };
-  const handleAutocompleteChange = (event, values) => {
-    formik.setFieldValue("remark", values);
+  // const handleAutocompleteChange = (event, values) => {
+  //   formik.setFieldValue("remark", values);
 
-    const hasId999 = values.some((item) => item.id === 999);
+  //   const hasId999 = values.some((item) => item.id === 999);
 
-    if (!hasId999) {
-      setAdditionalInput("");
-      formik.setFieldValue("otherIssue", "");
-    }
-  };
+  //   if (!hasId999) {
+  //     setAdditionalInput("");
+  //     formik.setFieldValue("otherIssue", "");
+  //   }
+  // };
 
   const onCancel = async () => {
     const id_machine = scannerResult.trim();
@@ -115,36 +115,36 @@ const Form = (props) => {
     ),
     fixer: Yup.string().required(t("info_machine_damage.validate_fixer")),
 
-    // Validation for remark
-    remark: Yup.array()
-      .of(
-        Yup.object().shape({
-          id: Yup.number().required("Status ID is required"),
-          info_reason_en: Yup.string().required(
-            "English skill name is required"
-          ),
-          info_reason_vn: Yup.string().required(
-            "Vietnamese skill name is required"
-          ),
-          info_reason_mm: Yup.string().required(
-            "Myanmar skill name is required"
-          ),
-        })
-      )
-      .min(1, t("info_machine_damage.validate_remark")),
-    otherIssue: Yup.string().test(
-      "is-required-when-id-999",
-      t("info_machine_damage.validate_other_issue"),
-      function (value) {
-        const { remark } = this.parent;
-        const hasId999 =
-          Array.isArray(remark) && remark.some((item) => item.id === 999);
-        if (hasId999) {
-          return !!value;
-        }
-        return true;
-      }
-    ),
+    // // Validation for remark
+    // remark: Yup.array()
+    //   .of(
+    //     Yup.object().shape({
+    //       id: Yup.number().required("Status ID is required"),
+    //       info_reason_en: Yup.string().required(
+    //         "English skill name is required"
+    //       ),
+    //       info_reason_vn: Yup.string().required(
+    //         "Vietnamese skill name is required"
+    //       ),
+    //       info_reason_mm: Yup.string().required(
+    //         "Myanmar skill name is required"
+    //       ),
+    //     })
+    //   )
+    //   .min(1, t("info_machine_damage.validate_remark")),
+    // otherIssue: Yup.string().test(
+    //   "is-required-when-id-999",
+    //   t("info_machine_damage.validate_other_issue"),
+    //   function (value) {
+    //     const { remark } = this.parent;
+    //     const hasId999 =
+    //       Array.isArray(remark) && remark.some((item) => item.id === 999);
+    //     if (hasId999) {
+    //       return !!value;
+    //     }
+    //     return true;
+    //   }
+    // ),
   });
 
   const formik = useFormik({
@@ -158,26 +158,26 @@ const Form = (props) => {
       id_machine: scannerResult.trim(),
       name_machine: "",
       fixer: "",
-      remark: [],
-      otherIssue: "",
+      // remark: [],
+      // otherIssue: "",
     },
     validationSchema,
     onSubmit: async (data) => {
       setLoading(true);
-      const arrayRemark = data.remark;
-      const idArray = arrayRemark.map((item) => item.id);
-      let remark = idArray.join(",");
+      // const arrayRemark = data.remark;
+      // const idArray = arrayRemark.map((item) => item.id);
+      // let remark = idArray.join(",");
 
-      const { id_machine, id_user_request, factory, fixer, otherIssue } = data;
+      const { id_machine, id_user_request, factory, fixer } = data;
       const language = languages;
       await dispatch(
         report_damage({
           id_machine: id_machine.trim(),
           id_user_request,
-          remark,
+          remark:'',
           factory,
           fixer,
-          otherIssue: otherIssue.trim(),
+          otherIssue: '',
           language,
         })
       );
@@ -207,7 +207,7 @@ const Form = (props) => {
         .then((response) => {
     
           setInfoMachine(response.data.data);
-          console.log(response.data.data)
+          // console.log(response.data.data)
           if(response.data.data === null){
             setScannerResult('')
           }
@@ -217,7 +217,7 @@ const Form = (props) => {
         })
         .catch((error) => {
           setLoading(true);
-          setDialogMessage(`Error: Không tìm thấy mã máy ${id_machine}`);
+          setDialogMessage(`Error: Not found ${id_machine}`);
           setDialogOpen(true);
           return error.response.data;
         });
@@ -310,13 +310,13 @@ const Form = (props) => {
     }
   }, [product, removeTask, dispatch, setScannerResult]);
   
-  useEffect(() => {
-    const { dept } = user;
-    const fetchData = () => {
-      dispatch(get_info_reason(dept));
-    };
-    fetchData();
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const { dept } = user;
+  //   const fetchData = () => {
+  //     dispatch(get_info_reason(dept));
+  //   };
+  //   fetchData();
+  // }, [dispatch]);
 
   return (
     <Box component="div">
@@ -588,7 +588,7 @@ const Form = (props) => {
                 </MenuItem>
               </TextField>
             </Grid>
-            <Grid item xs={6} md={6}>
+            {/* <Grid item xs={6} md={6}>
               {formik.values.remark.some((item) => item.id === 999) && (
                 <TextField
                   name="otherIssue"
@@ -610,31 +610,9 @@ const Form = (props) => {
                   }
                 />
               )}
-            </Grid>
+            </Grid> */}
 
-            <Grid item xs={12} md={12}>
-              {/* lý do hư máy phiên bản nhập tay */}
-              {/* <TextField
-                                name="remark"
-                                label={t("info_machine_damage.remark")}
-                                multiline
-                                rows={4}
-                                fullWidth
-                                className={
-                                    formik.errors.remark && formik.touched.remark
-                                        ? "is-invalid"
-                                        : ""
-                                }
-                                error={formik.errors.remark && formik.touched.remark === true}
-                                helperText={
-                                    formik.errors.remark && formik.touched.remark
-                                        ? formik.errors.remark
-                                        : null
-                                }
-                                onChange={formik.handleChange}
-                                value={formik.values.remark}
-                            /> */}
-
+            {/* <Grid item xs={12} md={12}>
               <Autocomplete
                 name="skill"
                 multiple
@@ -677,7 +655,7 @@ const Form = (props) => {
                   </MenuItem>
                 )}
               />
-            </Grid>
+            </Grid> */}
           </Grid>
           <Stack
             direction="row"

@@ -14,7 +14,7 @@
   "sidebar": {
     "system": "Hệ thống",
     "info_machine_damage": "Thông báo máy hư",
-    "relocate_the_machine": "Chuyển máy",
+    "relocate_the_machine": "Chuyển mã",
     "process_status": "Trạng thái xử lý",
     "info_user": "Thông tin cá nhân",
     "work_list": "Danh sách công việc",
@@ -87,7 +87,7 @@
     "status_1": "Sản xuất",
     "status_1_": "Quét mã và gửi yêu cầu cho thợ sửa.",
     "status_1_header": "Thông tin yêu cầu của thợ sửa",
-    "status_1_user_request": "Người gửi:",
+    "status_1_user_request": "Người gửi",
     "status_1_date": "Ngày yêu cầu:",
     "status_1_id_machine": "Mã máy:",
     "status_1_floor": "Mặt lầu:",
@@ -149,9 +149,6 @@
     "Cfm_Request_for_Machine_Relocation": "Xác nhận nghiệm thu yêu cầu dời máy",
     "btn_transfer": "Chuyển giao",
     "label_choose_repair":"Chọn thợ thay thế"
-
-    
-    
   },
   "personal_info": {
     "search_info": "Tra cứu thông tin",
@@ -185,7 +182,7 @@
   "work_list": {
     "work_list": "Danh sách công việc",
     "Pending_Assignment_List": "Danh sách chưa giao phó",
-    "Machine_Relocation_List": "Danh sách dời máy",
+    "Machine_Relocation_List": "Danh sách chuyển mã",
     "date": "Ngày",
     "id_machine": "Mã Máy",
     "id_machine_support": "Mã Máy Hỗ Trợ",

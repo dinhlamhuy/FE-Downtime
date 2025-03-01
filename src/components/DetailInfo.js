@@ -102,6 +102,20 @@ const DetailInfo = ({ isCheck, open, setOpen, machine, user }) => {
                   variant="div"
                   sx={{ fontSize: "14px", fontWeight: "500" }}
                 >
+                  {t("repair_status.machine_name")}{": "}
+                </Typography>
+                <Typography
+                  variant="span"
+                  sx={{ fontSize: "14px", color: "gray" }}
+                >
+                  {machine.Machine_Name}
+                </Typography>
+              </Grid>
+              <Grid item xs={6} md={6}>
+                <Typography
+                  variant="div"
+                  sx={{ fontSize: "14px", fontWeight: "500" }}
+                >
                   {t("process_status.status_1_floor")}{" "}
                 </Typography>
                 <Typography

@@ -151,8 +151,6 @@
     "Cfm_Request_for_Machine_Relocation": "Confirmation of machine relocation acceptance",
      "btn_transfer": "Transfer",
     "label_choose_repair":"Choose replacement mechanic"
-
-
   },
   "personal_info": {
     "search_info": "Look up information",
@@ -186,7 +184,7 @@
   "work_list": {
     "work_list": "Work list",
     "Pending_Assignment_List": "Pending Assignment List",
-    "Machine_Relocation_List": "Machine Relocation List",
+    "Machine_Relocation_List": "Change Over List",
     "date": "Date",
     "id_machine": "ID Machine",
     "id_machine_support": "Machine ID Support",

@@ -180,6 +180,21 @@ export const get_work_list_report_employee = createAsyncThunk(
     }
   }
 );
+export const get_work_list_change_over = createAsyncThunk(
+  "/task/getTaskChangeOver",
+  async ({ id_user_mechanic, factory, lean }) => {
+    try {
+      const data = await ElectricServices.get_work_list_change_over(
+        id_user_mechanic,
+        factory,
+        lean
+      );
+      return data;
+    } catch (error) {
+      return error.message;
+    }
+  }
+);
 
 // Confirm and Scanner
 export const scanner_fix_mechanic = createAsyncThunk(
@@ -213,7 +228,7 @@ export const finish_mechanic = createAsyncThunk(
     statusRadio,
     language,
     new_mechanic,
-    otherIssue,new_id_user_mechanic
+    otherIssue,new_id_user_mechanic, reason, otherMethod
   }) => {
     try {
       const data = await ElectricServices.finish_mechanic(
@@ -226,7 +241,7 @@ export const finish_mechanic = createAsyncThunk(
         statusRadio,
         language,
         new_mechanic,
-        otherIssue,new_id_user_mechanic
+        otherIssue,new_id_user_mechanic, reason, otherMethod
       );
       return data;
     } catch (error) {
@@ -527,6 +542,7 @@ export const electricSlice = createSlice({
     dataTaskReportDamageList: [], //Manager
     dataOwnerTaskReportDamageList: [],
     workListReportEmployee: [], // Mechanic Employee
+    workListChangeOverEmployee: [], // Mechanic Employee
     historyListReportMechanic: [],
     infoCalculate: [],
     infoTask: [],
@@ -578,6 +594,12 @@ export const electricSlice = createSlice({
       get_work_list_report_employee.fulfilled,
       (state, action) => {
         state.workListReportEmployee = action.payload.data;
+      }
+    );
+    builder.addCase(
+      get_work_list_change_over.fulfilled,
+      (state, action) => {
+        state.workListChangeOverEmployee = action.payload.data;
       }
     );
     builder.addCase(owner_asign_task.fulfilled, (state, action) => {

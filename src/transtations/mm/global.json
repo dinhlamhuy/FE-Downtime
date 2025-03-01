@@ -149,8 +149,6 @@
     "Cfm_Request_for_Machine_Relocation": "စက်ရွှေ့ပြောင်းမှုလက်ခံမှုအတည်ပြုခြင်း",
     "btn_transfer": "လွှဲပြောင်းပါ",
     "label_choose_repair":"ပြုပြင်သည့်နည်းလမ်းရွေးချယ်ပါ"
-
-
   },
   "personal_info": {
     "search_info": "အချက်အလက်ရှာဖွေပါ",
@@ -185,7 +183,7 @@
   "work_list": {
     "work_list": "အလုပ် စာရင်း",
     "Pending_Assignment_List": "တာဝန်ပေးရန်စောင့်ဆိုင်းသောစာရင်း",
-    "Machine_Relocation_List": "စက်ရွှေ့ပြောင်းမည့်စာရင်း",
+    "Machine_Relocation_List": "လွှဲပြောင်းစာရင်း",
     "date": "‌နေ့စွဲ",
     "id_machine": "စက်ID နံပါတ်",
     "id_machine_support": "စက် ID ပံ့ပိုးမှု",

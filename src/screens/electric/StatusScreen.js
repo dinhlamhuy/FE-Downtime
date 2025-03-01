@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   get_work_list_report_employee,
   get_history_mechanic,
+  get_work_list_change_over,
 } from "../../redux/features/electric";
 import BreadCrumb from "../../components/BreadCrumb";
 import ProgressStatus from "../../components/ProgressStatus";
@@ -12,7 +13,7 @@ import socketIOClient from "socket.io-client";
 import { BASE_URL } from "../../utils/env";
 
 import { useTranslation } from "react-i18next";
-import { get_all_machine } from "../../redux/features/machine";
+// import { get_all_machine } from "../../redux/features/machine";
 
 const host = BASE_URL;
 
@@ -47,9 +48,11 @@ const StatusScreen = () => {
   const socketRef = useRef();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { workListReportEmployee, historyListReportMechanic } = useSelector(
-    (state) => state.electric
-  );
+  const {
+    workListReportEmployee,
+    historyListReportMechanic,
+    workListChangeOverEmployee,
+  } = useSelector((state) => state.electric);
 
   const [value, setValue] = useState(0);
 
@@ -64,10 +67,15 @@ const StatusScreen = () => {
         await dispatch(get_history_mechanic({ id_user_mechanic, factory }));
       } else {
         // permission == "3" && (await dispatch(get_all_machine({ factory })));
-
         await dispatch(
           get_work_list_report_employee({ id_user_mechanic, factory, lean })
         );
+
+        // await Promise.all([
+        //   dispatch(
+        //     get_work_list_change_over({ id_user_mechanic, factory, lean })
+        //   ),
+        // ]);
       }
     };
 
@@ -188,7 +196,12 @@ const StatusScreen = () => {
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          <ProgressStatus listReport={workListReportEmployee} user={user} listRelocate={[]} />
+          <ProgressStatus
+            listReport={workListReportEmployee}
+            // listRelocate={workListChangeOverEmployee}
+            listRelocate={[]}
+            user={user}
+          />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           <History historyListReport={historyListReportMechanic} user={user} />

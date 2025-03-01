@@ -80,18 +80,19 @@ const UserlistScreen = () => {
             >
               <TableHead>
                 <TableRow>
-                  <TableCell style={{ fontWeight: "bold", whiteSpace: "nowrap", backgroundColor: "#1976d2", color: "#fff" }} align="center">
+                  <TableCell style={{ width:'80px', fontWeight: "bold", whiteSpace: "nowrap", backgroundColor: "#1976d2", color: "#fff" }} align="center">
                     {t("employee_list.name")}
                   </TableCell>
-                  <TableCell style={{ fontWeight: "bold", whiteSpace: "nowrap", backgroundColor: "#1976d2", color: "#fff" }} align="center">
-                    {t("employee_list.lean")}
-                  </TableCell>
-                  <TableCell style={{ fontWeight: "bold", whiteSpace: "nowrap", backgroundColor: "#1976d2", color: "#fff" }} align="center">
-                    {t("employee_list.floor")}
-                  </TableCell>
-                  <TableCell style={{ fontWeight: "bold", whiteSpace: "nowrap", backgroundColor: "#1976d2", color: "#fff" }} align="center">
+                  <TableCell style={{ width:'60px', fontWeight: "bold", whiteSpace: "nowrap", backgroundColor: "#1976d2", color: "#fff" }} align="center">
                     {t("employee_list.active_status")}
                   </TableCell>
+                  {/* <TableCell style={{ fontWeight: "bold", whiteSpace: "nowrap", backgroundColor: "#1976d2", color: "#fff" }} align="center">
+                    {t("employee_list.lean")}
+                  </TableCell> */}
+                  <TableCell style={{ width:'80px', fontWeight: "bold", whiteSpace: "nowrap", backgroundColor: "#1976d2", color: "#fff" }} align="center">
+                    {t("employee_list.floor")}
+                  </TableCell>
+                
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -104,14 +105,15 @@ const UserlistScreen = () => {
                       {row.user_name} - {row.name}
                     </TableCell>
                     <TableCell align="center">
-                      {row.lean}
+                      {statusCurrent(row.STS)}
                     </TableCell>
+                    {/* <TableCell align="center">
+                      {row.lean}
+                    </TableCell> */}
                     <TableCell align="center">
                       {row.floor}
                     </TableCell>
-                    <TableCell align="center">
-                      {statusCurrent(row.STS)}
-                    </TableCell>
+                   
                   </TableRow>
                 ))}
               </TableBody>

@@ -37,13 +37,14 @@ import DetailInfoRelocateMachine from "./DetailInfoRelocateMachine";
 import AcceptanceModal from "./AcceptanceModal";
 
 const ProgressStatus = ({ listReport, user, listRelocate }) => {
+  console.log(listReport);
   const [openProgress, setOpenProgress] = useState(listReport || []);
   const [openProgress2, setOpenProgress2] = useState(listRelocate || []);
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [activeModal, setActiveModal] = useState("");
   const [activeRelocateModal, setActiveRelocateModal] = useState("");
-  // console.log(activeModal)
+  // console.log(listRelocate)
   const [scannerResult, setScannerResult] = useState("");
   // const [scannerResult, setScannerResult] = useState("IT-PC12");
   const [idMachine, setIdMachine] = useState("");
@@ -133,9 +134,9 @@ const ProgressStatus = ({ listReport, user, listRelocate }) => {
     },
   ];
 
-  useEffect(()=>{
-   console.log(activeRelocateModal)
-  },[activeRelocateModal])
+  // useEffect(()=>{
+  // //  console.log(activeRelocateModal)
+  // },[activeRelocateModal])
   const handleClick = (index) => {
     const isOpen = openProgress.includes(index);
     if (isOpen) {
@@ -307,6 +308,7 @@ const ProgressStatus = ({ listReport, user, listRelocate }) => {
                   </List>
                 </Collapse>
                 {activeRelocateModal === "detailInfo" && (
+                 
                   <DetailInfoRelocateMachine
                     task={relocate}
                     isCheck={idRelocate === relocate.id}
@@ -496,6 +498,7 @@ const ProgressStatus = ({ listReport, user, listRelocate }) => {
                     idMachine={idMachine}
                     open={open}
                     userRequest={product.id_user_request}
+                    dept={product.dept}
                     setOpen={setOpen}
                     user={user}
                   />
