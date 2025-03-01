@@ -201,57 +201,43 @@ const FinishTaskElectric = (props) => {
       const idArray = arrayRemark.map((item) => item.id);
       let remark = idArray.join(",");
 
-      // console.log("check :", {
-
-      //     id_user_mechanic,
-      //     skill: skillIds,
-      //     id_machine,
-      //     remark_mechanic,
-      //     lean,
-      //     factory,
-      //     statusRadio,
-      //     language,
-      //     new_mechanic,
-      //     otherMethod,
-      //     reason:remark,
-      //     otherIssue,
-      // });
-      // dispatch(
-      //   finish_mechanic({
-      //     id_user_mechanic,
-      //     skill: skillIds,
-      //     id_machine,
-      //     remark_mechanic,
-      //     lean,
-      //     factory,
-      //     statusRadio,
-      //     language,
-      //     new_mechanic,
-      //     otherMethod,
-      //     reason: remark,
-      //     otherIssue,
-      //   })
-      // );
-      alert(
-        JSON.stringify(
-          {
-            id_user_mechanic,
-            skill: skillIds,
-            id_machine,
-            remark_mechanic,
-            lean,
-            factory,
-            statusRadio,
-            language,
-            new_mechanic,
-            otherMethod,
-            reason: remark,
-            otherIssue,
-          },
-          null,
-          2
-        )
+      
+      dispatch(
+        finish_mechanic({
+          id_user_mechanic,
+          skill: skillIds,
+          id_machine,
+          remark_mechanic,
+          lean,
+          factory,
+          statusRadio,
+          language,
+          new_mechanic,
+          otherMethod,
+          reason: remark,
+          otherIssue,
+        })
       );
+      // alert(
+      //   JSON.stringify(
+      //     {
+      //       id_user_mechanic,
+      //       skill: skillIds,
+      //       id_machine,
+      //       remark_mechanic,
+      //       lean,
+      //       factory,
+      //       statusRadio,
+      //       language,
+      //       new_mechanic,
+      //       otherMethod,
+      //       reason: remark,
+      //       otherIssue,
+      //     },
+      //     null,
+      //     2
+      //   )
+      // );
 
       setOpen(false);
     },
