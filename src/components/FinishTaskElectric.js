@@ -172,7 +172,7 @@ const FinishTaskElectric = (props) => {
       otherMethod: "",
       remark_mechanic: "",
       otherIssue: "",
-      scannerResult: "",
+      scannerResult: scannerResult,
       remark: [],
     },
 
@@ -269,7 +269,9 @@ const FinishTaskElectric = (props) => {
   }, [dispatch]);
 
   useEffect(() => {
-    alert(scannerResult);
+    if (scannerResult) {
+      formik.setFieldValue("scannerResult", scannerResult);
+    }
   }, [scannerResult, setScannerResult]);
 
   const onClose = () => {
