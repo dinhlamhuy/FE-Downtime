@@ -268,9 +268,9 @@ const FinishTaskElectric = (props) => {
     fetchInfoSkill();
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   alert(scannerResult);
-  // }, [scannerResult, setScannerResult]);
+  useEffect(() => {
+    alert(scannerResult);
+  }, [scannerResult, setScannerResult]);
 
   const onClose = () => {
     formik.setTouched({});
