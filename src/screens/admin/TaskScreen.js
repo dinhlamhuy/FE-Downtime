@@ -100,10 +100,10 @@ export default function TaskScreen() {
 
     const diffInMs = endDate - startDate;
     const diffInSeconds = Math.floor(diffInMs / 1000);
-    const adjustedSeconds = factory === 'LYM' ? diffInSeconds - 1800 : diffInSeconds;
-    const hours = Math.floor(adjustedSeconds / 3600);
-    const minutes = Math.floor((adjustedSeconds % 3600) / 60);
-    const seconds = (adjustedSeconds % 3600) % 60;
+
+    const hours = Math.floor(diffInSeconds / 3600);
+    const minutes = Math.floor((diffInSeconds % 3600) / 60);
+    const seconds = (diffInSeconds % 3600) % 60;
 
     return { hours, minutes, seconds };
   };
@@ -140,10 +140,10 @@ export default function TaskScreen() {
           item.date_user_request && new Date(item.date_user_request);
         const acceptTime = item.accept
           ? new Date(item.accept)
-          : new Date(date.getTime() + 7 * 60 * 60 * 1000);
+          : new Date(date.getTime() + 7 * 60 * 60 * 1000- (factory === 'LYM' ? 30 * 60 * 1000 : 0));
 
         const fixingTime = item.fixing && new Date(item.fixing);
-        const fixingTime3 = item.fixing ? new Date(item.fixing) : new Date(date.getTime() + 7 * 60 * 60 * 1000);
+        const fixingTime3 = item.fixing ? new Date(item.fixing) : new Date(date.getTime() + 7 * 60 * 60 * 1000- (factory === 'LYM' ? 30 * 60 * 1000 : 0));
         const finishTime = item.finish && new Date(item.finish);
         const minute_request =
           Math.max(((acceptTime - requestTime) / (1000 * 60)).toFixed(2), 0) ||
@@ -174,14 +174,14 @@ export default function TaskScreen() {
           minute_finish_detail: calculateTimeDifference(fixingTime, finishTime),
           minute_waiting: calculateTimeDifference(requestTime,  item.fixing
             ? fixingTime
-            : new Date(date.getTime() + 7 * 60 * 60 * 1000)),
+            : new Date(date.getTime() + 7 * 60 * 60 * 1000 - (factory === 'LYM' ? 30 * 60 * 1000 : 0))),
           total_downtime,
           total_waiting,
           total_downtime_detail: calculateTimeDifference(
             requestTime,
             item.finish
               ? finishTime
-              : new Date(date.getTime() + 7 * 60 * 60 * 1000)
+              : new Date(date.getTime() + 7 * 60 * 60 * 1000 - (factory === 'LYM' ? 30 * 60 * 1000 : 0))
           ),
         };
       });

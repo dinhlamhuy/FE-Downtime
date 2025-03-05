@@ -766,10 +766,10 @@ const get_All_task = (factory, fromDate, toDate, floor, fixer) => {
 
         const acceptTime = item.accept
         ? new Date(item.accept)
-        : new Date(date.getTime() + 7 * 60 * 60 * 1000); 
+        : new Date(date.getTime() + 7 * 60 * 60 * 1000- (factory === 'LYM' ? 30 * 60 * 1000 : 0)); 
 
         const fixingTime = item.fixing && new Date(item.fixing);
-        const finishTime = item.finish ? new Date(item.finish): new Date(date.getTime() + 7 * 60 * 60 * 1000); 
+        const finishTime = item.finish ? new Date(item.finish): new Date(date.getTime() + 7 * 60 * 60 * 1000- (factory === 'LYM' ? 30 * 60 * 1000 : 0)); 
         const minute_request =
           Math.max(((acceptTime - requestTime) / (1000 * 60)).toFixed(2), 0) ||
           0;
