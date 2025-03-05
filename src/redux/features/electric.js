@@ -69,6 +69,24 @@ export const get_list_status_mechanic = createAsyncThunk(
     }
   }
 );
+export const get_List_Status_Change_Over_Mechanic = createAsyncThunk(
+  "/task/get_List_Status_Change_Over_Mechanic",
+  async ({ user_name, position, factory, floor, lean, permission,id_task }) => {
+    try {
+      const data = await ElectricServices.get_List_Status_Change_Over_Mechanic(
+        user_name,
+        position,
+        factory,
+        floor,
+        lean,
+        permission,id_task
+      );
+      return data;
+    } catch (error) {
+      return error.message;
+    }
+  }
+);
 
 export const get_list_repair_mechanic = createAsyncThunk(
   "/task/getListRepairedMechanic",
@@ -549,6 +567,7 @@ export const electricSlice = createSlice({
     infoSkill: [],
     infoMachineUnderRepair: [],
     getListStatusMechanic: [],
+    getListStatusChangeOverMechanic: [],
     getListAsignMechanic: [],
     getListStatusTaskDetail: [],
     getListRepairMechanic: [],
@@ -580,6 +599,9 @@ export const electricSlice = createSlice({
     });
     builder.addCase(get_list_status_mechanic.fulfilled, (state, action) => {
       state.getListStatusMechanic = action.payload.data;
+    });
+    builder.addCase(get_List_Status_Change_Over_Mechanic.fulfilled, (state, action) => {
+      state.getListStatusChangeOverMechanic = action.payload.data;
     });
     builder.addCase(get_task_relocate_machine.fulfilled, (state, action) => {
       state.getTaskRelocate = action.payload.data;

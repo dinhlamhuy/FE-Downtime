@@ -100,10 +100,10 @@ export default function TaskScreen() {
 
     const diffInMs = endDate - startDate;
     const diffInSeconds = Math.floor(diffInMs / 1000);
-
-    const hours = Math.floor(diffInSeconds / 3600);
-    const minutes = Math.floor((diffInSeconds % 3600) / 60);
-    const seconds = (diffInSeconds % 3600) % 60;
+    const adjustedSeconds = factory === 'LYM' ? diffInSeconds - 1800 : diffInSeconds;
+    const hours = Math.floor(adjustedSeconds / 3600);
+    const minutes = Math.floor((adjustedSeconds % 3600) / 60);
+    const seconds = (adjustedSeconds % 3600) % 60;
 
     return { hours, minutes, seconds };
   };

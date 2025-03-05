@@ -34,6 +34,7 @@ import {
   get_all_lean,
   call_support,
   get_Machine_Under_Repair,
+  get_List_Status_Change_Over_Mechanic,
   get_task_relocate_machine,
   get_list_status_mechanic,
   asign_Task_Relocate_Machine,
@@ -442,9 +443,21 @@ const TableEmployeeList2 = ({
           />
         );
       case 2:
-        return <Chip label={t("employee_list.task")} color="warning"  sx={{ backgroundColor: "orange" }} />;
+        return (
+          <Chip
+            label={t("employee_list.task")}
+            color="warning"
+            sx={{ backgroundColor: "orange" }}
+          />
+        );
       case 3:
-        return <Chip label={t("employee_list.fixing")} color="error"    sx={{ backgroundColor: "red" }} />;
+        return (
+          <Chip
+            label={t("employee_list.fixing")}
+            color="error"
+            sx={{ backgroundColor: "red" }}
+          />
+        );
       default:
         return "";
     }
@@ -560,10 +573,12 @@ const TableEmployeeList2 = ({
                       textAlign: "center",
                       display: "flex",
                       alignItems: "center",
-                      height:'100%'
+                      height: "100%",
                     }}
                   >
-                    <Typography style={{width:'100%', height:'100%'}}>{statusCurrent(row.STS)}</Typography>
+                    <Typography style={{ width: "100%", height: "100%" }}>
+                      {statusCurrent(row.STS)}
+                    </Typography>
                   </TableCell>
                   <TableCell
                     style={{
@@ -922,15 +937,16 @@ const WorkListScreen = () => {
     (state) => state.auth.user
   );
   const handleClickOpenRelocate = async (row) => {
-    const { id_machine } = row;
+    const { id_machine, id } = row;
     await dispatch(
-      get_list_status_mechanic({
+      get_List_Status_Change_Over_Mechanic({
         user_name,
         position,
         factory,
         floor,
         lean,
         permission,
+        id_task: id,
       })
     );
 
@@ -944,7 +960,7 @@ const WorkListScreen = () => {
     getListAsignMechanic,
     getAllLean,
     infoMachineUnderRepair,
-    getListStatusMechanic,
+    getListStatusChangeOverMechanic,
     getTaskRelocate,
   } = useSelector((state) => state.electric);
 
@@ -1097,13 +1113,13 @@ const WorkListScreen = () => {
                             variant="contained"
                             color="success"
                             sx={{ whiteSpace: "nowrap" }}
-                            disabled={
-                              !(
-                                (lean === "TD" &&
-                                  !relocate.id_owner_electrician) ||
-                                (lean === "TM" && !relocate.id_owner_mechanic)
-                              )
-                            }
+                            // disabled={
+                            //   !(
+                            //     (lean === "TD" &&
+                            //       !relocate.id_owner_electrician) ||
+                            //     (lean === "TM" && !relocate.id_owner_mechanic)
+                            //   )
+                            // }
                             onClick={() => handleClickOpenRelocate(relocate)}
                           >
                             {(lean === "TD" &&
@@ -1302,7 +1318,7 @@ const WorkListScreen = () => {
         open={openEmployeeListRelocate}
         setOpen={setOpenEmployeeListRelocate}
         headerModal={t("work_list.employee_list")}
-        getListAsignMechanic={getListStatusMechanic}
+        getListAsignMechanic={getListStatusChangeOverMechanic}
         task={task}
       />
 

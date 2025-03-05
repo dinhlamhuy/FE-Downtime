@@ -109,6 +109,39 @@ const get_list_status_mechanic = (
       return error.response.data;
     });
 };
+const get_List_Status_Change_Over_Mechanic = (
+  user_name,
+  position,
+  factory,
+  floor,
+  lean,
+  permission, id_task
+) => {
+  return axios
+    .post(
+      BASE_URL + "/task/getListStatusChangeOverMechanic",
+      {
+        user_name,
+        position,
+        factory,
+        floor,
+        lean,
+        permission,id_task
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...authHeader(),
+        },
+      }
+    )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      return error.response.data;
+    });
+};
 
 const get_list_status_task_detail = (
   fromdate,
@@ -850,7 +883,8 @@ const ElectricServices = {
   get_All_task,
   get_task_relocate_machine,
   asignTaskRelocateMachine,
-  get_work_list_change_over
+  get_work_list_change_over,
+  get_List_Status_Change_Over_Mechanic
 };
 
 export default ElectricServices;

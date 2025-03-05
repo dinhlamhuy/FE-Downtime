@@ -190,7 +190,6 @@ const FinishTaskElectric = (props) => {
       // console.log('check: ', data);
       // console.log('Scanner Result:', data.scannerResult);
       const skillIds = data.skill.map((item) => item.id).join(",");
-
       const { remark_mechanic, otherMethod, otherIssue } = data;
       const { lean, factory, user_name } = user;
       const id_machine = idMachine;
@@ -201,7 +200,6 @@ const FinishTaskElectric = (props) => {
       const idArray = arrayRemark.map((item) => item.id);
       let remark = idArray.join(",");
 
-      
       dispatch(
         finish_mechanic({
           id_user_mechanic,

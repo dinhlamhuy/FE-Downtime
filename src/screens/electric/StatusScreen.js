@@ -67,15 +67,15 @@ const StatusScreen = () => {
         await dispatch(get_history_mechanic({ id_user_mechanic, factory }));
       } else {
         // permission == "3" && (await dispatch(get_all_machine({ factory })));
-        await dispatch(
-          get_work_list_report_employee({ id_user_mechanic, factory, lean })
-        );
 
-        // await Promise.all([
-        //   dispatch(
-        //     get_work_list_change_over({ id_user_mechanic, factory, lean })
-        //   ),
-        // ]);
+        await Promise.all([
+          await dispatch(
+            get_work_list_report_employee({ id_user_mechanic, factory, lean })
+          ),
+          dispatch(
+            get_work_list_change_over({ id_user_mechanic, factory, lean })
+          ),
+        ]);
       }
     };
 
@@ -198,8 +198,8 @@ const StatusScreen = () => {
         <CustomTabPanel value={value} index={0}>
           <ProgressStatus
             listReport={workListReportEmployee}
-            // listRelocate={workListChangeOverEmployee}
-            listRelocate={[]}
+            listRelocate={workListChangeOverEmployee}
+            // listRelocate={[]}
             user={user}
           />
         </CustomTabPanel>
