@@ -375,10 +375,15 @@ const TableEmployeeList2 = ({
   };
 
   const onClose = () => {
+    // console.log(selectedRows);
     setSelectedRows([]);
     setOpen(false);
   };
-
+  useEffect(() => {
+    if(!open){
+      setSelectedRows([]);
+    }
+  }, [open]);
   const fetchData2 = async () => {
     await dispatch(
       get_task_relocate_machine({ fixer: lean, id_owner: user_name, factory })
